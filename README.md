@@ -1,50 +1,77 @@
-# Welcome to your Expo app 👋
+### Setup
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
-
-## Get started
-
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+First, Install the following packages
 
 ```bash
-npm run reset-project
+npx expo install @clerk/clerk-expo @clerk/types @clerk/expo-passkey expo-secure-store expo-auth-session expo-web-browser expo-build-properties
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Stream Setup
 
-## Learn more
+Go to create new app 
 
-To learn more about developing your project with Expo, look at the following resources:
+![alt text](image.png)
+ 
+For documentation of React native go here :-
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+http://getstream.io/chat/docs/sdk/react-native/
 
-## Join the community
+Add this dependancy for chatting
 
-Join our community of developers creating universal apps.
+```bash
+npx expo install stream-chat-expo stream-chat-react-native
+npx expo install @react-native-community/netinfo expo-image-manipulator react-native-gesture-handler react-native-reanimated react-native-svg
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Import react native gesture handler root view and wrap the root _layout with it
+
+```tsx
+import {GestureHandlerRootView} from "react-native-gesture-handler"
+
+function RootLayout(){
+   return(
+      <GestureHandlerRootView>
+         {children}
+      </GestureHandlerRootView>
+   )
+}
+```
+
+Now , create channel in root layout of protected layout and for testing use this code
+
+```tsx
+import { Stack } from "expo-router"
+import { useEffect } from "react";
+import { StreamChat } from "stream-chat";
+ 
+// this is not secret key
+const client = StreamChat.getInstance("sxhhvdzn5xx4");
+
+
+const Layout = () => {
+
+    useEffect(() => {
+  const connect = async () => {
+    try {
+      await client.connectUser(
+        { id: "jlahey", name: "Jim Lahey", image: "https://i.imgur.com/fR9Jz14.png" },
+        client.devToken("jlahey")
+      );
+      const channel = client.channel("messaging", "the_park", { name: "The Park" });
+      await channel.watch();
+    } catch (err) {
+      console.error("StreamChat connection error:", err);
+    }
+  };
+  connect();
+}, []); // <– Empty array means “run once on mount” :contentReference[oaicite:3]{index=3}
+
+  return (
+    <Stack>
+        <Stack.Screen name="(tabs)" options={{headerShown:false}}/>
+    </Stack>
+  )
+}
+
+export default Layout
+```

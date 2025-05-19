@@ -6,6 +6,13 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 
+//Nativewind
+import "../global.css"
+
+// Gesture based 
+
+import {GestureHandlerRootView} from "react-native-gesture-handler"
+
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
@@ -18,12 +25,17 @@ export default function RootLayout() {
   }
 
   return (
+    <GestureHandlerRootView
+    style={{flex:1}}
+    >
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="(app)" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
+    </GestureHandlerRootView>
   );
 }
