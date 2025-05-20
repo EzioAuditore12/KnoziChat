@@ -12,6 +12,7 @@ import "../global.css"
 // Gesture based 
 
 import {GestureHandlerRootView} from "react-native-gesture-handler"
+import AuthProvider from '@/providers/AuthProvider';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -29,12 +30,14 @@ export default function RootLayout() {
     style={{flex:1}}
     >
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <AuthProvider>
       <Stack>
         <Stack.Screen name="(app)" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
+      </AuthProvider>
     </ThemeProvider>
     </GestureHandlerRootView>
   );

@@ -1,6 +1,6 @@
-import { View, Text, ActivityIndicator } from 'react-native'
+import { ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { Stack, useLocalSearchParams } from 'expo-router'
+import { useLocalSearchParams } from 'expo-router'
 import {Channel as ChannelType} from 'stream-chat'
 import { Channel, MessageList, MessageInput, useChatContext } from 'stream-chat-expo'
 import { SafeAreaView } from 'react-native-safe-area-context'
