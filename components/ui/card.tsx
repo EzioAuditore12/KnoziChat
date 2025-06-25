@@ -1,5 +1,5 @@
-import * as React from "react";
-import { Text, TextProps, View, ViewProps } from "react-native";
+import { type RefObject } from "react";
+import { Text, type TextProps, View, type ViewProps } from "react-native";
 import { TextClassContext } from "@/components/ui/text";
 import { cn } from "@/lib/utils";
 
@@ -7,7 +7,7 @@ function Card({
 	className,
 	...props
 }: ViewProps & {
-	ref?: React.RefObject<View>;
+	ref?: RefObject<View>;
 }) {
 	return (
 		<View
@@ -24,7 +24,7 @@ function CardHeader({
 	className,
 	...props
 }: ViewProps & {
-	ref?: React.RefObject<View>;
+	ref?: RefObject<View>;
 }) {
 	return (
 		<View
@@ -38,7 +38,7 @@ function CardTitle({
 	className,
 	...props
 }: TextProps & {
-	ref?: React.RefObject<Text>;
+	ref?: RefObject<Text>;
 }) {
 	return (
 		<Text
@@ -57,7 +57,7 @@ function CardDescription({
 	className,
 	...props
 }: TextProps & {
-	ref?: React.RefObject<Text>;
+	ref?: RefObject<Text>;
 }) {
 	return (
 		<Text
@@ -71,7 +71,7 @@ function CardContent({
 	className,
 	...props
 }: ViewProps & {
-	ref?: React.RefObject<View>;
+	ref?: RefObject<View>;
 }) {
 	return (
 		<TextClassContext.Provider value="text-card-foreground">
@@ -84,7 +84,7 @@ function CardFooter({
 	className,
 	...props
 }: ViewProps & {
-	ref?: React.RefObject<View>;
+	ref?: RefObject<View>;
 }) {
 	return (
 		<View

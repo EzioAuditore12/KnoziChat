@@ -1,15 +1,25 @@
-import * as AvatarPrimitive from "@rn-primitives/avatar";
-import * as React from "react";
+import {
+	Fallback,
+	type FallbackProps,
+	type FallbackRef,
+	Image,
+	type ImageProps,
+	type ImageRef,
+	Root,
+	type RootProps,
+	type RootRef,
+} from "@rn-primitives/avatar";
+import { type RefObject } from "react";
 import { cn } from "@/lib/utils";
 
 function Avatar({
 	className,
 	...props
-}: AvatarPrimitive.RootProps & {
-	ref?: React.RefObject<AvatarPrimitive.RootRef>;
+}: RootProps & {
+	ref?: RefObject<RootRef>;
 }) {
 	return (
-		<AvatarPrimitive.Root
+		<Root
 			className={cn(
 				"relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full",
 				className,
@@ -22,11 +32,11 @@ function Avatar({
 function AvatarImage({
 	className,
 	...props
-}: AvatarPrimitive.ImageProps & {
-	ref?: React.RefObject<AvatarPrimitive.ImageRef>;
+}: ImageProps & {
+	ref?: RefObject<ImageRef>;
 }) {
 	return (
-		<AvatarPrimitive.Image
+		<Image
 			className={cn("aspect-square h-full w-full", className)}
 			{...props}
 		/>
@@ -36,11 +46,11 @@ function AvatarImage({
 function AvatarFallback({
 	className,
 	...props
-}: AvatarPrimitive.FallbackProps & {
-	ref?: React.RefObject<AvatarPrimitive.FallbackRef>;
+}: FallbackProps & {
+	ref?: React.RefObject<FallbackRef>;
 }) {
 	return (
-		<AvatarPrimitive.Fallback
+		<Fallback
 			className={cn(
 				"flex h-full w-full items-center justify-center rounded-full bg-muted",
 				className,

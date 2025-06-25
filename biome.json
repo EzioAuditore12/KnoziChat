@@ -1,6 +1,6 @@
 {
 	"$schema": "https://biomejs.dev/schemas/2.0.5/schema.json",
-	"vcs": { "enabled": false, "clientKind": "git", "useIgnoreFile": false },
+	"vcs": { "enabled": false, "clientKind": "git", "useIgnoreFile": true },
 	"files": { "ignoreUnknown": false },
 	"formatter": { "enabled": true, "indentStyle": "tab" },
 	"linter": {
@@ -41,24 +41,7 @@
 				"noVar": "error",
 				"noWith": "warn"
 			}
-		},
-		"includes": [
-			"**",
-			"!android/app/build",
-			"!dist/*",
-			"**",
-			"!android/app/build",
-			"!dist/*",
-			"**",
-			"!android/app/build",
-			"!dist/*",
-			"**",
-			"!android/app/build",
-			"!dist/*",
-			"**",
-			"!android/app/build",
-			"!dist/*"
-		]
+		}
 	},
 	"javascript": {
 		"formatter": { "quoteStyle": "double" },
@@ -195,7 +178,6 @@
 	"overrides": [
 		{ "linter": { "rules": {} } },
 		{ "javascript": { "globals": ["exports"] } },
-		{},
 		{
 			"javascript": { "globals": [] },
 			"linter": {
@@ -219,135 +201,6 @@
 				}
 			}
 		},
-		{},
-		{ "includes": ["**/*.d.ts"], "linter": { "rules": {} } },
-		{
-			"includes": ["**/metro.config.js"],
-			"javascript": { "globals": ["exports"] }
-		},
-		{ "includes": ["**/*.js", "**/*.jsx"] },
-		{
-			"includes": ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
-			"javascript": { "globals": [] },
-			"linter": {
-				"rules": {
-					"complexity": { "noUselessConstructor": "warn" },
-					"correctness": {
-						"noUndeclaredVariables": "off",
-						"noUnusedVariables": "warn"
-					},
-					"style": {
-						"noCommonJs": "warn",
-						"useConsistentArrayType": {
-							"level": "warn",
-							"options": { "syntax": "shorthand" }
-						}
-					},
-					"suspicious": {
-						"noDuplicateClassMembers": "error",
-						"noExtraNonNullAssertion": "warn",
-						"noRedeclare": "warn"
-					}
-				}
-			}
-		},
-		{ "includes": ["*.web.*"] },
-		{ "includes": ["**/*.d.ts"], "linter": { "rules": {} } },
-		{
-			"includes": ["**/metro.config.js"],
-			"javascript": { "globals": ["exports"] }
-		},
-		{ "includes": ["**/*.js", "**/*.jsx"] },
-		{
-			"includes": ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
-			"javascript": { "globals": [] },
-			"linter": {
-				"rules": {
-					"complexity": { "noUselessConstructor": "warn" },
-					"correctness": {
-						"noUndeclaredVariables": "off",
-						"noUnusedVariables": "warn"
-					},
-					"style": {
-						"noCommonJs": "warn",
-						"useConsistentArrayType": {
-							"level": "warn",
-							"options": { "syntax": "shorthand" }
-						}
-					},
-					"suspicious": {
-						"noDuplicateClassMembers": "error",
-						"noExtraNonNullAssertion": "warn",
-						"noRedeclare": "warn"
-					}
-				}
-			}
-		},
-		{ "includes": ["*.web.*"] },
-		{ "includes": ["**/*.d.ts"], "linter": { "rules": {} } },
-		{
-			"includes": ["**/metro.config.js"],
-			"javascript": { "globals": ["exports"] }
-		},
-		{ "includes": ["**/*.js", "**/*.jsx"] },
-		{
-			"includes": ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
-			"javascript": { "globals": [] },
-			"linter": {
-				"rules": {
-					"complexity": { "noUselessConstructor": "warn" },
-					"correctness": {
-						"noUndeclaredVariables": "off",
-						"noUnusedVariables": "warn"
-					},
-					"style": {
-						"noCommonJs": "warn",
-						"useConsistentArrayType": {
-							"level": "warn",
-							"options": { "syntax": "shorthand" }
-						}
-					},
-					"suspicious": {
-						"noDuplicateClassMembers": "error",
-						"noExtraNonNullAssertion": "warn",
-						"noRedeclare": "warn"
-					}
-				}
-			}
-		},
-		{ "includes": ["*.web.*"] },
-		{ "includes": ["**/*.d.ts"], "linter": { "rules": {} } },
-		{
-			"includes": ["**/metro.config.js"],
-			"javascript": { "globals": ["exports"] }
-		},
-		{ "includes": ["**/*.js", "**/*.jsx"] },
-		{
-			"includes": ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
-			"javascript": { "globals": [] },
-			"linter": {
-				"rules": {
-					"complexity": { "noUselessConstructor": "warn" },
-					"correctness": {
-						"noUndeclaredVariables": "off",
-						"noUnusedVariables": "warn"
-					},
-					"style": {
-						"noCommonJs": "warn",
-						"useConsistentArrayType": {
-							"level": "warn",
-							"options": { "syntax": "shorthand" }
-						}
-					},
-					"suspicious": {
-						"noDuplicateClassMembers": "error",
-						"noExtraNonNullAssertion": "warn",
-						"noRedeclare": "warn"
-					}
-				}
-			}
-		},
-		{ "includes": ["*.web.*"] },
 		{ "includes": ["**/*.d.ts"], "linter": { "rules": {} } },
 		{
 			"includes": ["**/metro.config.js"],

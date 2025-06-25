@@ -1,6 +1,10 @@
-import * as ProgressPrimitive from "@rn-primitives/progress";
-import * as React from "react";
-import { Platform, View } from "react-native";
+import {
+	Indicator as PrimitiveIndicator,
+	Root,
+	type RootProps,
+	type RootRef,
+} from "@rn-primitives/progress";
+import { RefObject } from "react";
 import Animated, {
 	Extrapolation,
 	interpolate,
@@ -15,12 +19,12 @@ function Progress({
 	value,
 	indicatorClassName,
 	...props
-}: ProgressPrimitive.RootProps & {
-	ref?: React.RefObject<ProgressPrimitive.RootRef>;
+}: RootProps & {
+	ref?: RefObject<RootRef>;
 	indicatorClassName?: string;
 }) {
 	return (
-		<ProgressPrimitive.Root
+		<Root
 			className={cn(
 				"relative h-4 w-full overflow-hidden rounded-full bg-secondary",
 				className,
@@ -28,7 +32,7 @@ function Progress({
 			{...props}
 		>
 			<Indicator value={value} className={indicatorClassName} />
-		</ProgressPrimitive.Root>
+		</Root>
 	);
 }
 
@@ -51,29 +55,12 @@ function Indicator({
 			),
 		};
 	});
-
-	if (Platform.OS === "web") {
-		return (
-			<View
-				className={cn(
-					"h-full w-full flex-1 bg-primary web:transition-all",
-					className,
-				)}
-				style={{ transform: `translateX(-${100 - (value ?? 0)}%)` }}
-			>
-				<ProgressPrimitive.Indicator
-					className={cn("h-full w-full", className)}
-				/>
-			</View>
-		);
-	}
-
 	return (
-		<ProgressPrimitive.Indicator asChild>
+		<PrimitiveIndicator asChild>
 			<Animated.View
 				style={indicator}
 				className={cn("h-full bg-foreground", className)}
 			/>
-		</ProgressPrimitive.Indicator>
+		</PrimitiveIndicator>
 	);
 }
