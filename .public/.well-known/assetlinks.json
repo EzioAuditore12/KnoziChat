@@ -1,0 +1,12 @@
+[
+	{
+		"relation": ["delegate_permission/common.handle_all_urls"],
+		"target": {
+			"namespace": "android_app",
+			"package_name": "com.knozichat.app",
+			"sha256_cert_fingerprints": [
+				"F9:43:D1:EF:71:26:41:0A:2F:D4:E0:DF:3F:5F:41:4A:ED:EA:66:FF:1E:CC:47:96:E5:FA:E3:27:27:4B:ED:D0"
+			]
+		}
+	}
+]
