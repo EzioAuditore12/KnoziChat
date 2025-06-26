@@ -19,7 +19,9 @@ export default function ChatLayout() {
 	}
 	return (
 		<Stack>
-			<Stack.Screen name="index" />
+			<Stack.Screen name="index" options={{headerShown:false}}/>
+            <Stack.Screen name="profile" options={{presentation:"formSheet"}}/>
+            <Stack.Screen name="new-room" options={{animation:"slide_from_right"}}/>
 		</Stack>
 	);
 }
