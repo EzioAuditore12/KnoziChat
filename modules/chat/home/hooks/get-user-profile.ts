@@ -1,6 +1,6 @@
 import { useUser } from "@clerk/clerk-expo";
 
-export function ChatRoomHook(){
+export function getUserDetails(){
     const {user}=useUser()
 
     return{

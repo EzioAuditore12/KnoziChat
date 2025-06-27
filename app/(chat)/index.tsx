@@ -7,13 +7,42 @@ import { Stack } from "@/components/ui/layout";
 import { Link } from "expo-router";
 import { Plus } from "lucide-react-native";
 
-
 //hooks
-import { ChatRoomHook } from "@/modules/chat/hooks";
+import { useChatScreenData } from "@/modules/chat/home/hooks";
+import { useEffect } from "react";
 
-export default function ChatRoom(){
-	const {top}=useSafeAreaInsets()
-	const {userProfile}=ChatRoomHook()
+function ChatRoomContent() {
+   const { top } = useSafeAreaInsets()
+   const { userProfile, chatRooms, loading, error } = useChatScreenData()
+
+	// Handle loading state
+	if (loading) {
+		return (
+			<View className="flex-1" style={{paddingTop:top}}>
+				<Text>Loading...</Text>
+			</View>
+		);
+	}
+
+	// Handle error state
+	if (error) {
+		return (
+			<View className="flex-1" style={{paddingTop:top}}>
+				<Text>Error: {error}</Text>
+			</View>
+		);
+	}
+
+	// Handle empty state
+	if (!chatRooms || chatRooms.length === 0) {
+		return (
+			<View className="flex-1" style={{paddingTop:top}}>
+				<Text>No chat rooms found</Text>
+			</View>
+		);
+	}
+
+	console.log(chatRooms)
 
 	return(
 		<View className="flex-1" style={{paddingTop:top}}>
@@ -39,4 +68,8 @@ export default function ChatRoom(){
 			</Stack>
 		</View>
 	)
+}
+
+export default function ChatRoom(){
+	return <ChatRoomContent />;
 }
