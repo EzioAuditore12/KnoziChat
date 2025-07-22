@@ -16,6 +16,7 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Info } from "@/lib/icons/Info";
+import { authStore } from "@/store";
 import { router } from "expo-router";
 import * as React from "react";
 import { View } from "react-native";
@@ -29,6 +30,7 @@ const GITHUB_AVATAR_URI =
 	"https://i.pinimg.com/originals/ef/a2/8d/efa28d18a04e7fa40ed49eeb0ab660db.jpg";
 
 export default function Screen() {
+	const {logout,user}=authStore.getState()
 	const [progress, setProgress] = React.useState(78);
 
 	function updateProgressValue() {
@@ -45,10 +47,10 @@ export default function Screen() {
 						</AvatarFallback>
 					</Avatar>
 					<View className="p-3" />
-					<CardTitle className="pb-2 text-center">Rick Sanchez</CardTitle>
+					<CardTitle className="pb-2 text-center">{user?.firstName}</CardTitle>
 					<View className="flex-row">
 						<CardDescription className="text-base font-semibold">
-							Scientist
+							{user?.lastName}
 						</CardDescription>
 						<Tooltip delayDuration={150}>
 							<TooltipTrigger className="px-2 pb-0.5 active:opacity-50">
@@ -59,7 +61,7 @@ export default function Screen() {
 								/>
 							</TooltipTrigger>
 							<TooltipContent className="py-2 px-4 shadow">
-								<Text className="native:text-lg">Freelance</Text>
+								<Text className="native:text-lg">{user?.email}</Text>
 							</TooltipContent>
 						</Tooltip>
 					</View>
@@ -117,6 +119,14 @@ export default function Screen() {
 				}}
 			>
 				<Text>Go to login screen</Text>
+			</Button>
+			<Button
+			onPress={()=>{
+				logout()
+				router.replace("/(auth)/login")
+			}}
+			>
+				<Text>Logout</Text>
 			</Button>
 		</View>
 	);
