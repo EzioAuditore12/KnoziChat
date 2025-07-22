@@ -1,4 +1,4 @@
-import { getAxiosInstance} from "@/lib/api";
+import { getAxiosInstance } from "@/lib/api";
 
 interface GetProfileReponse {
 	id: string;
@@ -12,7 +12,7 @@ interface GetProfileReponse {
 const url = "/user/profile";
 
 export const getUserDetailsApi = async () => {
-    const axiosInstance=getAxiosInstance()
+	const axiosInstance = getAxiosInstance();
 	const response = await axiosInstance.get<GetProfileReponse>(url);
 	return response.data;
 };

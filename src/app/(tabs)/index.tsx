@@ -30,7 +30,7 @@ const GITHUB_AVATAR_URI =
 	"https://i.pinimg.com/originals/ef/a2/8d/efa28d18a04e7fa40ed49eeb0ab660db.jpg";
 
 export default function Screen() {
-	const {logout,user}=authStore.getState()
+	const { logout, user } = authStore.getState();
 	const [progress, setProgress] = React.useState(78);
 
 	function updateProgressValue() {
@@ -121,10 +121,10 @@ export default function Screen() {
 				<Text>Go to login screen</Text>
 			</Button>
 			<Button
-			onPress={()=>{
-				logout()
-				router.replace("/(auth)/login")
-			}}
+				onPress={() => {
+					logout();
+					router.replace("/(auth)/login");
+				}}
 			>
 				<Text>Logout</Text>
 			</Button>

@@ -1,15 +1,15 @@
-import { Tabs,Redirect } from "expo-router";
 import { authStore } from "@/store";
 import { AntDesign } from "@expo/vector-icons";
+import { Redirect, Tabs } from "expo-router";
 
 export default function TabLayout() {
 	const { user } = authStore.getState();
-	
-		if (!user) {
-			return <Redirect href={"/(auth)/login"} />;
-		}
+
+	if (!user) {
+		return <Redirect href={"/(auth)/login"} />;
+	}
 	return (
-			<Tabs>
+		<Tabs>
 			<Tabs.Screen
 				name="index"
 				options={{

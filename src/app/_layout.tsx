@@ -12,17 +12,21 @@ import { PortalHost } from "@rn-primitives/portal";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
-import { Platform,type AppStateStatus } from "react-native";
+import { type AppStateStatus, Platform } from "react-native";
 
-import { QueryClient, QueryClientProvider,focusManager } from "@tanstack/react-query";
 import { useAppState } from "@/lib/query/useAppState";
 import { useOnlineManager } from "@/lib/query/useOnlineManager";
+import {
+	QueryClient,
+	QueryClientProvider,
+	focusManager,
+} from "@tanstack/react-query";
 
 function onAppStateChange(status: AppStateStatus) {
-  // React Query already supports in web browser refetch on window focus by default
-  if (Platform.OS !== 'web') {
-    focusManager.setFocused(status === 'active')
-  }
+	// React Query already supports in web browser refetch on window focus by default
+	if (Platform.OS !== "web") {
+		focusManager.setFocused(status === "active");
+	}
 }
 
 const LIGHT_THEME: Theme = {
@@ -44,29 +48,29 @@ const usePlatformSpecificSetup = Platform.select({
 	default: noop,
 });
 
-const queryClient=new QueryClient()
+const queryClient = new QueryClient();
 
 export default function RootLayout() {
 	usePlatformSpecificSetup();
-	useAppState(onAppStateChange)
-	useOnlineManager()
+	useAppState(onAppStateChange);
+	useOnlineManager();
 	const { isDarkColorScheme } = useColorScheme();
 
 	return (
 		<QueryClientProvider client={queryClient}>
-		<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-			<StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-			<Stack initialRouteName="(tabs)">
-				<Stack.Screen name="(auth)" options={{ headerShown: false }} />
-				<Stack.Screen
-					name="(tabs)"
-					options={{
-						headerShown: false,
-					}}
-				/>
-			</Stack>
-			<PortalHost />
-		</ThemeProvider>
+			<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+				<StatusBar style={isDarkColorScheme ? "light" : "dark"} />
+				<Stack initialRouteName="(tabs)">
+					<Stack.Screen name="(auth)" options={{ headerShown: false }} />
+					<Stack.Screen
+						name="(tabs)"
+						options={{
+							headerShown: false,
+						}}
+					/>
+				</Stack>
+				<PortalHost />
+			</ThemeProvider>
 		</QueryClientProvider>
 	);
 }
@@ -82,7 +86,5 @@ function useSetWebBackgroundClassName() {
 		document.documentElement.classList.add("bg-background");
 	}, []);
 }
-
-
 
 function noop() {}

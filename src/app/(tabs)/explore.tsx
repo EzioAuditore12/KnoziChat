@@ -1,16 +1,19 @@
+import { Button } from "@/components/ui/button";
+import { Text } from "@/components/ui/text";
 import { useGetUserDetails } from "@/modules/app/profile/hooks/useGetUserDetails";
 import React from "react";
 import { View } from "react-native";
-import { Text } from "@/components/ui/text";
-import { Button } from "@/components/ui/button";
 
 const Explore = () => {
-	const { data, error, isLoading, isRefetchingByUser, refetchByUser } = useGetUserDetails();
+	const { data, error, isLoading, isRefetchingByUser, refetchByUser } =
+		useGetUserDetails();
 
 	if (isLoading) {
 		return (
 			<View className="flex-1 bg-gradient-to-br from-blue-400 to-purple-500 justify-center items-center">
-				<Text className="text-lg font-bold text-white">Loading user details...</Text>
+				<Text className="text-lg font-bold text-white">
+					Loading user details...
+				</Text>
 			</View>
 		);
 	}
@@ -31,12 +34,16 @@ const Explore = () => {
 						{data?.firstName?.[0] || "U"}
 					</Text>
 				</View>
-				<Text className="text-xl font-semibold text-gray-800 mb-1">{data?.firstName} {data?.lastName}</Text>
+				<Text className="text-xl font-semibold text-gray-800 mb-1">
+					{data?.firstName} {data?.lastName}
+				</Text>
 				<Text className="text-base text-gray-500 mb-2">{data?.email}</Text>
 				<Text className="text-xs text-gray-400 mb-4">ID: {data?.id}</Text>
 
 				{isRefetchingByUser && (
-					<Text className="bg-pink-100 text-pink-700 px-3 py-1 rounded-full mb-2">Refreshing...</Text>
+					<Text className="bg-pink-100 text-pink-700 px-3 py-1 rounded-full mb-2">
+						Refreshing...
+					</Text>
 				)}
 
 				<Button
