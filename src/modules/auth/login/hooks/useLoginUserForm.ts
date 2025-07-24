@@ -28,8 +28,6 @@ export function useloginUserForm() {
 
 	const errorMessage = isError ? CustomBackendError.getErrorMessage(error) : "";
 
-	console.log(error);
-
 	return {
 		isPending,
 		mutate,

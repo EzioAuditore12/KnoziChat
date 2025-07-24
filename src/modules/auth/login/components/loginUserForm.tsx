@@ -1,7 +1,8 @@
+import { InputField } from "@/components/form/input-field";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Lock, Mail } from "lucide-react-native";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
 import { loginUserValidations } from "../validation/loginForm";
@@ -32,25 +33,24 @@ export function LoginForm({ triggerLogin, isLoading }: LoginFormProps) {
 		triggerLogin({ email: data.email, password: data.password });
 
 	return (
-		<View className="gap-y-2 w-full p-2 max-w-md">
+		<View className="gap-y-3 max-w-md p-2 w-full">
 			<Controller
 				control={control}
 				rules={{
 					required: true,
 				}}
 				render={({ field: { onChange, onBlur, value } }) => (
-					<Input
-						placeholder="Enter your email address"
-						onBlur={onBlur}
-						onChangeText={onChange}
+					<InputField
+						placeholder="Email"
+						error={errors.email}
 						value={value}
+						onChangeText={onChange}
+						onBlur={onBlur}
+						Icon={Mail}
 					/>
 				)}
 				name="email"
 			/>
-			{errors.email && (
-				<Text className="text-red-500">{errors.email?.message}</Text>
-			)}
 
 			<Controller
 				control={control}
@@ -58,22 +58,26 @@ export function LoginForm({ triggerLogin, isLoading }: LoginFormProps) {
 					required: true,
 				}}
 				render={({ field: { onChange, onBlur, value } }) => (
-					<Input
-						placeholder="Enter your password"
+					<InputField
+						placeholder="Password"
 						secureTextEntry
-						onBlur={onBlur}
-						onChangeText={onChange}
+						error={errors.password}
 						value={value}
+						onChangeText={onChange}
+						onBlur={onBlur}
+						Icon={Lock}
 					/>
 				)}
 				name="password"
 			/>
-			{errors.password && (
-				<Text className="text-red-500">{errors.password?.message}</Text>
-			)}
-
-			<Button onPress={handleSubmit(onSubmit)} disabled={isLoading}>
-				<Text>{isLoading ? "Logging in..." : "Login"}</Text>
+			<Button
+				className="rounded-3xl elevation-sm"
+				onPress={handleSubmit(onSubmit)}
+				disabled={isLoading}
+			>
+				<Text className="font-bold text-xl py-1">
+					{isLoading ? "LOGGING IN" : "LOGIN"}
+				</Text>
 			</Button>
 		</View>
 	);
