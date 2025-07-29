@@ -1,13 +1,29 @@
 import { Text } from "@/components/ui/text";
-import { H1, Muted } from "@/components/ui/typography";
+import { H2, Muted } from "@/components/ui/typography";
+import { Link } from "expo-router";
+import {
+	Dimensions,
+	KeyboardAvoidingView,
+	Platform,
+	ScrollView,
+	View,
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+//Components
 import { LoginBanner } from "@/modules/auth/login/components/loginBanner";
 import { LoginForm } from "@/modules/auth/login/components/loginUserForm";
 import { SocialProviderLogin } from "@/modules/auth/login/components/socialProviderLogin";
+
+//hook
 import { useloginUserForm } from "@/modules/auth/login/hooks/useLoginUserForm";
-import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 
 export default function LoginScreen() {
 	const { mutate, error, isPending } = useloginUserForm();
+
+	const { height } = Dimensions.get("window");
+	const insets = useSafeAreaInsets();
+
 	return (
 		<KeyboardAvoidingView
 			behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -20,15 +36,28 @@ export default function LoginScreen() {
 					padding: 8,
 					justifyContent: "center",
 					alignItems: "center",
-					rowGap: 32,
+					rowGap: 30,
+					paddingBottom: insets.bottom,
 				}}
 			>
-				<LoginBanner />
-				<H1>Login</H1>
+				{height > 700 ? <LoginBanner /> : undefined}
+
+				<H2>Welcome Back !</H2>
+
 				<LoginForm isLoading={isPending} triggerLogin={mutate} />
+
 				{error && <Text className="text-red-500">{error}</Text>}
+
 				<Muted className="text-lg">Or Continue With</Muted>
+
 				<SocialProviderLogin />
+
+				<View className="flex-row gap-x-1">
+					<Muted className="text-md">Don't have an account</Muted>
+					<Link href={"/(auth)/register/test"} className="text-blue-500">
+						Register
+					</Link>
+				</View>
 			</ScrollView>
 		</KeyboardAvoidingView>
 	);

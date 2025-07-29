@@ -26,12 +26,11 @@ import Animated, {
 	LayoutAnimationConfig,
 } from "react-native-reanimated";
 
-const GITHUB_AVATAR_URI =
-	"https://i.pinimg.com/originals/ef/a2/8d/efa28d18a04e7fa40ed49eeb0ab660db.jpg";
-
 export default function Screen() {
 	const { logout, user } = authStore.getState();
 	const [progress, setProgress] = React.useState(78);
+
+	console.log(user?.profilePicture);
 
 	function updateProgressValue() {
 		setProgress(Math.floor(Math.random() * 100));
@@ -41,7 +40,7 @@ export default function Screen() {
 			<Card className="w-full max-w-sm p-6 rounded-2xl">
 				<CardHeader className="items-center">
 					<Avatar alt="Rick Sanchez's Avatar" className="w-24 h-24">
-						<AvatarImage source={{ uri: GITHUB_AVATAR_URI }} />
+						<AvatarImage source={{ uri: user?.profilePicture ?? undefined }} />
 						<AvatarFallback>
 							<Text>RS</Text>
 						</AvatarFallback>

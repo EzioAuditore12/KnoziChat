@@ -9,9 +9,8 @@ export default function AuthenticationScreens() {
 	}
 
 	return (
-		<Stack initialRouteName="login">
-			<Stack.Screen name="login" options={{ headerShown: false }} />
-			<Stack.Screen name="register" options={{ headerShown: false }} />
+		<Stack initialRouteName="index">
+			<Stack.Screen name="index" options={{ headerShown: false }} />
 		</Stack>
 	);
 }

@@ -1,4 +1,4 @@
-import { InputField } from "@/components/form/input-field";
+import { InputField } from "@/components/form/styled-input-field";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { zodResolver } from "@hookform/resolvers/zod";

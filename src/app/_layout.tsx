@@ -10,7 +10,6 @@ import {
 } from "@react-navigation/native";
 import { PortalHost } from "@rn-primitives/portal";
 import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
 import * as React from "react";
 import { type AppStateStatus, Platform } from "react-native";
 
@@ -59,7 +58,6 @@ export default function RootLayout() {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-				<StatusBar style={isDarkColorScheme ? "light" : "dark"} />
 				<Stack initialRouteName="(tabs)">
 					<Stack.Screen name="(auth)" options={{ headerShown: false }} />
 					<Stack.Screen
