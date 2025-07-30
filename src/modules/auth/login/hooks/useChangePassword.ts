@@ -2,11 +2,11 @@ import { authStore } from "@/store";
 import { CustomBackendError } from "@/utils/axios-error";
 import { useMutation } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { loginUserAPI } from "../api/loginUserForm";
+import { changePasswordTriggerAPI } from "../api/change-password";
 
-export function useloginUserForm() {
+export function useChangePasswordForm() {
 	const { mutate, isPending, isError, error } = useMutation({
-		mutationFn: loginUserAPI,
+		mutationFn: changePasswordTriggerAPI,
 		onSuccess: (data) => {
 			// Set Authorization tokens
 			authStore.getState().setTokens({
@@ -22,7 +22,7 @@ export function useloginUserForm() {
 				profilePicture: data.user.profilePicture,
 			});
 
-			router.replace("/");
+			router.replace("/(tabs)");
 		},
 	});
 

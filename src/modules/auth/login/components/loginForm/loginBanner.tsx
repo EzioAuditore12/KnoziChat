@@ -11,7 +11,7 @@ export function LoginBanner() {
 				width: 200,
 				height: 200,
 			}}
-			source={require("../assets/Login.json")}
+			source={require("../../assets/Login.json")}
 			loop={false}
 		/>
 	);

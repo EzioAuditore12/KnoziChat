@@ -2,7 +2,7 @@ import env from "@/env";
 import axios from "axios";
 
 interface LoginUserApiProps {
-	email: string;
+	phoneNumber: string;
 	password: string;
 }
 
@@ -10,7 +10,8 @@ interface LoginUserApiResponse {
 	status: boolean;
 	user: {
 		id: string;
-		email: string;
+		email: string | null;
+		phoneNumber: string;
 		firstName: string;
 		lastName: string;
 		profilePicture: string;
@@ -24,9 +25,12 @@ interface LoginUserApiResponse {
 
 const url = `${env.EXPO_PUBLIC_BACKEND_API_URL}/auth/login`;
 
-export async function loginUserAPI({ email, password }: LoginUserApiProps) {
+export async function loginUserAPI({
+	phoneNumber,
+	password,
+}: LoginUserApiProps) {
 	const response = await axios.post<LoginUserApiResponse>(url, {
-		email,
+		phoneNumber,
 		password,
 	});
 	return response.data;

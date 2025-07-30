@@ -1,22 +1,22 @@
-import { InputField } from "@/components/form/input-field";
+import { InputField } from "@/components/form/styled-input-field";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Lock, Mail } from "lucide-react-native";
+import { Lock, PhoneCall } from "lucide-react-native";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
-import { loginUserValidations } from "../validation/loginForm";
+import { loginUserValidations } from "../../validation/loginForm";
 
 interface LoginFormProps {
 	triggerLogin: ({
-		email,
+		phoneNumber,
 		password,
-	}: { email: string; password: string }) => void;
+	}: { phoneNumber: string; password: string }) => void;
 	isLoading: boolean;
 }
 
 interface LoginFormData {
-	email: string;
+	phoneNumber: string;
 	password: string;
 }
 
@@ -30,7 +30,7 @@ export function LoginForm({ triggerLogin, isLoading }: LoginFormProps) {
 	});
 
 	const onSubmit: (data: LoginFormData) => void = (data) =>
-		triggerLogin({ email: data.email, password: data.password });
+		triggerLogin({ phoneNumber: data.phoneNumber, password: data.password });
 
 	return (
 		<View className="gap-y-3 max-w-md p-2 w-full">
@@ -41,15 +41,15 @@ export function LoginForm({ triggerLogin, isLoading }: LoginFormProps) {
 				}}
 				render={({ field: { onChange, onBlur, value } }) => (
 					<InputField
-						placeholder="Email"
-						error={errors.email}
+						placeholder="Phone Number"
+						error={errors.phoneNumber}
 						value={value}
 						onChangeText={onChange}
 						onBlur={onBlur}
-						Icon={Mail}
+						Icon={PhoneCall}
 					/>
 				)}
-				name="email"
+				name="phoneNumber"
 			/>
 
 			<Controller

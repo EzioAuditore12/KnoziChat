@@ -1,6 +1,8 @@
 import "@/global.css";
 
 import { NAV_THEME } from "@/lib/constants";
+import { useAppState } from "@/lib/query/useAppState";
+import { useOnlineManager } from "@/lib/query/useOnlineManager";
 import { useColorScheme } from "@/lib/useColorScheme";
 import {
 	DarkTheme,
@@ -9,18 +11,14 @@ import {
 	ThemeProvider,
 } from "@react-navigation/native";
 import { PortalHost } from "@rn-primitives/portal";
-import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import * as React from "react";
-import { type AppStateStatus, Platform } from "react-native";
-
-import { useAppState } from "@/lib/query/useAppState";
-import { useOnlineManager } from "@/lib/query/useOnlineManager";
 import {
 	QueryClient,
 	QueryClientProvider,
 	focusManager,
 } from "@tanstack/react-query";
+import { Stack } from "expo-router";
+import * as React from "react";
+import { type AppStateStatus, Platform } from "react-native";
 
 function onAppStateChange(status: AppStateStatus) {
 	// React Query already supports in web browser refetch on window focus by default
@@ -38,11 +36,6 @@ const DARK_THEME: Theme = {
 	colors: NAV_THEME.dark,
 };
 
-export {
-	// Catch any errors thrown by the Layout component.
-	ErrorBoundary,
-} from "expo-router";
-
 const usePlatformSpecificSetup = Platform.select({
 	web: useSetWebBackgroundClassName,
 	default: noop,
@@ -59,7 +52,6 @@ export default function RootLayout() {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-				<StatusBar style={isDarkColorScheme ? "light" : "dark"} />
 				<Stack initialRouteName="(tabs)">
 					<Stack.Screen name="(auth)" options={{ headerShown: false }} />
 					<Stack.Screen

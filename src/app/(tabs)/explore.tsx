@@ -1,3 +1,4 @@
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { useGetUserDetails } from "@/modules/app/profile/hooks/useGetUserDetails";
@@ -7,6 +8,8 @@ import { View } from "react-native";
 const Explore = () => {
 	const { data, error, isLoading, isRefetchingByUser, refetchByUser } =
 		useGetUserDetails();
+
+	console.log(data);
 
 	if (isLoading) {
 		return (
@@ -29,11 +32,9 @@ const Explore = () => {
 	return (
 		<View className="flex-1 bg-gradient-to-br from-gray-100 to-blue-100 justify-center items-center px-4">
 			<View className="w-full max-w-md bg-white rounded-2xl shadow-lg p-6 items-center">
-				<View className="w-20 h-20 rounded-full bg-blue-300 flex items-center justify-center mb-4">
-					<Text className="text-3xl font-bold text-white">
-						{data?.firstName?.[0] || "U"}
-					</Text>
-				</View>
+				<Avatar alt="Profile Image" className="w-24 h-24">
+					<AvatarImage source={{ uri: data?.profilePicture }} />
+				</Avatar>
 				<Text className="text-xl font-semibold text-gray-800 mb-1">
 					{data?.firstName} {data?.lastName}
 				</Text>

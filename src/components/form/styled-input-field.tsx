@@ -1,32 +1,36 @@
+import { iconWithClassName } from "@/lib/icons/iconWithClassName";
 import { useColorScheme } from "@/lib/useColorScheme";
 import { cn } from "@/lib/utils";
+import { type LucideIcon } from "lucide-react-native";
 import { useState } from "react";
 import type { FieldError } from "react-hook-form";
-import { type StyleProp, View, type ViewStyle } from "react-native";
+import { View } from "react-native";
 import { Input, InputProps } from "../ui/input";
 import { P } from "../ui/typography";
 
 export interface InputFieldProps extends InputProps {
 	error: FieldError | undefined;
-	viewStyle?: StyleProp<ViewStyle>;
+	Icon: LucideIcon;
 }
 
 export const InputField = ({
-	viewStyle = {
-		width: "100%",
-	},
 	className,
+	Icon,
 	onFocus,
 	onBlur,
 	error,
 	...props
 }: InputFieldProps) => {
 	const [focused, setFocused] = useState(false);
+	iconWithClassName(Icon);
 	const { isDarkColorScheme } = useColorScheme();
 	return (
-		<View style={viewStyle}>
+		<View className="relative w-full">
 			<Input
-				className={cn(className)}
+				className={cn(
+					"h-16 rounded-3xl bg-gray-200 dark:bg-white text-black pl-16 elevation-md",
+					className,
+				)}
 				style={{
 					borderColor: error
 						? "#ef4444"
@@ -34,8 +38,8 @@ export const InputField = ({
 							? isDarkColorScheme
 								? "#818cf8"
 								: "#000"
-							: "black",
-					borderWidth: 1.5,
+							: "transparent", // No border when not focused or errored
+					borderWidth: 2,
 				}}
 				onFocus={(e) => {
 					setFocused(true);
@@ -51,10 +55,11 @@ export const InputField = ({
 				}}
 				{...props}
 			/>
+			<Icon className="absolute top-5 left-4" color={"black"} size={20} />
 			{error ? (
-				<P className="text-red-500 min-h-3 ml-3 text-sm">{error.message}</P>
+				<P className="text-red-500 min-h-5 ml-3">{error.message}</P>
 			) : (
-				<P className="min-h-3 text-sm" />
+				<P className="min-h-5" />
 			)}
 		</View>
 	);
