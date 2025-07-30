@@ -79,7 +79,7 @@ export default function LoginScreen() {
 				<SocialProviderLogin />
 
 				<Link href={"/(auth)/register"} className="text-black dark:text-white">
-					Don't have an account 
+					Don't have an account
 				</Link>
 			</ScrollView>
 		</KeyboardAvoidingView>

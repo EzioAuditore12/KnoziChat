@@ -1,7 +1,7 @@
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
-import { useGetUserDetails } from "@/modules/app/profile/hooks/useGetUserDetails";
+import { useGetUserDetails } from "@/modules/app/profile/hooks/use-get-user-details";
 import React from "react";
 import { View } from "react-native";
 

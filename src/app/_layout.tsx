@@ -19,7 +19,7 @@ import {
 import { Stack } from "expo-router";
 import * as React from "react";
 import { type AppStateStatus, Platform } from "react-native";
-import "react-native-reanimated"
+import "react-native-reanimated";
 
 function onAppStateChange(status: AppStateStatus) {
 	// React Query already supports in web browser refetch on window focus by default

@@ -10,46 +10,46 @@ import { ForgotPasswordForm } from "@/modules/auth/forget-password/components/fo
 import { useForgetPassword } from "@/modules/auth/forget-password/hooks/useForgetPassword";
 
 export default function ForgotPasswordPhoneScreen() {
-    const { error, isPending, mutate } = useForgetPassword();
-    const [dialogOpen, setDialogOpen] = useState(false);
+	const { error, isPending, mutate } = useForgetPassword();
+	const [dialogOpen, setDialogOpen] = useState(false);
 
-    useEffect(() => {
-        if (error) setDialogOpen(true);
-    }, [error]);
+	useEffect(() => {
+		if (error) setDialogOpen(true);
+	}, [error]);
 
-    return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
-            style={{ flex: 1 }}
-        >
-            <ScrollView
-                contentContainerStyle={{
-                    flexGrow: 1,
-                    padding: 8,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    rowGap: 32,
-                }}
-            >
-                {/* Forgot Password Phone Banner */}
-                <ForgotPasswordPhoneBanner />
+	return (
+		<KeyboardAvoidingView
+			behavior={Platform.OS === "ios" ? "padding" : "height"}
+			keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
+			style={{ flex: 1 }}
+		>
+			<ScrollView
+				contentContainerStyle={{
+					flexGrow: 1,
+					padding: 8,
+					justifyContent: "center",
+					alignItems: "center",
+					rowGap: 32,
+				}}
+			>
+				{/* Forgot Password Phone Banner */}
+				<ForgotPasswordPhoneBanner />
 
-                {/* Forgot Password Phone Form */}
-                <ForgotPasswordForm
-                    triggerForgotPasswordRequest={mutate}
-                    isLoading={isPending}
-                />
+				{/* Forgot Password Phone Form */}
+				<ForgotPasswordForm
+					triggerForgotPasswordRequest={mutate}
+					isLoading={isPending}
+				/>
 
-                {/* Error Component */}
-                {error && (
-                    <ErrorDialog
-                        error={error}
-                        open={dialogOpen}
-                        onOpenChange={setDialogOpen}
-                    />
-                )}
-            </ScrollView>
-        </KeyboardAvoidingView>
-    );
+				{/* Error Component */}
+				{error && (
+					<ErrorDialog
+						error={error}
+						open={dialogOpen}
+						onOpenChange={setDialogOpen}
+					/>
+				)}
+			</ScrollView>
+		</KeyboardAvoidingView>
+	);
 }

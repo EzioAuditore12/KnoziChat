@@ -1,42 +1,23 @@
-import { useState } from 'react';
-import { Button, Image, View, StyleSheet } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+import { useState } from "react";
+import { View } from "react-native";
+import { ProfileImagePicker } from "./profile-image-picker";
 
 export function ImagePickerExample() {
-  const [image, setImage] = useState<string | null>(null);
+	const [selectedImage, setSelectedImage] = useState<string>("image1.png");
+	const [isDefaultImage, setIsDefaultImage] = useState<boolean>(true);
 
-  const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images', 'videos'],
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+	const handleImageSelect = (imageUri: string, isDefault: boolean) => {
+		setSelectedImage(imageUri);
+		setIsDefaultImage(isDefault);
+		console.log("Selected image:", imageUri, "Is default:", isDefault);
+	};
 
-    console.log(result);
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
-  };
-
-  return (
-    <View style={styles.container}>
-      <Button title="Pick an image from camera roll" onPress={pickImage} />
-      {image && <Image source={{ uri: image }} style={styles.image} />}
-    </View>
-  );
+	return (
+		<View className="justify-center items-center p-4">
+			<ProfileImagePicker
+				onImageSelect={handleImageSelect}
+				selectedImage={selectedImage}
+			/>
+		</View>
+	);
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  image: {
-    width: 200,
-    height: 200,
-  },
-});
