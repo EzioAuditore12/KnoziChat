@@ -1,18 +1,17 @@
 import { CustomBackendError } from "@/utils/axios-error";
 import { useMutation } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { forgetPasswordTriggerAPI } from "../api/forget-password-trigger";
+import { verifyforgetPasswordRequestTriggerAPI } from "../api/verify-forget-otp-request";
 
-export function useForgetPassword() {
+export function useVerifyOTP() {
 	const { mutate, isPending, isError, error } = useMutation({
-		mutationFn: forgetPasswordTriggerAPI,
+		mutationFn: verifyforgetPasswordRequestTriggerAPI,
 		onSuccess: (data) => {
-			router.push({
-				pathname: "/login/forget-password-otp",
+			router.replace({
+				pathname: "/forget-password/change-password",
 				params: {
 					phoneNumber: data.phoneNumber,
-					otpDuration: data.otpDuration,
-					requestToken: data.requestToken,
+					verificationRequestToken: data.verificationRequestToken,
 				},
 			});
 		},

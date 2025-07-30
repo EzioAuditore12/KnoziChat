@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { PhoneCall } from "lucide-react-native";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
-import { forgotPasswordPhoneNumberSchema } from "../../validation/forgotPasswordForm";
+import { forgotPasswordPhoneNumberSchema } from "../../validations/forgotPasswordForm";
 
 interface ForgotPasswordFormProps {
 	triggerForgotPasswordRequest: ({

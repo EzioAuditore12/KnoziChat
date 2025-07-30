@@ -4,7 +4,7 @@ import { Text } from "@/components/ui/text";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
-import { changePasswordSchema } from "../../validation/changePassword";
+import { changePasswordSchema } from "../../validations/changePassword";
 
 interface ChangePasswordFormProps {
 	phoneNumber: string;

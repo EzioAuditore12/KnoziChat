@@ -67,7 +67,7 @@ export default function LoginScreen() {
 				)}
 				{/* Link to forget Password */}
 				<Link
-					href={"/(auth)/login/forgot-password-phone"}
+					href={"/(auth)/forget-password"}
 					className="text-black dark:text-white"
 				>
 					Forgot Password ?
@@ -77,6 +77,10 @@ export default function LoginScreen() {
 
 				{/* Social Provider Login */}
 				<SocialProviderLogin />
+
+				<Link href={"/(auth)/register"} className="text-black dark:text-white">
+					Don't have an account 
+				</Link>
 			</ScrollView>
 		</KeyboardAvoidingView>
 	);
