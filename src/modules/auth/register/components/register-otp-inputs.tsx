@@ -1,27 +1,27 @@
 import { InputOTP, InputOTPProps } from "@/components/ui/input-otp";
 import { cn } from "@/lib/utils";
 
-export interface ForgetPasswordOtpInputProps extends InputOTPProps {
+export interface RegisterOtpInputProps extends InputOTPProps {
 	phoneNumber: string;
-	requestToken: string;
+	registerationToken: string;
 	triggerVerifyOTP: ({
 		phoneNumber,
 		otp,
-		requestToken,
-	}: { phoneNumber: string; otp: string; requestToken: string }) => void;
+		registerationToken,
+	}: { phoneNumber: string; otp: string; registerationToken: string }) => void;
 }
 
-export function ForgetPasswordOtpInput({
+export function RegisterOtpInput({
 	className,
 	phoneNumber,
-	requestToken,
+	registerationToken,
 	triggerVerifyOTP,
 	...props
-}: ForgetPasswordOtpInputProps) {
+}: RegisterOtpInputProps) {
 	const handleOTPComplete = (code: string) => {
 		triggerVerifyOTP({
 			otp: code,
-			requestToken: requestToken,
+			registerationToken: registerationToken,
 			phoneNumber: phoneNumber,
 		});
 	};

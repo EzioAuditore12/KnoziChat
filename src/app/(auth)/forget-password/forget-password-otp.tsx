@@ -4,9 +4,9 @@ import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 
+import { ForgotPasswordOTPBanner } from "@/modules/auth/forget-password/components/forgotPassword/forgot-password-banner";
 // Forget Password Otp Input Screen Components
 import { ForgetPasswordOtpInput } from "@/modules/auth/forget-password/components/forgotPassword/forgot-password-otp";
-import { ForgotPasswordOTPBanner } from "@/modules/auth/forget-password/components/forgotPassword/forgot-password-banner";
 
 // Forget Password Otp Input Screen Hooks
 import { useVerifyOTP } from "@/modules/auth/forget-password/hooks/useVeriftyOTP";
