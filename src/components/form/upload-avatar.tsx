@@ -1,5 +1,6 @@
 import { getImageFromGallery } from "@/hooks/get-image-gallery";
 import { getLocalAssets } from "@/hooks/get-local-assets";
+import { useEffect } from "react";
 import { Button, Pressable, View } from "react-native";
 import { Image } from "../ui/image";
 
@@ -31,6 +32,22 @@ export function UploadAvatar({ value, onChange }: UploadAvatarProps) {
 		require("@/modules/auth/register/assets/profile-photo/image1.png"),
 	];
 	const localAssets = getLocalAssets({ Assets: localAssetArr });
+
+	// Set default avatar on mount if value is not set
+	useEffect(() => {
+		if (
+			(!value || !value.uri) &&
+			localAssets &&
+			localAssets.length > 0 &&
+			onChange
+		) {
+			onChange({
+				uri: localAssets[0].uri ?? "",
+				type: localAssets[0].type,
+				name: localAssets[0].name,
+			});
+		}
+	}, [localAssets, value, value?.uri, onChange]);
 
 	const handleUseDefaultAvatar = () => {
 		if (localAssets && localAssets.length > 0 && onChange) {
