@@ -1,6 +1,5 @@
 import { ErrorDialog } from "@/components/error-dialog";
 import { useEffect, useState } from "react";
-import { KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 
 // Forgot Password Phone Screen Components
 import { ForgotPasswordPhoneBanner } from "@/modules/auth/forget-password/components/forgotPasswordPhone/forget-password-banner";
@@ -8,6 +7,7 @@ import { ForgotPasswordForm } from "@/modules/auth/forget-password/components/fo
 
 // Forgot Password Phone Screen Hooks
 import { useForgetPassword } from "@/modules/auth/forget-password/hooks/useForgetPassword";
+import { KeyboardAwareScrollView } from "@/components/keyboard-aware-scrollView";
 
 export default function ForgotPasswordPhoneScreen() {
 	const { error, isPending, mutate } = useForgetPassword();
@@ -18,20 +18,7 @@ export default function ForgotPasswordPhoneScreen() {
 	}, [error]);
 
 	return (
-		<KeyboardAvoidingView
-			behavior={Platform.OS === "ios" ? "padding" : "height"}
-			keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
-			style={{ flex: 1 }}
-		>
-			<ScrollView
-				contentContainerStyle={{
-					flexGrow: 1,
-					padding: 8,
-					justifyContent: "center",
-					alignItems: "center",
-					rowGap: 32,
-				}}
-			>
+		<KeyboardAwareScrollView className="justify-center items-center p-2 gap-y-8">
 				{/* Forgot Password Phone Banner */}
 				<ForgotPasswordPhoneBanner />
 
@@ -49,7 +36,6 @@ export default function ForgotPasswordPhoneScreen() {
 						onOpenChange={setDialogOpen}
 					/>
 				)}
-			</ScrollView>
-		</KeyboardAvoidingView>
+	</KeyboardAwareScrollView>
 	);
 }

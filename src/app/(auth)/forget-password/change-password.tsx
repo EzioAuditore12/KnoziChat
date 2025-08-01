@@ -1,7 +1,7 @@
 import { ErrorDialog } from "@/components/error-dialog";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { KeyboardAvoidingView, Platform, ScrollView } from "react-native";
+import { KeyboardAwareScrollView } from "@/components/keyboard-aware-scrollView";
 
 // Change Password Screen Components
 import { ChangePasswordBanner } from "@/modules/auth/forget-password/components/changePassword/change-password-banner";
@@ -18,7 +18,9 @@ interface LocalSearchParamsChangePassword {
 export default function ChangePasswordScreen() {
 	const { phoneNumber, verificationRequestToken } =
 		useLocalSearchParams() as unknown as LocalSearchParamsChangePassword;
+	
 	const { error, isPending, mutate } = useChangePasswordForm();
+	
 	const [dialogOpen, setDialogOpen] = useState(false);
 
 	useEffect(() => {
@@ -26,20 +28,7 @@ export default function ChangePasswordScreen() {
 	}, [error]);
 
 	return (
-		<KeyboardAvoidingView
-			behavior={Platform.OS === "ios" ? "padding" : "height"}
-			keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
-			style={{ flex: 1 }}
-		>
-			<ScrollView
-				contentContainerStyle={{
-					flexGrow: 1,
-					padding: 8,
-					justifyContent: "center",
-					alignItems: "center",
-					rowGap: 32,
-				}}
-			>
+		<KeyboardAwareScrollView className="justify-center items-center p-2 gap-y-8">
 				{/* Change Password Banner */}
 				<ChangePasswordBanner />
 
@@ -57,7 +46,6 @@ export default function ChangePasswordScreen() {
 					open={dialogOpen}
 					onOpenChange={setDialogOpen}
 				/>
-			</ScrollView>
-		</KeyboardAvoidingView>
+		</KeyboardAwareScrollView>
 	);
 }

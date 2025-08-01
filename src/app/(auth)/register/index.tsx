@@ -1,8 +1,12 @@
 import { ErrorDialog } from "@/components/error-dialog";
-import { RegisterationForm } from "@/modules/auth/register/components/register-form";
-import { useRegisterationForm } from "@/modules/auth/register/hooks/use-registeration-form";
 import { useEffect, useState } from "react";
-import { View } from "react-native";
+import { KeyboardAwareScrollView } from "@/components/keyboard-aware-scrollView";
+
+// Register User Screen Components
+import { RegisterationForm } from "@/modules/auth/register/components/register-form";
+
+// Register User Screen Hooks
+import { useRegisterationForm } from "@/modules/auth/register/hooks/use-registeration-form";
 
 export default function RegisterMainScreen() {
 	const { error, isPending, mutate } = useRegisterationForm();
@@ -14,7 +18,7 @@ export default function RegisterMainScreen() {
 	}, [error]);
 
 	return (
-		<View className="flex-1 justify-center items-center">
+		<KeyboardAwareScrollView className="justify-center items-center">
 			<RegisterationForm triggerRegisteration={mutate} isLoading={isPending} />
 
 			{/* Error Component */}
@@ -23,6 +27,6 @@ export default function RegisterMainScreen() {
 				open={dialogOpen}
 				onOpenChange={setDialogOpen}
 			/>
-		</View>
+		</KeyboardAwareScrollView >
 	);
 }

@@ -1,11 +1,15 @@
 import { ErrorDialog } from "@/components/error-dialog";
 import { Text } from "@/components/ui/text";
-import { RegisterOTPBanner } from "@/modules/auth/register/components/register-banner-otp";
-import { RegisterOtpInput } from "@/modules/auth/register/components/register-otp-inputs";
-import { useVerifyRegisteration } from "@/modules/auth/register/hooks/use-verify-register";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { View } from "react-native";
+import { KeyboardAwareScrollView } from "@/components/keyboard-aware-scrollView";
+
+// Verify Registeration Components
+import { RegisterOTPBanner } from "@/modules/auth/register/components/register-banner-otp";
+import { RegisterOtpInput } from "@/modules/auth/register/components/register-otp-inputs";
+
+// Verify Registeration Hooks
+import { useVerifyRegisteration } from "@/modules/auth/register/hooks/use-verify-register";
 
 interface VerifyRegisterationScreenLocalParams {
 	phoneNumber: string;
@@ -26,7 +30,7 @@ export default function VerifyRegisterationScreen() {
 	}, [error]);
 
 	return (
-		<View className="flex-1 justify-center items-center gap-y-2">
+		<KeyboardAwareScrollView className="justify-center items-center p-2 gap-y-2">
 			<RegisterOTPBanner otpDuration={otpDuration} phoneNumber={phoneNumber} />
 			<RegisterOtpInput
 				registerationToken={registerationToken}
@@ -42,6 +46,6 @@ export default function VerifyRegisterationScreen() {
 			/>
 
 			{isPending && <Text>Validating ....</Text>}
-		</View>
+		</KeyboardAwareScrollView>
 	);
 }

@@ -29,7 +29,6 @@ export function RegisterationForm({
 
 	const onSubmit = async (data: registerUserInputs) => {
 		const { confirmPassword, ...registerData } = data;
-		console.log(registerData);
 		triggerRegisteration(registerData);
 	};
 
