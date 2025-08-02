@@ -1,6 +1,5 @@
 import { ErrorDialog } from "@/components/error-dialog";
 import { useEffect, useState } from "react";
-import { KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 
 // Forgot Password Phone Screen Components
 import { ForgotPasswordPhoneBanner } from "@/modules/auth/forget-password/components/forgotPasswordPhone/forget-password-banner";
@@ -8,48 +7,35 @@ import { ForgotPasswordForm } from "@/modules/auth/forget-password/components/fo
 
 // Forgot Password Phone Screen Hooks
 import { useForgetPassword } from "@/modules/auth/forget-password/hooks/useForgetPassword";
+import { KeyboardAwareScrollView } from "@/components/keyboard-aware-scrollView";
 
 export default function ForgotPasswordPhoneScreen() {
-    const { error, isPending, mutate } = useForgetPassword();
-    const [dialogOpen, setDialogOpen] = useState(false);
+	const { error, isPending, mutate } = useForgetPassword();
+	const [dialogOpen, setDialogOpen] = useState(false);
 
-    useEffect(() => {
-        if (error) setDialogOpen(true);
-    }, [error]);
+	useEffect(() => {
+		if (error) setDialogOpen(true);
+	}, [error]);
 
-    return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
-            style={{ flex: 1 }}
-        >
-            <ScrollView
-                contentContainerStyle={{
-                    flexGrow: 1,
-                    padding: 8,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    rowGap: 32,
-                }}
-            >
-                {/* Forgot Password Phone Banner */}
-                <ForgotPasswordPhoneBanner />
+	return (
+		<KeyboardAwareScrollView className="justify-center items-center p-2 gap-y-8">
+				{/* Forgot Password Phone Banner */}
+				<ForgotPasswordPhoneBanner />
 
-                {/* Forgot Password Phone Form */}
-                <ForgotPasswordForm
-                    triggerForgotPasswordRequest={mutate}
-                    isLoading={isPending}
-                />
+				{/* Forgot Password Phone Form */}
+				<ForgotPasswordForm
+					triggerForgotPasswordRequest={mutate}
+					isLoading={isPending}
+				/>
 
-                {/* Error Component */}
-                {error && (
-                    <ErrorDialog
-                        error={error}
-                        open={dialogOpen}
-                        onOpenChange={setDialogOpen}
-                    />
-                )}
-            </ScrollView>
-        </KeyboardAvoidingView>
-    );
+				{/* Error Component */}
+				{error && (
+					<ErrorDialog
+						error={error}
+						open={dialogOpen}
+						onOpenChange={setDialogOpen}
+					/>
+				)}
+	</KeyboardAwareScrollView>
+	);
 }
