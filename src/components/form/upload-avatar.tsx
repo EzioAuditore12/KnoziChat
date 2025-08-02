@@ -1,8 +1,10 @@
 import { getImageFromGallery } from "@/hooks/get-image-gallery";
 import { getLocalAssets } from "@/hooks/get-local-assets";
 import { useEffect } from "react";
-import { Button, Pressable, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { Image } from "../ui/image";
+import { Button } from "../ui/button";
+import { Text } from "../ui/text";
 
 interface UploadAvatarProps {
 	value?: {
@@ -60,7 +62,7 @@ export function UploadAvatar({ value, onChange }: UploadAvatarProps) {
 	};
 
 	return (
-		<View style={{ alignItems: "center" }}>
+		<View className="justify-center items-center gap-y-1">
 			<Pressable onPress={retreiveGalleryImage}>
 				<Image
 					source={
@@ -68,11 +70,13 @@ export function UploadAvatar({ value, onChange }: UploadAvatarProps) {
 							? { uri: value.uri }
 							: require("@/modules/auth/register/assets/profile-photo/image1.png")
 					}
-					size={"xl"}
-					shape={"circle"}
+				size={"xl"}
+				shape={"circle"}
 				/>
 			</Pressable>
-			<Button title="Use Default Avatar" onPress={handleUseDefaultAvatar} />
+			<Button className="bg-purple-500 rounded-2xl"  onPress={handleUseDefaultAvatar}>
+				<Text className="text-white">Use Default Avatar</Text>
+			</Button>
 		</View>
 	);
 }

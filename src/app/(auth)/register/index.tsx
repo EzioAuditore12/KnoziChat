@@ -7,6 +7,7 @@ import { RegisterationForm } from "@/modules/auth/register/components/register-f
 
 // Register User Screen Hooks
 import { useRegisterationForm } from "@/modules/auth/register/hooks/use-registeration-form";
+import { H2, H3 } from "@/components/ui/typography";
 
 export default function RegisterMainScreen() {
 	const { error, isPending, mutate } = useRegisterationForm();
@@ -18,7 +19,9 @@ export default function RegisterMainScreen() {
 	}, [error]);
 
 	return (
-		<KeyboardAwareScrollView className="justify-center items-center">
+		<KeyboardAwareScrollView className="justify-center items-center px-2 gap-y-1">
+
+			<H2>CREATE YOUR ACCOUNT</H2>
 			<RegisterationForm triggerRegisteration={mutate} isLoading={isPending} />
 
 			{/* Error Component */}

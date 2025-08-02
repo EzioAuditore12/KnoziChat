@@ -26,16 +26,18 @@ export const InputField = ({
 	return (
 		<View style={viewStyle}>
 			<Input
-				className={cn(className)}
+				className={cn("rounded-2xl",className)}
 				style={{
 					borderColor: error
 						? "#ef4444"
 						: focused
 							? isDarkColorScheme
-								? "#818cf8"
-								: "#000"
-							: "black",
-					borderWidth: 1.5,
+								? "white"
+								: "gray"
+							: isDarkColorScheme
+								? "gray"
+								: "purple",
+					borderWidth: 2,
 				}}
 				onFocus={(e) => {
 					setFocused(true);
