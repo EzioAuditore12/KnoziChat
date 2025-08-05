@@ -1,133 +1,55 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Text } from "@/components/ui/text";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Info } from "@/lib/icons/Info";
-import { authStore } from "@/store";
-import { router } from "expo-router";
-import * as React from "react";
+import { Text, TextClassContext } from "@/components/ui/text";
+import { H1, H2, H3 } from "@/components/ui/typography";
+import { VirtualizedList } from "@/components/virtual-list";
+import { Header } from "@/modules/app/home/components/header";
 import { View } from "react-native";
-import Animated, {
-	FadeInUp,
-	FadeOutDown,
-	LayoutAnimationConfig,
-} from "react-native-reanimated";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-const GITHUB_AVATAR_URI =
-	"https://i.pinimg.com/originals/ef/a2/8d/efa28d18a04e7fa40ed49eeb0ab660db.jpg";
+type User = { id: string; name: string };
 
-export default function Screen() {
-	const { logout, user } = authStore.getState();
-	const [progress, setProgress] = React.useState(78);
+const users: User[] = [
+	{ id: "1", name: "Alice" },
+	{ id: "2", name: "Bob" },
+	{ id: "3", name: "Charlie" },
+	{ id: "4", name: "David" },
+	{ id: "5", name: "Eva" },
+	{ id: "6", name: "Frank" },
+	{ id: "7", name: "Grace" },
+	{ id: "8", name: "Helen" },
+	{ id: "9", name: "Ivan" },
+	{ id: "10", name: "Julia" },
+];
 
-	function updateProgressValue() {
-		setProgress(Math.floor(Math.random() * 100));
-	}
+export default function HomeScreen() {
 	return (
-		<View className="flex-1 justify-center items-center gap-5 p-6 bg-secondary/30">
-			<Card className="w-full max-w-sm p-6 rounded-2xl">
-				<CardHeader className="items-center">
-					<Avatar alt="Rick Sanchez's Avatar" className="w-24 h-24">
-						<AvatarImage source={{ uri: GITHUB_AVATAR_URI }} />
-						<AvatarFallback>
-							<Text>RS</Text>
-						</AvatarFallback>
-					</Avatar>
-					<View className="p-3" />
-					<CardTitle className="pb-2 text-center">{user?.firstName}</CardTitle>
-					<View className="flex-row">
-						<CardDescription className="text-base font-semibold">
-							{user?.lastName}
-						</CardDescription>
-						<Tooltip delayDuration={150}>
-							<TooltipTrigger className="px-2 pb-0.5 active:opacity-50">
-								<Info
-									size={14}
-									strokeWidth={2.5}
-									className="w-4 h-4 text-foreground/70"
-								/>
-							</TooltipTrigger>
-							<TooltipContent className="py-2 px-4 shadow">
-								<Text className="native:text-lg">{user?.email}</Text>
-							</TooltipContent>
-						</Tooltip>
-					</View>
-				</CardHeader>
-				<CardContent>
-					<View className="flex-row justify-around gap-3">
-						<View className="items-center">
-							<Text className="text-sm text-muted-foreground">Dimension</Text>
-							<Text className="text-xl font-semibold">C-137</Text>
-						</View>
-						<View className="items-center">
-							<Text className="text-sm text-muted-foreground">Age</Text>
-							<Text className="text-xl font-semibold">70</Text>
-						</View>
-						<View className="items-center">
-							<Text className="text-sm text-muted-foreground">Species</Text>
-							<Text className="text-xl font-semibold">Human</Text>
-						</View>
-					</View>
-				</CardContent>
-				<CardFooter className="flex-col gap-3 pb-0">
-					<View className="flex-row items-center overflow-hidden">
-						<Text className="text-sm text-muted-foreground">Productivity:</Text>
-						<LayoutAnimationConfig skipEntering>
-							<Animated.View
-								key={progress}
-								entering={FadeInUp}
-								exiting={FadeOutDown}
-								className="w-11 items-center"
-							>
-								<Text className="text-sm font-bold text-sky-600">
-									{progress}%
-								</Text>
-							</Animated.View>
-						</LayoutAnimationConfig>
-					</View>
-					<Progress
-						value={progress}
-						className="h-2"
-						indicatorClassName="bg-sky-600"
-					/>
-					<View />
-					<Button
-						variant="outline"
-						className="shadow shadow-foreground/5"
-						onPress={updateProgressValue}
+		<SafeAreaView>
+			<Header />
+			<VirtualizedList<User>
+				items={users}
+				keyExtractor={(item) => item.id}
+				className="w-full"
+				renderItem={(item, index) => (
+					<View
+						key={item.id}
+						className="bg-white mx-4 my-2 rounded-xl p-5 flex-row items-center shadow-sm"
+						style={{
+							elevation: 2, // NativeWind doesn't support shadowOpacity, so keep elevation for Android shadow
+						}}
 					>
-						<Text>Update</Text>
-					</Button>
-				</CardFooter>
-			</Card>
-			<Button
-				onPress={() => {
-					router.push("/login");
-				}}
-			>
-				<Text>Go to login screen</Text>
-			</Button>
-			<Button
-				onPress={() => {
-					logout();
-					router.replace("/(auth)/login");
-				}}
-			>
-				<Text>Logout</Text>
-			</Button>
-		</View>
+						<View className="w-10 h-10 rounded-full bg-indigo-100 justify-center items-center mr-4">
+							<Text className="font-bold text-lg text-indigo-500">
+								{item.name[0]}
+							</Text>
+						</View>
+						<View>
+							<Text className="text-base font-semibold text-[#222]">
+								{item.name}
+							</Text>
+							<Text className="text-gray-400">User #{index + 1}</Text>
+						</View>
+					</View>
+				)}
+			/>
+		</SafeAreaView>
 	);
 }

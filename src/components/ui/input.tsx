@@ -11,7 +11,7 @@ function Input({ className, ...props }: InputProps) {
 	return (
 		<TextInput
 			className={cn(
-				"h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-lg text-foreground focus:border-ring",
+				"h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-lg text-foreground focus:border-ring dark:focus:border-white",
 				props.editable === false && "opacity-50",
 				className,
 			)}

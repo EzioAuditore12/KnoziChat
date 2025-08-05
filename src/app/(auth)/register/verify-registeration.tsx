@@ -1,8 +1,8 @@
 import { ErrorDialog } from "@/components/error-dialog";
+import { KeyboardAwareScrollView } from "@/components/keyboard-aware-scrollView";
 import { Text } from "@/components/ui/text";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { KeyboardAwareScrollView } from "@/components/keyboard-aware-scrollView";
 
 // Verify Registeration Components
 import { RegisterOTPBanner } from "@/modules/auth/register/components/register-banner-otp";

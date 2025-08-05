@@ -2,12 +2,11 @@ import { cn } from "@/lib/utils";
 import * as AvatarPrimitive from "@rn-primitives/avatar";
 import * as React from "react";
 
-function Avatar({
-	className,
-	...props
-}: AvatarPrimitive.RootProps & {
+type AvatarProps = AvatarPrimitive.RootProps & {
 	ref?: React.RefObject<AvatarPrimitive.RootRef>;
-}) {
+};
+
+function Avatar({ className, ...props }: AvatarProps) {
 	return (
 		<AvatarPrimitive.Root
 			className={cn(
@@ -51,3 +50,4 @@ function AvatarFallback({
 }
 
 export { Avatar, AvatarFallback, AvatarImage };
+export type { AvatarProps };

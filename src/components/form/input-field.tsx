@@ -26,7 +26,7 @@ export const InputField = ({
 	return (
 		<View style={viewStyle}>
 			<Input
-				className={cn("rounded-2xl",className)}
+				className={cn("rounded-2xl", className)}
 				style={{
 					borderColor: error
 						? "#ef4444"

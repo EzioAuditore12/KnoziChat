@@ -2,7 +2,7 @@ import { authStore } from "@/store";
 import { Redirect, Stack } from "expo-router";
 
 export default function AuthenticationScreens() {
-	const { user } = authStore.getState();
+	const { user } = authStore();
 
 	if (user) {
 		return <Redirect href={"/"} />;
