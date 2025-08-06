@@ -1,27 +1,20 @@
-import { ErrorDialog } from "@/components/error-dialog";
 import { KeyboardAwareScrollView } from "@/components/keyboard-aware-scrollView";
 import { H1, Muted } from "@/components/ui/typography";
 import { Link } from "expo-router";
-import React, { useEffect, useState } from "react";
 import { useWindowDimensions } from "react-native";
 
 // Login Screen Components
-import { LoginBanner } from "@/modules/auth/login/components/loginForm/loginBanner";
-import { LoginForm } from "@/modules/auth/login/components/loginForm/loginUserForm";
-import { SocialProviderLogin } from "@/modules/auth/login/components/loginForm/socialProviderLogin";
+import { LoginBanner } from "@/modules/auth/login/components/loginBanner";
+import { LoginForm } from "@/modules/auth/login/components/loginUserForm";
+import { SocialProviderLogin } from "@/modules/auth/login/components/socialProviderLogin";
 
 // Login Screen Hooks
 import { useloginUserForm } from "@/modules/auth/login/hooks/useLoginUserForm";
 
 export default function LoginScreen() {
-	const { mutate, error, isPending } = useloginUserForm();
-	const [dialogOpen, setDialogOpen] = useState(false);
+	const { mutate, isPending } = useloginUserForm();
 
 	const windowDimensions = useWindowDimensions();
-
-	useEffect(() => {
-		if (error) setDialogOpen(true);
-	}, [error]);
 
 	return (
 		<KeyboardAwareScrollView className="justify-center items-center gap-y-5">
@@ -33,14 +26,6 @@ export default function LoginScreen() {
 			{/* Login Form */}
 			<LoginForm isLoading={isPending} triggerLogin={mutate} />
 
-			{/* Error Component */}
-			{error && (
-				<ErrorDialog
-					error={error}
-					open={dialogOpen}
-					onOpenChange={setDialogOpen}
-				/>
-			)}
 			{/* Link to forget Password */}
 			<Link
 				href={"/(auth)/forget-password"}

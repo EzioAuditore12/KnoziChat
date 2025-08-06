@@ -1,21 +1,14 @@
-import { ErrorDialog } from "@/components/error-dialog";
-import { useEffect, useState } from "react";
+import { KeyboardAwareScrollView } from "@/components/keyboard-aware-scrollView";
 
 // Forgot Password Phone Screen Components
 import { ForgotPasswordPhoneBanner } from "@/modules/auth/forget-password/components/forgotPasswordPhone/forget-password-banner";
 import { ForgotPasswordForm } from "@/modules/auth/forget-password/components/forgotPasswordPhone/forgot-password-form";
 
-import { KeyboardAwareScrollView } from "@/components/keyboard-aware-scrollView";
 // Forgot Password Phone Screen Hooks
 import { useForgetPassword } from "@/modules/auth/forget-password/hooks/useForgetPassword";
 
 export default function ForgotPasswordPhoneScreen() {
-	const { error, isPending, mutate } = useForgetPassword();
-	const [dialogOpen, setDialogOpen] = useState(false);
-
-	useEffect(() => {
-		if (error) setDialogOpen(true);
-	}, [error]);
+	const { isPending, mutate } = useForgetPassword();
 
 	return (
 		<KeyboardAwareScrollView className="justify-center items-center p-2 gap-y-8">
@@ -27,15 +20,6 @@ export default function ForgotPasswordPhoneScreen() {
 				triggerForgotPasswordRequest={mutate}
 				isLoading={isPending}
 			/>
-
-			{/* Error Component */}
-			{error && (
-				<ErrorDialog
-					error={error}
-					open={dialogOpen}
-					onOpenChange={setDialogOpen}
-				/>
-			)}
 		</KeyboardAwareScrollView>
 	);
 }

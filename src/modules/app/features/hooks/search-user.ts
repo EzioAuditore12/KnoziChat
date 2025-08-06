@@ -11,30 +11,20 @@ interface getUserDetailsProps {
 }
 
 export function getUsers({ limit, name }: getUserDetailsProps) {
-	const {
-		data,
-		isLoading,
-		isError,
-		error,
-		fetchNextPage,
-		hasNextPage,
-		isFetchingNextPage,
-	} = useInfiniteQuery({
-		queryKey: ["Search-User", name],
-		queryFn: ({ pageParam }) =>
-			getUsersFromName({ name, page: pageParam, limit }),
-		initialPageParam: 1,
-		getNextPageParam: (lastPage, allPages) => {
-			return lastPage.users.length > 0 ? allPages.length + 1 : undefined;
-		},
-	});
-
-	const errorMessage = isError ? CustomBackendError.getErrorMessage(error) : "";
+	const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+		useInfiniteQuery({
+			queryKey: ["Search-User", name],
+			queryFn: ({ pageParam }) =>
+				getUsersFromName({ name, page: pageParam, limit }),
+			initialPageParam: 1,
+			getNextPageParam: (lastPage, allPages) => {
+				return lastPage.users.length > 0 ? allPages.length + 1 : undefined;
+			},
+		});
 
 	return {
 		data,
 		isLoading,
-		error: errorMessage,
 		fetchNextPage,
 		hasNextPage,
 		isFetchingNextPage,

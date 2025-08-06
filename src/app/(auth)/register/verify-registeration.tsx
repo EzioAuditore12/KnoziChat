@@ -1,8 +1,6 @@
-import { ErrorDialog } from "@/components/error-dialog";
 import { KeyboardAwareScrollView } from "@/components/keyboard-aware-scrollView";
 import { Text } from "@/components/ui/text";
 import { useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
 
 // Verify Registeration Components
 import { RegisterOTPBanner } from "@/modules/auth/register/components/register-banner-otp";
@@ -21,13 +19,7 @@ export default function VerifyRegisterationScreen() {
 	const { otpDuration, phoneNumber, registerationToken } =
 		useLocalSearchParams() as unknown as VerifyRegisterationScreenLocalParams;
 
-	const { error, isPending, mutate } = useVerifyRegisteration();
-
-	const [dialogOpen, setDialogOpen] = useState(false);
-
-	useEffect(() => {
-		if (error) setDialogOpen(true);
-	}, [error]);
+	const { isPending, mutate } = useVerifyRegisteration();
 
 	return (
 		<KeyboardAwareScrollView className="justify-center items-center p-2 gap-y-2">
@@ -36,13 +28,6 @@ export default function VerifyRegisterationScreen() {
 				registerationToken={registerationToken}
 				phoneNumber={phoneNumber}
 				triggerVerifyOTP={mutate}
-			/>
-
-			{/* Error Component */}
-			<ErrorDialog
-				error={error}
-				open={dialogOpen}
-				onOpenChange={setDialogOpen}
 			/>
 
 			{isPending && <Text>Validating ....</Text>}

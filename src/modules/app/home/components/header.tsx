@@ -8,7 +8,10 @@ export function Header() {
 		<View className="flex-row px-4 justify-between items-center py-2">
 			<Text className="font-semibold text-4xl">Knozichat</Text>
 
-			<Pressable className="ml-auto mr-2 rounded-full bg-gray-400 p-2">
+			<Pressable
+				className="ml-auto mr-2 rounded-full bg-gray-400 p-2"
+				onPress={() => router.navigate("/(features)/create-group")}
+			>
 				<Plus size={30} color={"white"} />
 			</Pressable>
 

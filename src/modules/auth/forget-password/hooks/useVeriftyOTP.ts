@@ -4,7 +4,7 @@ import { router } from "expo-router";
 import { verifyforgetPasswordRequestTriggerAPI } from "../api/verify-forget-otp-request";
 
 export function useVerifyOTP() {
-	const { mutate, isPending, isError, error } = useMutation({
+	const { mutate, isPending } = useMutation({
 		mutationFn: verifyforgetPasswordRequestTriggerAPI,
 		onSuccess: (data) => {
 			router.replace({
@@ -15,13 +15,15 @@ export function useVerifyOTP() {
 				},
 			});
 		},
+		onError: (data) => {
+			return alert(
+				`Verification Failed: ${CustomBackendError.getErrorMessage(data)}`,
+			);
+		},
 	});
-
-	const errorMessage = isError ? CustomBackendError.getErrorMessage(error) : "";
 
 	return {
 		isPending,
 		mutate,
-		error: errorMessage,
 	};
 }

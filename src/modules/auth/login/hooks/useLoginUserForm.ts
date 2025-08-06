@@ -5,7 +5,7 @@ import { router } from "expo-router";
 import { loginUserAPI } from "../api/loginUserForm";
 
 export function useloginUserForm() {
-	const { mutate, isPending, isError, error } = useMutation({
+	const { mutate, isPending } = useMutation({
 		mutationFn: loginUserAPI,
 		onSuccess: (data) => {
 			// Set Authorization tokens
@@ -24,13 +24,13 @@ export function useloginUserForm() {
 
 			router.replace("/");
 		},
+		onError: (data) => {
+			return alert(`Login Failed: ${CustomBackendError.getErrorMessage(data)}`);
+		},
 	});
-
-	const errorMessage = isError ? CustomBackendError.getErrorMessage(error) : "";
 
 	return {
 		isPending,
 		mutate,
-		error: errorMessage,
 	};
 }

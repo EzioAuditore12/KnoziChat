@@ -4,7 +4,7 @@ import { router } from "expo-router";
 import { forgetPasswordTriggerAPI } from "../api/forget-password-trigger";
 
 export function useForgetPassword() {
-	const { mutate, isPending, isError, error } = useMutation({
+	const { mutate, isPending } = useMutation({
 		mutationFn: forgetPasswordTriggerAPI,
 		onSuccess: (data) => {
 			router.push({
@@ -16,13 +16,15 @@ export function useForgetPassword() {
 				},
 			});
 		},
+		onError: (data) => {
+			return alert(
+				`Failed forget password Request: ${CustomBackendError.getErrorMessage(data)}`,
+			);
+		},
 	});
-
-	const errorMessage = isError ? CustomBackendError.getErrorMessage(error) : "";
 
 	return {
 		isPending,
 		mutate,
-		error: errorMessage,
 	};
 }

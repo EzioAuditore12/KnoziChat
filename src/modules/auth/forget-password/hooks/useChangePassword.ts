@@ -5,7 +5,7 @@ import { router } from "expo-router";
 import { changePasswordTriggerAPI } from "../api/change-password";
 
 export function useChangePasswordForm() {
-	const { mutate, isPending, isError, error } = useMutation({
+	const { mutate, isPending } = useMutation({
 		mutationFn: changePasswordTriggerAPI,
 		onSuccess: (data) => {
 			// Set Authorization tokens
@@ -24,13 +24,14 @@ export function useChangePasswordForm() {
 
 			router.replace("/(tabs)");
 		},
+		onError: (data) => {
+			return alert(
+				`Change Password Failed: ${CustomBackendError.getErrorMessage(data)}`,
+			);
+		},
 	});
-
-	const errorMessage = isError ? CustomBackendError.getErrorMessage(error) : "";
-
 	return {
 		isPending,
 		mutate,
-		error: errorMessage,
 	};
 }

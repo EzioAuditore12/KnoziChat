@@ -5,7 +5,7 @@ import { router } from "expo-router";
 import { VerifyRegisterationUserAPI } from "../api/verify-register";
 
 export function useVerifyRegisteration() {
-	const { mutate, isPending, isError, error } = useMutation({
+	const { mutate, isPending } = useMutation({
 		mutationFn: VerifyRegisterationUserAPI,
 		onSuccess: (data) => {
 			// Set Authorization tokens
@@ -24,13 +24,15 @@ export function useVerifyRegisteration() {
 
 			router.replace("/(tabs)");
 		},
+		onError: (data) => {
+			return alert(
+				`Verification Failed: ${CustomBackendError.getErrorMessage(data)}`,
+			);
+		},
 	});
-
-	const errorMessage = isError ? CustomBackendError.getErrorMessage(error) : "";
 
 	return {
 		isPending,
 		mutate,
-		error: errorMessage,
 	};
 }

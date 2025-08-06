@@ -3,9 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Lock, PhoneCall } from "lucide-react-native";
+import { useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
-import { loginUserValidations } from "../../validation/loginForm";
+import { loginUserValidations } from "../validation/loginForm";
 
 interface LoginFormProps {
 	triggerLogin: ({
@@ -29,6 +30,8 @@ export function LoginForm({ triggerLogin, isLoading }: LoginFormProps) {
 		resolver: zodResolver(loginUserValidations),
 	});
 
+	const inputRef = useRef<any>(null);
+
 	const onSubmit: (data: LoginFormData) => void = (data) =>
 		triggerLogin({ phoneNumber: data.phoneNumber, password: data.password });
 
@@ -47,6 +50,8 @@ export function LoginForm({ triggerLogin, isLoading }: LoginFormProps) {
 						onChangeText={onChange}
 						onBlur={onBlur}
 						Icon={PhoneCall}
+						returnKeyType="next"
+						onSubmitEditing={() => inputRef.current?.focus()}
 					/>
 				)}
 				name="phoneNumber"
@@ -59,6 +64,7 @@ export function LoginForm({ triggerLogin, isLoading }: LoginFormProps) {
 				}}
 				render={({ field: { onChange, onBlur, value } }) => (
 					<InputField
+						ref={inputRef}
 						placeholder="Password"
 						secureTextEntry
 						error={errors.password}
@@ -66,6 +72,7 @@ export function LoginForm({ triggerLogin, isLoading }: LoginFormProps) {
 						onChangeText={onChange}
 						onBlur={onBlur}
 						Icon={Lock}
+						onSubmitEditing={handleSubmit(onSubmit)}
 					/>
 				)}
 				name="password"

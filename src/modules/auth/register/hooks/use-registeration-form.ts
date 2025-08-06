@@ -4,7 +4,7 @@ import { router } from "expo-router";
 import { registerUserAPI } from "../api/register-user-form";
 
 export function useRegisterationForm() {
-	const { mutate, isPending, isError, error } = useMutation({
+	const { mutate, isPending } = useMutation({
 		mutationFn: registerUserAPI,
 		onSuccess: (data) => {
 			router.push({
@@ -16,14 +16,15 @@ export function useRegisterationForm() {
 				pathname: "/(auth)/register/verify-registeration",
 			});
 		},
+		onError: (data) => {
+			return alert(
+				`Registeration Failed: ${CustomBackendError.getErrorMessage(data)}`,
+			);
+		},
 	});
 
-	const errorMessage = isError ? CustomBackendError.getErrorMessage(error) : "";
-
-	console.log(error);
 	return {
 		isPending,
 		mutate,
-		error: errorMessage,
 	};
 }
