@@ -1,3 +1,10 @@
+# KnoziChat
+
+Current APK Link : -
+
+https://drive.google.com/file/d/1LW6v9FKg7BhW4sHtjdtJAMMHdUr8HX_M/view?usp=sharing
+
+
 # Starter base
 
 A starting point to help you set up your project quickly and use the common components provided by `react-native-reusables`. The idea is to make it easier for you to get started.
