@@ -2,7 +2,10 @@ import { useRefreshOnFocus } from "@/lib/query/useRefreshOnFocus";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getMessagesAPI } from "../api/get-messages";
 
-export function useGetMessages({ chatId, limit }: { chatId: string; limit: number }) {
+export function useGetMessages({
+	chatId,
+	limit,
+}: { chatId: string; limit: number }) {
 	const {
 		data,
 		isLoading,
@@ -12,7 +15,8 @@ export function useGetMessages({ chatId, limit }: { chatId: string; limit: numbe
 		refetch,
 	} = useInfiniteQuery({
 		queryKey: ["Chat-Messages", chatId],
-		queryFn: ({ pageParam }) => getMessagesAPI({ id: chatId, limit, page: pageParam }),
+		queryFn: ({ pageParam }) =>
+			getMessagesAPI({ id: chatId, limit, page: pageParam }),
 		initialPageParam: 1,
 		getNextPageParam: (lastPage, allPages) => {
 			// If we got fewer messages than the limit, we've reached the end

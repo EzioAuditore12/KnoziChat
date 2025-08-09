@@ -6,9 +6,13 @@ import { createGroupChatAPI } from "../api/create-group";
 export function createGroupChat() {
 	const { mutate, isPending } = useMutation({
 		mutationFn: createGroupChatAPI,
-		onSuccess: () => {
+		onSuccess: (data) => {
 			router.replace({
-				pathname:"/(app)/(tabs)"
+				pathname: "/(app)/chats/group-chat/[groupId]",
+				params:{
+					groupId:data.id,
+					groupName:data.name
+				}
 			});
 		},
 		onError: (data) => {

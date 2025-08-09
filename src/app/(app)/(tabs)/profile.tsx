@@ -2,6 +2,8 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { useGetUserDetails } from "@/modules/app/profile/hooks/useGetUserDetails";
+import { authStore } from "@/store";
+import { router } from "expo-router";
 import React from "react";
 import { View } from "react-native";
 
@@ -10,6 +12,8 @@ const Explore = () => {
 		useGetUserDetails();
 
 	console.log(data);
+
+	const logout=authStore(state=>state.logout)
 
 	if (isLoading) {
 		return (
@@ -54,6 +58,18 @@ const Explore = () => {
 					<Text className="text-white font-semibold">Refresh</Text>
 				</Button>
 			</View>
+
+
+			<Button
+			onPress={()=>{
+				logout()
+				router.replace({
+					pathname:"/(auth)/login"
+				})
+			}}
+			>
+				<Text>Logout</Text>
+			</Button>
 		</View>
 	);
 };

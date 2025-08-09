@@ -16,7 +16,7 @@ export function useloginUserForm() {
 
 			// Set User details
 			authStore.getState().setUser({
-				id:data.user.id,
+				id: data.user.id,
 				firstName: data.user.firstName,
 				lastName: data.user.lastName,
 				email: data.user.email ?? "",

@@ -5,14 +5,14 @@ import { Alert } from "react-native";
 import { createPrivateChatAPI } from "../api/create-private-chat";
 
 export function useCreatePrivateChat() {
-	const { data, mutate, isPending } = useMutation({
+	const { mutate, isPending } = useMutation({
 		mutationFn: createPrivateChatAPI,
-		onSuccess: () => {
-			router.push({
-				pathname: "/chats/personal-chat/[chatId]",
+		onSuccess: (data) => {
+			router.replace({
+				pathname: "/(app)/chats/personal-chat/[chatId]",
 				params: {
-					chatId: data?.chatId as string,
-					userName: data?.participants.userB,
+					chatId: data.chatId,
+					userName:data.participants.userB.name,
 				},
 			});
 		},

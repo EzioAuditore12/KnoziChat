@@ -17,8 +17,13 @@ export interface CreatePrivateChatQueryResponse {
 	chatId: string;
 	message: string;
 	participants: {
-		userA: string;
-		userB: string;
+		userA: {
+			id:string
+		};
+		userB:{
+			id:string
+			name:string
+		};
 	};
 }
 
