@@ -9,7 +9,7 @@ export function useLeaveGroup() {
 		mutationFn: (params: { groupId: string }) => leaveGroupAPI(params),
 		onSuccess: () => {
 			router.replace({
-				pathname: "/(tabs)",
+				pathname: "/(app)/(tabs)",
 			});
 		},
 		onError: (error) => {

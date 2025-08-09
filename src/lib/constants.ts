@@ -16,3 +16,11 @@ export const NAV_THEME = {
 		text: "hsl(0 0% 98%)", // foreground
 	},
 };
+
+export const socketEvents = {
+	ALERT: "ALERT",
+	REFETCH_CHATS: "REFETCH_CHATS",
+	NEW_ATTACHMENT: "NEW_ATTACHMENT",
+	NEW_MESSAGE_ALERT: "NEW_MESSAGE_ALERT",
+	NEW_MESSAGE: "NEW_MESSAGE"
+};

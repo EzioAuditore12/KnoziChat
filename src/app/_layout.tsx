@@ -11,10 +11,10 @@ export default function RootLayout() {
 	return (
 		<ThemeProvider>
 			<TanstackReactQueryProvider>
-				<Stack initialRouteName="(tabs)">
+				<Stack initialRouteName="(app)">
 					<Stack.Screen name="(auth)" options={{ headerShown: false }} />
 					<Stack.Screen
-						name="(tabs)"
+						name="(app)"
 						options={{
 							headerShown: false,
 						}}

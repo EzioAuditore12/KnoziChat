@@ -39,7 +39,7 @@ export default function SearchScreen() {
 							profilePicture={item.profilePicture}
 							onPress={() =>
 								router.push({
-									pathname: "/(features)/[userId]",
+									pathname: "/(app)/(features)/[userId]",
 									params: { userId: item.id },
 								})
 							}

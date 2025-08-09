@@ -7,7 +7,9 @@ export function createGroupChat() {
 	const { mutate, isPending } = useMutation({
 		mutationFn: createGroupChatAPI,
 		onSuccess: () => {
-			router.replace("/(tabs)");
+			router.replace({
+				pathname:"/(app)/(tabs)"
+			});
 		},
 		onError: (data) => {
 			return alert(

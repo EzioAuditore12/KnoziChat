@@ -7,7 +7,7 @@ import {
 import { Text } from "@/components/ui/text";
 import { authStore } from "@/store";
 import { AntDesign } from "@expo/vector-icons";
-import { Redirect, Tabs } from "expo-router";
+import { Tabs } from "expo-router";
 import { TestTube } from "lucide-react-native";
 
 function UserProfilePhoto({
@@ -28,10 +28,6 @@ function UserProfilePhoto({
 
 export default function TabLayout() {
 	const { user } = authStore();
-
-	if (!user) {
-		return <Redirect href={"/(auth)/login"} />;
-	}
 	return (
 		<Tabs>
 			<Tabs.Screen
@@ -51,7 +47,7 @@ export default function TabLayout() {
 					tabBarIcon: ({ focused }) => (
 						<UserProfilePhoto
 							alt="User Profile Photo"
-							uri={user.profilePicture!}
+							uri={user?.profilePicture!}
 							className="border-2"
 							style={{
 								borderColor: focused ? "red" : "",

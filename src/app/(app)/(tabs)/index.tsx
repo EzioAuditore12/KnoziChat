@@ -34,7 +34,7 @@ export default function HomeScreen() {
 								onPress={() => {
 									if (item.groupChat) {
 										router.push({
-											pathname: "/chats/group-chat/[groupId]",
+											pathname: "/(app)/chats/group-chat/[groupId]",
 											params: {
 												groupId: item.id,
 												groupName: item.name,
@@ -45,6 +45,7 @@ export default function HomeScreen() {
 											pathname: "/chats/personal-chat/[chatId]",
 											params: {
 												chatId: item.id,
+												userName: item.members[1].name,
 											},
 										});
 									}
