@@ -6,7 +6,7 @@ import { useDebounce } from "@/hooks/user-debounce";
 import type { User } from "@/modules/app/features/api/search-user";
 import { UserCard } from "@/modules/app/features/components/user-card";
 import { getUsers } from "@/modules/app/features/hooks/search-user";
-import { Stack } from "expo-router";
+import { Stack, router } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -37,6 +37,12 @@ export default function SearchScreen() {
 							firstName={item.firstName}
 							phoneNumber={item.phoneNumber}
 							profilePicture={item.profilePicture}
+							onPress={() =>
+								router.push({
+									pathname: "/(features)/[userId]",
+									params: { userId: item.id },
+								})
+							}
 						/>
 					)}
 					onEndReached={() => fetchNextPage()}

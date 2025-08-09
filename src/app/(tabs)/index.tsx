@@ -1,55 +1,78 @@
-import { Text, TextClassContext } from "@/components/ui/text";
-import { H1, H2, H3 } from "@/components/ui/typography";
+import { ActivityIndicator } from "@/components/ui/activity-indicator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Text } from "@/components/ui/text";
 import { VirtualizedList } from "@/components/virtual-list";
+import type { Chat } from "@/modules/app/home/api/get-my-chats";
 import { Header } from "@/modules/app/home/components/header";
+import { getMyChats } from "@/modules/app/home/hooks/get-my-chats";
+import { router } from "expo-router";
 import { View } from "react-native";
+import { Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-type User = { id: string; name: string };
-
-const users: User[] = [
-	{ id: "1", name: "Alice" },
-	{ id: "2", name: "Bob" },
-	{ id: "3", name: "Charlie" },
-	{ id: "4", name: "David" },
-	{ id: "5", name: "Eva" },
-	{ id: "6", name: "Frank" },
-	{ id: "7", name: "Grace" },
-	{ id: "8", name: "Helen" },
-	{ id: "9", name: "Ivan" },
-	{ id: "10", name: "Julia" },
-];
-
 export default function HomeScreen() {
+	const { data, fetchNextPage, isFetchingNextPage, isLoading } = getMyChats({
+		limit: 10,
+	});
 	return (
-		<SafeAreaView>
+		<SafeAreaView className="flex-1">
 			<Header />
-			<VirtualizedList<User>
-				items={users}
-				keyExtractor={(item) => item.id}
-				className="w-full"
-				renderItem={(item, index) => (
-					<View
-						key={item.id}
-						className="bg-white mx-4 my-2 rounded-xl p-5 flex-row items-center shadow-sm"
-						style={{
-							elevation: 2, // NativeWind doesn't support shadowOpacity, so keep elevation for Android shadow
-						}}
-					>
-						<View className="w-10 h-10 rounded-full bg-indigo-100 justify-center items-center mr-4">
-							<Text className="font-bold text-lg text-indigo-500">
-								{item.name[0]}
-							</Text>
-						</View>
-						<View>
-							<Text className="text-base font-semibold text-[#222]">
-								{item.name}
-							</Text>
-							<Text className="text-gray-400">User #{index + 1}</Text>
-						</View>
-					</View>
-				)}
-			/>
+			{isLoading ? (
+				<ActivityIndicator />
+			) : (
+				<>
+					<VirtualizedList<Chat>
+						items={data?.pages?.flatMap((page) => page.chats) ?? []}
+						keyExtractor={(item) => item.id}
+						renderItem={(item) => (
+							<Pressable
+								key={item.id}
+								className="bg-white mx-4 my-2 rounded-xl p-5 flex-row items-center shadow-sm gap-x-2"
+								style={{
+									elevation: 2,
+								}}
+								onPress={() => {
+									if (item.groupChat) {
+										router.push({
+											pathname: "/chats/group-chat/[groupId]",
+											params: {
+												groupId: item.id,
+												groupName: item.name,
+											},
+										});
+									} else {
+										router.push({
+											pathname: "/chats/personal-chat/[chatId]",
+											params: {
+												chatId: item.id,
+											},
+										});
+									}
+								}}
+							>
+								<Avatar alt="Image">
+									<AvatarImage source={{ uri: item.avatar! }} />
+									<AvatarFallback>
+										<Text>RS</Text>
+									</AvatarFallback>
+								</Avatar>
+								<View>
+									<Text className="text-base font-semibold text-[#222]">
+										{item.name}
+									</Text>
+									<Text className="text-gray-400">
+										{item.members.length > 2
+											? `${item.members.length} members`
+											: "Personal Chat"}
+									</Text>
+								</View>
+							</Pressable>
+						)}
+						onEndReached={() => fetchNextPage()}
+					/>
+					{isFetchingNextPage && <ActivityIndicator />}
+				</>
+			)}
 		</SafeAreaView>
 	);
 }

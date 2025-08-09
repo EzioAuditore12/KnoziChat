@@ -8,6 +8,7 @@ import { Text } from "@/components/ui/text";
 import { authStore } from "@/store";
 import { AntDesign } from "@expo/vector-icons";
 import { Redirect, Tabs } from "expo-router";
+import { TestTube } from "lucide-react-native";
 
 function UserProfilePhoto({
 	className,
@@ -57,6 +58,13 @@ export default function TabLayout() {
 							}}
 						/>
 					),
+				}}
+			/>
+			<Tabs.Screen
+				name="test"
+				options={{
+					title: "Test",
+					tabBarIcon: ({ color }) => <TestTube color={color} />,
 				}}
 			/>
 		</Tabs>
