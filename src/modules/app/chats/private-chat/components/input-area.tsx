@@ -1,18 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
-import { cn } from "@/lib/utils";
-import { useState } from "react";
-import { View, type ViewProps, TouchableOpacity, Alert } from "react-native";
-import { Paperclip } from "lucide-react-native";
 import { getImageFromGallery } from "@/hooks/get-image-gallery";
+import { cn } from "@/lib/utils";
+import { Paperclip } from "lucide-react-native";
+import { useState } from "react";
+import { Alert, TouchableOpacity, View, type ViewProps } from "react-native";
 
 interface ImageData {
 	uri: string;
 	type: string;
 	name: string;
 }
-
 
 interface InputAreaProps extends ViewProps {
 	handleSendMessage: (message: string) => void;
@@ -39,7 +38,7 @@ export function InputArea({
 			const galleryImage = await getImageFromGallery({
 				allowedImageType: ["image/png", "image/jpeg"],
 			});
-			
+
 			if (galleryImage && handleImageUpload) {
 				handleImageUpload({
 					uri: galleryImage.uri,

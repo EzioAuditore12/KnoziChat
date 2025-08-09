@@ -18,11 +18,11 @@ export interface CreatePrivateChatQueryResponse {
 	message: string;
 	participants: {
 		userA: {
-			id:string
+			id: string;
 		};
-		userB:{
-			id:string
-			name:string
+		userB: {
+			id: string;
+			name: string;
 		};
 	};
 }

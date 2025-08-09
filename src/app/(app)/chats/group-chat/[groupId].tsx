@@ -1,4 +1,3 @@
-
 import { Input } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import { VirtualizedList } from "@/components/virtual-list";
@@ -8,7 +7,12 @@ import { useGetMessages } from "@/modules/app/features/hooks/use-get-messages";
 import { getSocket } from "@/providers/socket-provider";
 import { authStore } from "@/store";
 import { useQueryClient } from "@tanstack/react-query";
-import { Stack, router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import {
+	Stack,
+	router,
+	useFocusEffect,
+	useLocalSearchParams,
+} from "expo-router";
 import { useCallback, useMemo, useRef, useState } from "react";
 import {
 	FlatList,
@@ -77,7 +81,9 @@ export default function GroupChatScreen() {
 		groupName: string;
 	};
 
-	const [realtimeMessages, setRealtimeMessages] = useState<GroupChatMessage[]>([]);
+	const [realtimeMessages, setRealtimeMessages] = useState<GroupChatMessage[]>(
+		[],
+	);
 	const flatListRef = useRef<FlatList>(null);
 	const socket = getSocket();
 	const queryClient = useQueryClient();
@@ -116,10 +122,14 @@ export default function GroupChatScreen() {
 		const filteredRealtimeMessages = realtimeMessages.filter((rtMessage) => {
 			// If it's a temp message and we have a real message with similar content and time, remove it
 			if (rtMessage.id.startsWith("temp-")) {
-				const hasMatchingDbMessage = dbMessages.some((dbMessage) => 
-					dbMessage.content === rtMessage.content &&
-					dbMessage.sender.id === rtMessage.sender.id &&
-					Math.abs(new Date(dbMessage.createdAt).getTime() - new Date(rtMessage.createdAt).getTime()) < 10000 // Within 10 seconds
+				const hasMatchingDbMessage = dbMessages.some(
+					(dbMessage) =>
+						dbMessage.content === rtMessage.content &&
+						dbMessage.sender.id === rtMessage.sender.id &&
+						Math.abs(
+							new Date(dbMessage.createdAt).getTime() -
+								new Date(rtMessage.createdAt).getTime(),
+						) < 10000, // Within 10 seconds
 				);
 				return !hasMatchingDbMessage;
 			}
@@ -161,10 +171,13 @@ export default function GroupChatScreen() {
 					console.log("Sender data:", data.message.sender);
 
 					// Try to find sender name from existing database messages
-					const existingSender = dbMessages.find(msg => msg.sender.id === data.message.sender.id);
-					const senderName = data.message.sender.name || 
-									 existingSender?.sender.name || 
-									 "Unknown User";
+					const existingSender = dbMessages.find(
+						(msg) => msg.sender.id === data.message.sender.id,
+					);
+					const senderName =
+						data.message.sender.name ||
+						existingSender?.sender.name ||
+						"Unknown User";
 
 					// Transform backend message to frontend format
 					const transformedMessage: GroupChatMessage = {
@@ -173,9 +186,10 @@ export default function GroupChatScreen() {
 						sender: {
 							id: data.message.sender.id,
 							name: senderName,
-							profilePicture: data.message.sender.profilePicture || 
-										   existingSender?.sender.profilePicture || 
-										   null,
+							profilePicture:
+								data.message.sender.profilePicture ||
+								existingSender?.sender.profilePicture ||
+								null,
 						},
 						chatId: data.message.chatId,
 						createdAt: new Date(data.message.createdAt),
@@ -186,9 +200,7 @@ export default function GroupChatScreen() {
 					// Add to real-time messages
 					setRealtimeMessages((prev) => {
 						// Check if message already exists to avoid duplicates
-						const exists = prev.some(
-							(msg) => msg.id === transformedMessage.id,
-						);
+						const exists = prev.some((msg) => msg.id === transformedMessage.id);
 						if (exists) return prev;
 
 						return [...prev, transformedMessage];
@@ -239,9 +251,7 @@ export default function GroupChatScreen() {
 					// Add to real-time messages
 					setRealtimeMessages((prev) => {
 						// Check if message already exists to avoid duplicates
-						const exists = prev.some(
-							(msg) => msg.id === transformedMessage.id,
-						);
+						const exists = prev.some((msg) => msg.id === transformedMessage.id);
 						if (exists) return prev;
 
 						return [...prev, transformedMessage];
@@ -317,7 +327,9 @@ export default function GroupChatScreen() {
 				content: item.content,
 				createdAt: item.createdAt.toISOString(),
 				senderName: !item.isCurrentUser ? item.sender.name : undefined,
-				senderAvatar: !item.isCurrentUser ? item.sender.profilePicture : undefined,
+				senderAvatar: !item.isCurrentUser
+					? item.sender.profilePicture
+					: undefined,
 			}}
 		/>
 	);

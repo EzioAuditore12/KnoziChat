@@ -10,7 +10,9 @@ export function useSendAttachment() {
 			// e.g., show a toast or update UI
 		},
 		onError: (error) => {
-			alert(`Send Attachment Failed: ${CustomBackendError.getErrorMessage(error)}`);
+			alert(
+				`Send Attachment Failed: ${CustomBackendError.getErrorMessage(error)}`,
+			);
 		},
 	});
 

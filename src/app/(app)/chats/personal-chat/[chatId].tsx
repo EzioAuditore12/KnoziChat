@@ -114,10 +114,14 @@ export default function PrivateChatScreen() {
 		const filteredRealtimeMessages = realtimeMessages.filter((rtMessage) => {
 			// If it's a temp message and we have a real message with similar content and time, remove it
 			if (rtMessage.id.startsWith("temp-")) {
-				const hasMatchingDbMessage = dbMessages.some((dbMessage) => 
-					dbMessage.content === rtMessage.content &&
-					dbMessage.sender.id === rtMessage.sender.id &&
-					Math.abs(new Date(dbMessage.createdAt).getTime() - new Date(rtMessage.createdAt).getTime()) < 10000 // Within 10 seconds
+				const hasMatchingDbMessage = dbMessages.some(
+					(dbMessage) =>
+						dbMessage.content === rtMessage.content &&
+						dbMessage.sender.id === rtMessage.sender.id &&
+						Math.abs(
+							new Date(dbMessage.createdAt).getTime() -
+								new Date(rtMessage.createdAt).getTime(),
+						) < 10000, // Within 10 seconds
 				);
 				return !hasMatchingDbMessage;
 			}
@@ -180,9 +184,7 @@ export default function PrivateChatScreen() {
 					// Add to real-time messages (since backend excludes sender, these are always from others)
 					setRealtimeMessages((prev) => {
 						// Check if message already exists to avoid duplicates
-						const exists = prev.some(
-							(msg) => msg.id === transformedMessage.id,
-						);
+						const exists = prev.some((msg) => msg.id === transformedMessage.id);
 						if (exists) return prev;
 
 						return [...prev, transformedMessage];
@@ -233,9 +235,7 @@ export default function PrivateChatScreen() {
 					// Add to real-time messages
 					setRealtimeMessages((prev) => {
 						// Check if message already exists to avoid duplicates
-						const exists = prev.some(
-							(msg) => msg.id === transformedMessage.id,
-						);
+						const exists = prev.some((msg) => msg.id === transformedMessage.id);
 						if (exists) return prev;
 
 						return [...prev, transformedMessage];

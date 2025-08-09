@@ -9,10 +9,10 @@ export function createGroupChat() {
 		onSuccess: (data) => {
 			router.replace({
 				pathname: "/(app)/chats/group-chat/[groupId]",
-				params:{
-					groupId:data.id,
-					groupName:data.name
-				}
+				params: {
+					groupId: data.id,
+					groupName: data.name,
+				},
 			});
 		},
 		onError: (data) => {

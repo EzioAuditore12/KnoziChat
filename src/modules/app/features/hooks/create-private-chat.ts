@@ -12,7 +12,7 @@ export function useCreatePrivateChat() {
 				pathname: "/(app)/chats/personal-chat/[chatId]",
 				params: {
 					chatId: data.chatId,
-					userName:data.participants.userB.name,
+					userName: data.participants.userB.name,
 				},
 			});
 		},

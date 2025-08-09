@@ -13,7 +13,7 @@ const Explore = () => {
 
 	console.log(data);
 
-	const logout=authStore(state=>state.logout)
+	const logout = authStore((state) => state.logout);
 
 	if (isLoading) {
 		return (
@@ -59,14 +59,13 @@ const Explore = () => {
 				</Button>
 			</View>
 
-
 			<Button
-			onPress={()=>{
-				logout()
-				router.replace({
-					pathname:"/(auth)/login"
-				})
-			}}
+				onPress={() => {
+					logout();
+					router.replace({
+						pathname: "/(auth)/login",
+					});
+				}}
 			>
 				<Text>Logout</Text>
 			</Button>
