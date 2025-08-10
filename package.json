@@ -8,7 +8,7 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
-    "lint": "pnpm exec biome lint",
+    "lint": "pnpm exec biome lint src",
     "lint:fix": "pnpm exec biome check src --write",
     "prepare": "husky"
   },
