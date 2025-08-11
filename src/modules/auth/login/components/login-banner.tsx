@@ -1,6 +1,6 @@
 import LottieView from "lottie-react-native";
 import { useRef } from "react";
-import loginBannerAnimation from "../assets/login-banner.json";
+import loginBannerAnimation from "../assets/lottie/login-banner.json";
 
 export function LoginBanner() {
 	const animation = useRef<LottieView>(null);
@@ -9,8 +9,8 @@ export function LoginBanner() {
 			autoPlay={true}
 			ref={animation}
 			style={{
-				width: 200,
-				height: 200,
+				width: 250,
+				height: 250,
 			}}
 			source={loginBannerAnimation}
 			loop={false}

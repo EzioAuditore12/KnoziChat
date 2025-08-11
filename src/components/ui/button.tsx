@@ -1,65 +1,57 @@
 import { cva, type VariantProps } from "class-variance-authority";
-import * as React from "react";
+import { type ComponentProps } from "react";
 import { Pressable } from "react-native";
 import { TextClassContext } from "@/components/ui/text";
 import { cn } from "@/lib/utils";
 
-const buttonVariants = cva(
-	"group flex items-center justify-center rounded-md web:ring-offset-background web:transition-colors web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2",
-	{
-		variants: {
-			variant: {
-				default: "bg-primary web:hover:opacity-90 active:opacity-90",
-				destructive: "bg-destructive web:hover:opacity-90 active:opacity-90",
-				outline:
-					"border border-input bg-background web:hover:bg-accent web:hover:text-accent-foreground active:bg-accent",
-				secondary: "bg-secondary web:hover:opacity-80 active:opacity-80",
-				ghost:
-					"web:hover:bg-accent web:hover:text-accent-foreground active:bg-accent",
-				link: "web:underline-offset-4 web:hover:underline web:focus:underline",
-			},
-			size: {
-				default: "h-10 px-4 py-2 native:h-12 native:px-5 native:py-3",
-				sm: "h-9 rounded-md px-3",
-				lg: "h-11 rounded-md px-8 native:h-14",
-				icon: "h-10 w-10",
-			},
+const buttonVariants = cva("flex items-center justify-center rounded-md", {
+	variants: {
+		variant: {
+			default: "bg-primary active:opacity-90 web:hover:opacity-90",
+			destructive: "bg-destructive active:opacity-90 web:hover:opacity-90",
+			outline:
+				"border border-input bg-background active:bg-accent web:hover:bg-accent",
+			secondary: "bg-secondary active:opacity-80 web:hover:opacity-80",
+			ghost: "active:bg-accent web:hover:bg-accent",
+			link: "web:hover:underline",
 		},
-		defaultVariants: {
-			variant: "default",
-			size: "default",
+		size: {
+			default: "py-3 px-5 min-h-[48px]",
+			sm: "py-2 px-3 min-h-[36px]",
+			lg: "py-4 px-8 min-h-[56px]",
+			icon: "p-3 w-12 h-12",
 		},
 	},
-);
+	defaultVariants: {
+		variant: "default",
+		size: "default",
+	},
+});
 
-const buttonTextVariants = cva(
-	"web:whitespace-nowrap text-sm native:text-base font-medium text-foreground web:transition-colors",
-	{
-		variants: {
-			variant: {
-				default: "text-primary-foreground",
-				destructive: "text-destructive-foreground",
-				outline: "group-active:text-accent-foreground",
-				secondary:
-					"text-secondary-foreground group-active:text-secondary-foreground",
-				ghost: "group-active:text-accent-foreground",
-				link: "text-primary group-active:underline",
-			},
-			size: {
-				default: "",
-				sm: "",
-				lg: "native:text-lg",
-				icon: "",
-			},
+const buttonTextVariants = cva("text-base font-medium text-center", {
+	variants: {
+		variant: {
+			default: "text-primary-foreground",
+			destructive: "text-destructive-foreground",
+			outline: "text-foreground",
+			secondary: "text-secondary-foreground",
+			ghost: "text-foreground",
+			link: "text-primary",
 		},
-		defaultVariants: {
-			variant: "default",
-			size: "default",
+		size: {
+			default: "text-base leading-5",
+			sm: "text-sm leading-4",
+			lg: "text-lg leading-6",
+			icon: "text-base leading-5",
 		},
 	},
-);
+	defaultVariants: {
+		variant: "default",
+		size: "default",
+	},
+});
 
-type ButtonProps = React.ComponentProps<typeof Pressable> &
+type ButtonProps = ComponentProps<typeof Pressable> &
 	VariantProps<typeof buttonVariants>;
 
 function Button({ ref, className, variant, size, ...props }: ButtonProps) {
@@ -68,12 +60,11 @@ function Button({ ref, className, variant, size, ...props }: ButtonProps) {
 			value={buttonTextVariants({
 				variant,
 				size,
-				className: "web:pointer-events-none",
 			})}
 		>
 			<Pressable
 				className={cn(
-					props.disabled && "opacity-50 web:pointer-events-none",
+					props.disabled && "opacity-50",
 					buttonVariants({ variant, size, className }),
 				)}
 				ref={ref}

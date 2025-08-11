@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Platform } from "react-native";
 import { MMKV } from "react-native-mmkv";
-import { StateStorage } from "zustand/middleware";
+import type { StateStorage } from "zustand/middleware";
 
 const storage = new MMKV();
 

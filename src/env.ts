@@ -1,5 +1,5 @@
 const env = {
-	BACKEND_API_URL: process.env.EXPO_BACKEND_API_URL,
+	BACKEND_API_URL: process.env.EXPO_PUBLIC_BACKEND_API_URL,
 };
 
 export default env;
