@@ -37,19 +37,17 @@ function validateDatabaseConfig(config: Record<string, unknown>) {
   return validatedConfig;
 }
 
-export function getTypeOrmOptions(): TypeOrmModuleOptions {
-  const validatedConfig = validateDatabaseConfig({
-    DATABASE_TYPE: process.env.DATABASE_TYPE,
-    DATABASE_URL: process.env.DATABASE_URL,
-    DATABASE_AUTO_LOAD_ENTITIES:
-      process.env.DATABASE_AUTO_LOAD_ENTITIES === 'true',
-    DATABASE_SYNCHRONIZE: process.env.DATABASE_SYNCHRONIZE === 'true',
-  });
+const validatedConfig = validateDatabaseConfig({
+  DATABASE_TYPE: process.env.DATABASE_TYPE,
+  DATABASE_URL: process.env.DATABASE_URL,
+  DATABASE_AUTO_LOAD_ENTITIES:
+    process.env.DATABASE_AUTO_LOAD_ENTITIES === 'true',
+  DATABASE_SYNCHRONIZE: process.env.DATABASE_SYNCHRONIZE === 'true',
+});
 
-  return {
-    type: validatedConfig.DATABASE_TYPE as 'postgres',
-    url: validatedConfig.DATABASE_URL,
-    autoLoadEntities: validatedConfig.DATABASE_AUTO_LOAD_ENTITIES,
-    synchronize: validatedConfig.DATABASE_SYNCHRONIZE,
-  };
-}
+export const typeOrmConfig: TypeOrmModuleOptions = {
+  type: validatedConfig.DATABASE_TYPE as 'postgres',
+  url: validatedConfig.DATABASE_URL,
+  autoLoadEntities: validatedConfig.DATABASE_AUTO_LOAD_ENTITIES,
+  synchronize: validatedConfig.DATABASE_SYNCHRONIZE,
+};

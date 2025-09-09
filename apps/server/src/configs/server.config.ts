@@ -1,6 +1,13 @@
 import 'dotenv/config';
 import { plainToInstance } from 'class-transformer';
-import { IsEnum, IsNumber, Max, Min, validateSync } from 'class-validator';
+import {
+  IsEnum,
+  IsNumber,
+  Max,
+  Min,
+  validateSync,
+  Matches,
+} from 'class-validator';
 
 enum Environment {
   Development = 'development',
@@ -17,6 +24,11 @@ class EnvironmentVariables {
   @Min(0)
   @Max(65535)
   PORT: number;
+
+  @Matches(/^redis:\/\/.+$/, {
+    message: 'REDIS_URL must be a valid REDIS connection string.',
+  })
+  REDIS_URL: string;
 }
 
 export function validateServerConfig(config: Record<string, unknown>) {
