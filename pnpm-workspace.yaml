@@ -6,4 +6,5 @@ onlyBuiltDependencies:
   - '@nestjs/core'
   - '@scarf/scarf'
   - esbuild
+  - msgpackr-extract
   - unrs-resolver
