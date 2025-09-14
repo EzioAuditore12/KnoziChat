@@ -4,7 +4,9 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  BeforeInsert,
 } from 'typeorm';
+import bcrypt from 'bcrypt';
 
 @Entity()
 export class User {
@@ -20,8 +22,11 @@ export class User {
   @Column({ type: 'varchar', length: 50 })
   lastName: string;
 
-  @Column({ type: 'varchar', length: 254, unique: true })
-  email: string;
+  @Column({ type: 'varchar', length: 20, unique: true })
+  phoneNumber: string;
+
+  @Column({ type: 'varchar', length: 254, unique: true, nullable: true })
+  email?: string;
 
   @Column({ type: 'text', nullable: true })
   avatar?: string;
@@ -34,4 +39,9 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @BeforeInsert()
+  async hashPassword() {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
 }

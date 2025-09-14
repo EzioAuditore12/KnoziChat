@@ -14,6 +14,8 @@ import { typeOrmConfig } from './configs/database.config';
 import { bullMQConfig } from './configs/bullMQ.config';
 import { throttlerModuleConfig } from './configs/throttler.config';
 import { createCacheOptions } from './configs/cache.config';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { createCacheOptions } from './configs/cache.config';
     ThrottlerModule.forRoot(throttlerModuleConfig),
     TypeOrmModule.forRoot(typeOrmConfig),
     BullModule.forRoot(bullMQConfig),
+    UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
