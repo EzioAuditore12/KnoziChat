@@ -1,19 +1,33 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsEmail,
+  IsOptional,
+  IsPhoneNumber,
+  IsString,
+  IsStrongPassword,
+  Length,
+  MaxLength,
+} from 'class-validator';
 
-export class UserDto {
-  @ApiProperty({ example: '123e4567-e89b-12d3-XXX4-426614174000' })
-  id: string;
-
+export class CreateUserDto {
   @ApiProperty({ maxLength: 50, example: 'John' })
+  @IsString()
+  @Length(1, 50)
   firstName: string;
 
   @ApiPropertyOptional({ maxLength: 50, example: 'Abhran', required: false })
+  @IsOptional()
+  @IsString()
+  @Length(1, 50)
   middleName?: string;
 
   @ApiProperty({ maxLength: 50, example: 'Doe' })
+  @IsString()
+  @Length(1, 50)
   lastName: string;
 
   @ApiProperty({ maxLength: 20, example: '+91234567890' })
+  @IsPhoneNumber()
   phoneNumber: string;
 
   @ApiPropertyOptional({
@@ -22,17 +36,18 @@ export class UserDto {
     example: 'example@gmail.com',
     required: false,
   })
+  @IsOptional()
+  @IsEmail()
   email?: string;
 
-  @ApiProperty({ example: 'Example@123' })
+  @ApiProperty({ maxLength: 16, example: 'example@123' })
+  @IsStrongPassword({
+    minLength: 8,
+    minLowercase: 1,
+    minNumbers: 1,
+    minSymbols: 1,
+    minUppercase: 1,
+  })
+  @MaxLength(16)
   password: string;
-
-  @ApiProperty({ example: 'https://example.com/avatar.jpg' })
-  avatar?: string;
-
-  @ApiProperty({ example: '2025-09-14T12:34:56.789Z' })
-  createdAt: Date;
-
-  @ApiProperty({ example: '2025-09-14T12:34:56.789Z' })
-  updatedAt: Date;
 }

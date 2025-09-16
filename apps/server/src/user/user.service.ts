@@ -6,13 +6,13 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 
 // DTO's
-import { UserDto } from './dto/user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UserService {
   constructor(@InjectRepository(User) private UserRepo: Repository<User>) {}
 
-  async create(createUserDto: UserDto) {
+  async create(createUserDto: CreateUserDto) {
     const user = this.UserRepo.create(createUserDto);
     return await this.UserRepo.save(user);
   }

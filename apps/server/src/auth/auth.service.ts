@@ -1,77 +1,35 @@
+import { Injectable } from '@nestjs/common';
+import { TokenService } from './services/token.service';
+import { BlacklistRefreshTokenService } from './services/blacklist-refresh.service';
+import { UserAuthService } from './services/user-auth.service';
 import {
-  ConflictException,
-  Inject,
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import bcrypt from 'bcrypt';
-import { UserService } from 'src/user/user.service';
-import { RegisterUserDto } from './dto/register-user.dto';
+  RegisterUserDto,
+  VerifyRegisterUserDto,
+} from './dto/register-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
-import { JwtService } from '@nestjs/jwt';
-import { AuthJwtPayload } from './types/auth-jwt-payload';
-import refreshJwtConfig from './configs/refresh-jwt.config';
-import type { ConfigType } from '@nestjs/config';
-import { InjectRepository } from '@nestjs/typeorm';
-import { BlackListedRefreshToken } from './entities/black-list-refresh-token.entity';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private userService: UserService,
-    private jwtService: JwtService,
-    @Inject(refreshJwtConfig.KEY)
-    private refreshTokenConfig: ConfigType<typeof refreshJwtConfig>,
-    @InjectRepository(BlackListedRefreshToken)
-    private blackListedRefreshTokenRepo: Repository<BlackListedRefreshToken>,
+    private tokenService: TokenService,
+    private blacklistRefreshTokenService: BlacklistRefreshTokenService,
+    private userAuthService: UserAuthService,
   ) {}
 
   async registerUser(registerUserDto: RegisterUserDto) {
-    const user = await this.userService.findByPhoneNumber(
-      registerUserDto.phoneNumber,
-    );
+    return this.userAuthService.registerUser(registerUserDto);
+  }
 
-    if (user)
-      throw new ConflictException('User with this phone number already exists');
-
-    const createdUser = await this.userService.create(registerUserDto);
-
-    return createdUser;
+  async verifyRegisteration(verifyRegisterUserDto: VerifyRegisterUserDto) {
+    return this.userAuthService.verifyUser(verifyRegisterUserDto);
   }
 
   async validateUser(loginUserDto: LoginUserDto) {
-    const user = await this.userService.findByPhoneNumber(
-      loginUserDto.phoneNumber,
-    );
-
-    if (!user)
-      throw new NotFoundException('User with this phone number does not exist');
-
-    const { password: userPassword, ...userDetails } = user;
-
-    const isPasswordValid = await bcrypt.compare(
-      loginUserDto.password,
-      userPassword,
-    );
-
-    if (!isPasswordValid)
-      throw new UnauthorizedException(
-        'Either entered email is wrong or password',
-      );
-
-    return userDetails;
+    return this.userAuthService.validateUser(loginUserDto);
   }
 
   generateTokens(userId: string) {
-    const payload: Pick<AuthJwtPayload, 'sub'> = { sub: userId };
-    const accessToken = this.jwtService.sign(payload);
-    const refreshToken = this.jwtService.sign(payload, this.refreshTokenConfig);
-    return {
-      accessToken,
-      refreshToken,
-    };
+    return this.tokenService.generateTokens(userId);
   }
 
   async refreshToken({
@@ -85,44 +43,19 @@ export class AuthService {
     createdAt: Date;
     expiredAt: Date;
   }) {
-    const user = await this.userService.findOne(userId);
-
-    if (!user) throw new NotFoundException('Given user does not exist');
-
-    await this.blackListedRefreshTokenRepo.save({
+    // Example: blacklist old token and issue new tokens
+    await this.blacklistRefreshTokenService.insertBlackListedRefreshToken({
       userId,
       refreshToken,
-      createdAt,
+      issuedAt: createdAt,
       expiredAt,
     });
-
-    return this.generateTokens(userId);
-  }
-
-  async insertBlackListedRefreshToken({
-    userId,
-    refreshToken,
-    issuedAt,
-    expiredAt,
-  }: {
-    userId: string;
-    refreshToken: string;
-    issuedAt: Date;
-    expiredAt: Date;
-  }) {
-    const insertBlaclistedToken = this.blackListedRefreshTokenRepo.create({
-      userId,
-      refreshToken,
-      createdAt: issuedAt,
-      expiredAt,
-    });
-
-    await this.blackListedRefreshTokenRepo.save(insertBlaclistedToken);
+    return this.tokenService.generateTokens(userId);
   }
 
   async findBlackListedRefreshToken(refreshToken: string) {
-    return this.blackListedRefreshTokenRepo.findOne({
-      where: { refreshToken },
-    });
+    return this.blacklistRefreshTokenService.findBlackListedRefreshToken(
+      refreshToken,
+    );
   }
 }

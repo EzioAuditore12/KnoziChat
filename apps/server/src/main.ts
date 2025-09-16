@@ -12,7 +12,7 @@ import { openApiDocsInit } from './configs/openApi.config';
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter(),
+    new FastifyAdapter({ logger: true }),
   );
 
   openApiDocsInit(app);

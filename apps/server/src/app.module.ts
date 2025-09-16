@@ -16,6 +16,7 @@ import { throttlerModuleConfig } from './configs/throttler.config';
 import { createCacheOptions } from './configs/cache.config';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -26,12 +27,14 @@ import { UserModule } from './user/user.module';
     }),
     CacheModule.registerAsync({
       useFactory: createCacheOptions,
+      isGlobal: true,
     }),
     ThrottlerModule.forRoot(throttlerModuleConfig),
     TypeOrmModule.forRoot(typeOrmConfig),
     BullModule.forRoot(bullMQConfig),
-    UserModule,
+    CommonModule,
     AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [
