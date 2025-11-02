@@ -1,0 +1,18 @@
+import type { StateStorage } from 'zustand/middleware';
+import * as SecureStore from 'expo-secure-store';
+
+export const secureStorage: StateStorage = {
+
+  getItem: async (name: string): Promise<string | null> => {
+    const value = await SecureStore.getItemAsync(name);
+    return value ?? null;
+  },
+
+  setItem: async (name: string, value: string): Promise<void> => {
+    await SecureStore.setItemAsync(name, value);
+  },
+
+  removeItem: async (name: string): Promise<void> => {
+    await SecureStore.deleteItemAsync(name);
+  },
+};
