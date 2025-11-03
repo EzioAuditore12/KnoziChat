@@ -13,7 +13,7 @@ export function openApiDocsInit(app: NestFastifyApplication) {
   const document = SwaggerModule.createDocument(app, openApiConfig);
 
   app.use(
-    '/api-docs',
+    '/api',
     apiReference({
       content: document,
       theme: 'bluePlanet',

@@ -1,5 +1,4 @@
-import { Redirect, Tabs } from 'expo-router';
-import { AntDesign } from '@expo/vector-icons';
+import { Redirect, Stack } from 'expo-router';
 
 import { useAuthStore } from '@/store';
 
@@ -9,23 +8,10 @@ export default function AppScreensLayout() {
   if (!user) return <Redirect href="/(auth)/login" />;
 
   return (
-    <Tabs initialRouteName="index">
-      <Tabs.Screen
-        name="index"
-        options={{
-          tabBarIcon: ({ color }) => (
-            <AntDesign size={28} name="home" color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          tabBarIcon: ({ color }) => (
-            <AntDesign size={28} name="user" color={color} />
-          ),
-        }}
-      />
-    </Tabs>
+    <Stack initialRouteName="(tabs)">
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="search" options={{ headerShown: false }} />
+      <Stack.Screen name="[id]" options={{ headerShown: false }}></Stack.Screen>
+    </Stack>
   );
 }

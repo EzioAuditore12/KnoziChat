@@ -12,6 +12,8 @@ export default function HomeScreen(){
             <Text>{user?.firstName}</Text>
             <Link href={'/(auth)/login'}>Login</Link>
 
+            <Link href={'/(app)/search'}>Search</Link>
+
         <Button className="bg-red-500" onPress={logout}>
             <ButtonText>Logout</ButtonText>
         </Button>
