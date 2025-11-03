@@ -12,7 +12,7 @@ export const loginFormApi = async (data: LoginFormParams) => {
 
   const parsed = loginFormResponseSchema.safeParse(response.data);
 
-  if (!parsed.success) {;
+  if (!parsed.success) {
     throw new Error(
       `Validation failed: ${JSON.stringify(parsed.error.message)}`,
     );

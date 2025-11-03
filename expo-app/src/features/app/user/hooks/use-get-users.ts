@@ -3,7 +3,10 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import type { UserSearchParams } from '../schemas/search-user/user-search-parmas.schema';
 import { getUsersApi } from '../api/get-users.api';
 
-export function useGetUsers({ firstName, limit }: Omit<UserSearchParams,'page'>) {
+export function useGetUsers({
+  firstName,
+  limit,
+}: Omit<UserSearchParams, 'page'>) {
   return useInfiniteQuery({
     queryKey: ['search-user', firstName],
 
