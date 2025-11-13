@@ -21,8 +21,8 @@ export default function UserProfileInformation() {
     );
 
   return (
-    <Center className="p-2 flex-1" style={{ marginBottom: safeAreaInsets.top }}>
-      <UserProfile className='w-full max-w-4xl' data={data} />
+    <Center className="flex-1 p-2" style={{ marginBottom: safeAreaInsets.top }}>
+      <UserProfile className="w-full max-w-4xl" data={data} />
     </Center>
   );
 }

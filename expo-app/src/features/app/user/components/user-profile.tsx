@@ -32,7 +32,7 @@ export function UserProfile({ className, data, ...props }: UserProfileProps) {
     <Box
       key={id}
       className={cn(
-        'p-6 bg-white rounded-2xl shadow-lg flex flex-col items-center space-y-4',
+        'flex flex-col items-center space-y-4 rounded-2xl bg-white p-6 shadow-lg',
         className,
       )}
       {...props}
@@ -52,7 +52,7 @@ export function UserProfile({ className, data, ...props }: UserProfileProps) {
       <Text size="lg" className="text-center text-gray-700">
         {phoneNumber}
       </Text>
-      <Text size="sm" className="text-center text-gray-500 mt-2">
+      <Text size="sm" className="mt-2 text-center text-gray-500">
         Joined: {new Date(createdAt).toLocaleDateString()}
       </Text>
     </Box>

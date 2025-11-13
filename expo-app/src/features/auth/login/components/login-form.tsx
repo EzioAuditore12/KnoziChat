@@ -15,7 +15,7 @@ import { Text } from '@/components/ui/text';
 
 interface LoginFormProps extends ComponentProps<typeof VStack> {
   handleFormSubmit: (data: LoginFormParams) => void;
-  isFormSubmitting: boolean
+  isFormSubmitting: boolean;
 }
 
 export function LoginForm({
@@ -81,9 +81,7 @@ export function LoginForm({
       )}
 
       <Button disabled={isFormSubmitting} onPress={handleSubmit(onSubmit)}>
-        <ButtonText>
-            {isFormSubmitting ? "Loading..." :  "Login"}
-        </ButtonText>
+        <ButtonText>{isFormSubmitting ? 'Loading...' : 'Login'}</ButtonText>
       </Button>
     </VStack>
   );

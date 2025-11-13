@@ -8,7 +8,7 @@ export default function LoginScreen() {
   const { mutate, isPending } = useLoginForm();
 
   return (
-    <Box className="flex-1 justify-center items-center">
+    <Box className="flex-1 items-center justify-center">
       <Heading size="3xl">Login</Heading>
       <LoginForm
         handleFormSubmit={mutate}

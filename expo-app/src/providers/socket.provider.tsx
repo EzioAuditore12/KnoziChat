@@ -1,5 +1,5 @@
-import {io} from 'socket.io-client';
+import { io } from 'socket.io-client';
 
-export function connectWS(){
-    return io('http://10.0.2.2:8000')
+export function connectWS() {
+  return io('http://10.0.2.2:8000');
 }
