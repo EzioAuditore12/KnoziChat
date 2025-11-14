@@ -16,9 +16,8 @@ module.exports = function (api) {
           },
         },
       ],
-      'react-native-worklets/plugin',
-      '@realm/babel-plugin',
       ['@babel/plugin-proposal-decorators', { legacy: true }],
+      'react-native-worklets/plugin',
     ],
   };
 };

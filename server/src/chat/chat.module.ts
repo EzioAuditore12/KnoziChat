@@ -1,22 +1,32 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { Message, MessageSchema } from './entities/message.entity';
 import {
-  Conversation,
-  ConversationSchema,
-} from './entities/conversation.entity';
+  GroupChatSchema,
+  GroupChat,
+} from './entities/group-chat/group-chat.entity';
+import {
+  DirectMessage,
+  DirectMessageSchema,
+} from './entities/direct-message.entity';
+import {
+  GroupMessage,
+  GroupMessageSchema,
+} from './entities/group-chat/group-message.entity';
 
-import { ChatService } from './chat.service';
 import { ChatGateway } from './chat.gateway';
+import { DirectChatService } from './services/direct-chat.service';
+import { DirectChatController } from './controllers/direct-chat.controller';
 
 @Module({
+  controllers: [DirectChatController],
   imports: [
     MongooseModule.forFeature([
-      { name: Message.name, schema: MessageSchema },
-      { name: Conversation.name, schema: ConversationSchema },
+      { name: DirectMessage.name, schema: DirectMessageSchema },
+      { name: GroupChat.name, schema: GroupChatSchema },
+      { name: GroupMessage.name, schema: GroupMessageSchema },
     ]),
   ],
-  providers: [ChatGateway, ChatService],
+  providers: [ChatGateway, DirectChatService],
 })
 export class ChatModule {}

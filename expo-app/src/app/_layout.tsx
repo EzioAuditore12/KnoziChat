@@ -12,6 +12,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 
 import { TanstackReactQueryClientProvider } from '@/providers/tanstack-query-client.provider';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
+import { WaterMelonDBProvider } from '@/db';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -19,12 +20,14 @@ export default function RootLayout() {
   return (
     <GluestackUIProvider mode="system">
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <TanstackReactQueryClientProvider>
-          <Stack
-            initialRouteName="(app)"
-            screenOptions={{ headerShown: false }}
-          />
-        </TanstackReactQueryClientProvider>
+        <WaterMelonDBProvider>
+          <TanstackReactQueryClientProvider>
+            <Stack
+              initialRouteName="(app)"
+              screenOptions={{ headerShown: false }}
+            />
+          </TanstackReactQueryClientProvider>
+        </WaterMelonDBProvider>
         <StatusBar style="auto" />
       </ThemeProvider>
     </GluestackUIProvider>
