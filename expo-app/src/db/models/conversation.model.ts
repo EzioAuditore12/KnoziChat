@@ -1,4 +1,4 @@
-import { Model } from '@nozbe/watermelondb';
+import { Model, Relation } from '@nozbe/watermelondb';
 import { children, date, relation, text } from '@nozbe/watermelondb/decorators';
 import { Associations } from '@nozbe/watermelondb/Model';
 
@@ -19,10 +19,15 @@ export class Conversation extends Model {
       type: 'has_many',
       foreignKey: 'conversation_id',
     },
+
+    [USER_TABLE_NAME]: {
+      type: 'belongs_to',
+      key: 'user_id',
+    },
   };
 
   @relation(USER_TABLE_NAME, 'user_id')
-  user!: Promise<User>;
+  user!: Relation<User>;
 
   @children(DIRECT_CHAT_TABLE_NAME)
   directChats!: Promise<DirectChat[]>;

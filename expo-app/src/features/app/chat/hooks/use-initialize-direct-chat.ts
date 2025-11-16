@@ -41,7 +41,7 @@ export const useInitializeDirectChat = () => {
       router.replace({
         pathname: '/(app)/chat/[id]',
         params: {
-          id: savedReceiver.id,
+          id: savedConversation.id,
         },
       });
     },

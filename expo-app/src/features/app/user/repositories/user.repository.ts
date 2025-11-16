@@ -21,7 +21,11 @@ export class UserRepository {
     });
   }
 
-  async get() {
+  async findAll() {
     return await database.get<User>(USER_TABLE_NAME).query().fetch();
+  }
+
+  async findById(id: string) {
+    return await database.get<User>(USER_TABLE_NAME).find(id);
   }
 }
