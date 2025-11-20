@@ -3,6 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useDebounce } from 'use-debounce';
 
 import { Box } from '@/components/ui/box';
+
 import { SearchUserInput } from '@/features/app/user/components/search-user';
 import { useGetUsers } from '@/features/app/user/hooks/use-get-users';
 import { UserList } from '@/features/app/user/components/user-list';
