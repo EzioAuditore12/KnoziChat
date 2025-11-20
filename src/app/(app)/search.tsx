@@ -10,11 +10,11 @@ import { UserList } from '@/features/app/user/components/user-list';
 export default function SearchScreen() {
   const safeAreaInsets = useSafeAreaInsets();
 
-  const [firstNameSearch, setFirstNameSearch] = useState('');
-  const [searchValue] = useDebounce(firstNameSearch, 300);
+  const [search, setSearch] = useState('');
+  const [searchValue] = useDebounce(search, 300);
 
   const { data, fetchNextPage, isFetchingNextPage } = useGetUsers({
-    firstName: searchValue,
+    search: searchValue,
     limit: 10,
   });
 
@@ -24,8 +24,8 @@ export default function SearchScreen() {
     <Box style={{ marginTop: safeAreaInsets.top }} className="flex-1 p-2">
       <SearchUserInput
         className="mb-5"
-        value={firstNameSearch}
-        onChangeText={setFirstNameSearch}
+        value={search}
+        onChangeText={setSearch}
       />
 
       <UserList

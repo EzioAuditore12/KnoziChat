@@ -1,9 +1,9 @@
 import { z } from 'zod';
 
 export const userSearchParamsSchema = z.object({
-  firstName: z.string().max(50),
+  search: z.string().max(50),
   page: z.number().min(1).default(1),
-  limit: z.number().min(1).default(20),
+  limit: z.number().min(1).default(30),
 });
 
 export type UserSearchParams = z.infer<typeof userSearchParamsSchema>;

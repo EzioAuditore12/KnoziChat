@@ -23,6 +23,8 @@ export const getUserApi = async (id: string) => {
   const url = `${env.EXPO_PUBLIC_API_URL}/user/${id}`;
   const response = await axios.get(url);
 
+ 
+
   const parsed = userSchema.safeParse(response.data);
 
   if (!parsed.success) {
