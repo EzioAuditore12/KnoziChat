@@ -1,17 +1,17 @@
-import type { StateStorage } from 'zustand/middleware';
-import * as SecureStore from 'expo-secure-store';
+import { StateStorage } from 'zustand/middleware';
+import { createMMKV } from 'react-native-mmkv';
 
-export const secureStorage: StateStorage = {
-  getItem: async (name: string): Promise<string | null> => {
-    const value = await SecureStore.getItemAsync(name);
+const storage = createMMKV();
+
+export const zustandStorage: StateStorage = {
+  setItem: (name, value) => {
+    return storage.set(name, value);
+  },
+  getItem: (name) => {
+    const value = storage.getString(name);
     return value ?? null;
   },
-
-  setItem: async (name: string, value: string): Promise<void> => {
-    await SecureStore.setItemAsync(name, value);
-  },
-
-  removeItem: async (name: string): Promise<void> => {
-    await SecureStore.deleteItemAsync(name);
+  removeItem: (name) => {
+    return storage.remove(name);
   },
 };

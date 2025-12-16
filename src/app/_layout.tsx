@@ -1,32 +1,25 @@
-import '@/global.css';
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from '@react-navigation/native';
+import '../../global.css';
+
+import { ThemeProvider } from '@react-navigation/native';
+import { PortalHost } from '@rn-primitives/portal';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useColorScheme } from 'nativewind';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-import { TanstackReactQueryClientProvider } from '@/providers/tanstack-query-client.provider';
-import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
+import { NAV_THEME } from '@/lib/theme';
+import { TanstackReactQueryClientProvider } from '@/providers/tanstak-query-client.provider';
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
 
   return (
-    <GluestackUIProvider mode="system">
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <TanstackReactQueryClientProvider>
-          <Stack
-            initialRouteName="(app)"
-            screenOptions={{ headerShown: false }}
-          />
-        </TanstackReactQueryClientProvider>
-        <StatusBar style="auto" />
-      </ThemeProvider>
-    </GluestackUIProvider>
+    <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
+      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+      <TanstackReactQueryClientProvider>
+        <Stack initialRouteName="(main)" screenOptions={{ headerShown: false }} />
+      </TanstackReactQueryClientProvider>
+      <PortalHost />
+    </ThemeProvider>
   );
 }

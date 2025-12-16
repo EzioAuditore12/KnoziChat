@@ -1,22 +1,14 @@
-import axios from 'axios';
-
 import { env } from '@/env';
+import { typedFetch } from '@/lib/fetch';
 
-import type { LoginFormParams } from '../schemas/login-form-param.schema';
-import { loginFormResponseSchema } from '../schemas/login-form-response.schema';
+import type { LoginParam } from '../schemas/login-param.schema';
+import { loginResponseSchema } from '../schemas/login-response.schema';
 
-const url = `${env.EXPO_PUBLIC_API_URL}/auth/login`;
-
-export const loginFormApi = async (data: LoginFormParams) => {
-  const response = await axios.post(url, data);
-
-  const parsed = loginFormResponseSchema.safeParse(response.data);
-
-  if (!parsed.success) {
-    throw new Error(
-      `Validation failed: ${JSON.stringify(parsed.error.message)}`,
-    );
-  }
-
-  return parsed.data;
+export const loginFormApi = async (data: LoginParam) => {
+  return await typedFetch({
+    url: `${env.API_URL}/auth/login`,
+    method: 'POST',
+    body: data,
+    schema: loginResponseSchema,
+  });
 };

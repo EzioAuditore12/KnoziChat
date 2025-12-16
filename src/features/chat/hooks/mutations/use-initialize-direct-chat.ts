@@ -1,0 +1,57 @@
+import { useMutation } from '@tanstack/react-query';
+import { router } from 'expo-router';
+
+import { getUserApi } from '@/features/common/api/get-user.api';
+import { initializeDirectChatApi } from '../../api/initialize-direct-chat.api';
+
+import { UserRepository } from '@/db/repositories/user';
+import { ConversationRepository } from '@/db/repositories/conversation';
+import { DirectChatRepository } from '@/db/repositories/direct-chat';
+
+export const useInitializeDirectChat = () => {
+  const userRepository = new UserRepository();
+  const conversationRespository = new ConversationRepository();
+  const directChatRepository = new DirectChatRepository();
+
+  return useMutation({
+    mutationFn: initializeDirectChatApi,
+    onSuccess: async (data) => {
+      const receiverDetails = await getUserApi(data.data.receiverId);
+
+      const savedReceiver = await userRepository.create({
+        ...receiverDetails,
+        createdAt: new Date(receiverDetails.createdAt),
+        updatedAt: new Date(receiverDetails.updatedAt),
+      });
+
+      const savedConversation = await conversationRespository.create({
+        contact: savedReceiver.firstName,
+        userId: savedReceiver.id,
+        createdAt: new Date(data.data.createdAt),
+        updatedAt: new Date(data.data.createdAt),
+      });
+
+      await directChatRepository.create({
+        _id: data.data._id,
+        conversationId: savedConversation.id,
+        isDelivered: false,
+        isSeen: false,
+        mode: 'SENT',
+        text: data.data.text,
+        createdAt: new Date(data.data.createdAt),
+        updatedAt: new Date(data.data.createdAt),
+      });
+
+      router.replace({
+        pathname: '/(main)/chat/[id]',
+        params: {
+          id: savedConversation.id,
+        },
+      });
+    },
+    onError: (error) => {
+      console.log(error.message);
+      alert(`${error.message}`);
+    },
+  });
+};

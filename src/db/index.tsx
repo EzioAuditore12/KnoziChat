@@ -27,11 +27,7 @@ export const database = new Database({
 const WatermelonDBContext = createContext(database);
 
 export const WaterMelonDBProvider = ({ children }: PropsWithChildren) => {
-  return (
-    <WatermelonDBContext.Provider value={database}>
-      {children}
-    </WatermelonDBContext.Provider>
-  );
+  return <WatermelonDBContext.Provider value={database}>{children}</WatermelonDBContext.Provider>;
 };
 
 export const useDatabase = () => useContext(WatermelonDBContext);

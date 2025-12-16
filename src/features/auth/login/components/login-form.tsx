@@ -1,88 +1,76 @@
-import type { ComponentProps } from 'react';
+import { arktypeResolver } from '@hookform/resolvers/arktype';
 import { Controller, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { cn } from '@gluestack-ui/utils/nativewind-utils';
+import { View, type ViewProps } from 'react-native';
 
-import { VStack } from '@/components/ui/vstack';
-import { Input, InputField } from '@/components/ui/input';
-import { Button, ButtonText } from '@/components/ui/button';
-
-import {
-  loginFormParamsSchema,
-  type LoginFormParams,
-} from '../schemas/login-form-param.schema';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
 
-interface LoginFormProps extends ComponentProps<typeof VStack> {
-  handleFormSubmit: (data: LoginFormParams) => void;
-  isFormSubmitting: boolean;
+import { cn } from '@/lib/utils';
+
+import { loginParamSchema, type LoginParam } from '../schemas/login-param.schema';
+
+interface LoginFormProps extends ViewProps {
+  isSubmitting: boolean;
+  handleSubmit: (data: LoginParam) => void;
 }
 
-export function LoginForm({
-  className,
-  handleFormSubmit,
-  isFormSubmitting,
-  ...props
-}: LoginFormProps) {
+export function LoginForm({ className, handleSubmit, isSubmitting, ...props }: LoginFormProps) {
   const {
     control,
     formState: { errors },
-    handleSubmit,
-  } = useForm<LoginFormParams>({
+    handleSubmit: handleFormSubmit,
+  } = useForm<LoginParam>({
     defaultValues: {
       phoneNumber: '',
       password: '',
     },
-    resolver: zodResolver(loginFormParamsSchema),
+    resolver: arktypeResolver(loginParamSchema),
   });
 
-  const onSubmit = (data: LoginFormParams) => {
-    handleFormSubmit(data);
+  const onSubmit = (data: LoginParam) => {
+    handleSubmit(data);
   };
 
   return (
-    <VStack space="2xl" className={cn('p-2', className)} {...props}>
+    <View className={cn('gap-y-2 p-2', className)} {...props}>
       <Controller
         control={control}
         name="phoneNumber"
-        render={({ field: { onBlur, onChange, value } }) => (
-          <Input>
-            <InputField
-              placeholder="Enter your phone number"
-              value={value}
-              onChangeText={onChange}
-              onBlur={onBlur}
-            />
-          </Input>
+        render={({ field: { value, onChange, onBlur } }) => (
+          <Input placeholder="Phone Number" value={value} onChangeText={onChange} onBlur={onBlur} />
         )}
       />
 
       {errors.phoneNumber && (
-        <Text className="text-red-500">{errors.phoneNumber.message}</Text>
+        <Text variant={'small'} className="text-red-500">
+          {errors.phoneNumber.message}
+        </Text>
       )}
 
       <Controller
         control={control}
         name="password"
-        render={({ field: { onBlur, onChange, value } }) => (
-          <Input>
-            <InputField
-              placeholder="Enter your password"
-              value={value}
-              onChangeText={onChange}
-              onBlur={onBlur}
-            />
-          </Input>
+        render={({ field: { value, onBlur, onChange } }) => (
+          <Input
+            value={value}
+            placeholder="Password"
+            onChangeText={onChange}
+            onBlur={onBlur}
+            secureTextEntry
+          />
         )}
       />
 
       {errors.password && (
-        <Text className="text-red-500">{errors.password.message}</Text>
+        <Text variant={'small'} className="text-red-500">
+          {errors.password.message}
+        </Text>
       )}
 
-      <Button disabled={isFormSubmitting} onPress={handleSubmit(onSubmit)}>
-        <ButtonText>{isFormSubmitting ? 'Loading...' : 'Login'}</ButtonText>
+      <Button onPress={handleFormSubmit(onSubmit)} disabled={isSubmitting}>
+        <Text> {isSubmitting ? 'Submitting' : 'Submit'}</Text>
       </Button>
-    </VStack>
+    </View>
   );
 }
