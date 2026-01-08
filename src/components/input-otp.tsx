@@ -178,16 +178,16 @@ export const InputOTPSlot = React.forwardRef<View, InputOTPSlotProps>(
         <View
           ref={ref}
           className={cn(
-            'relative flex h-14 w-14 items-center justify-center rounded-md border border-input bg-background text-lg',
+            'border-input bg-background relative flex h-14 w-14 items-center justify-center rounded-md border text-lg',
             'mx-1 shadow-sm',
-            isActive ? 'z-10 border-primary' : '',
+            isActive ? 'border-primary z-10' : '',
             Platform.OS === 'ios'
               ? 'ios:shadow-sm ios:shadow-foreground/10'
               : 'android:elevation-1',
             className
           )}>
-          <Text className="text-center text-xl font-medium text-foreground">{char}</Text>
-          {isActive && !char && <View className="absolute h-6 w-0.5 animate-pulse bg-foreground" />}
+          <Text className="text-foreground text-center text-xl font-medium">{char}</Text>
+          {isActive && !char && <View className="bg-foreground absolute h-6 w-0.5 animate-pulse" />}
         </View>
       </Pressable>
     );
@@ -203,7 +203,7 @@ export interface InputOTPSeparatorProps {
 export const InputOTPSeparator = React.forwardRef<View, InputOTPSeparatorProps>(
   ({ className }, ref) => (
     <View ref={ref} className={cn('px-2', className)}>
-      <View className="h-0.5 w-4 bg-muted-foreground" />
+      <View className="bg-muted-foreground h-0.5 w-4" />
     </View>
   )
 );

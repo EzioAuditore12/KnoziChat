@@ -48,7 +48,7 @@ export function VerificationRegisterationForm({
         </InputOTP>
 
         {isSubmitting && (
-          <Text className="absolute top-20 self-center text-muted" variant={'h3'}>
+          <Text className="text-muted absolute top-20 self-center" variant={'h3'}>
             Submitting
           </Text>
         )}

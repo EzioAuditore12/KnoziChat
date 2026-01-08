@@ -16,7 +16,7 @@ export default function LoginScreen() {
     <KeyboardAwareScrollView contentContainerClassName="flex-1 items-center justify-center p-2">
       <Text variant={'h2'}>Welcome Back !</Text>
 
-      <LoginBanner/>
+      <LoginBanner />
 
       <LoginForm className="w-full max-w-xl" handleSubmit={mutate} isSubmitting={isPending} />
 
