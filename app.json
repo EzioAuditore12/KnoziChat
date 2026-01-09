@@ -20,7 +20,8 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.dakshpurohit.KnoziChat"
+      "package": "com.dakshpurohit.KnoziChat",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "output": "static",
@@ -73,6 +74,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "acdb14e6-e83e-4774-bba9-f72a28737808"
+      }
     }
   }
 }

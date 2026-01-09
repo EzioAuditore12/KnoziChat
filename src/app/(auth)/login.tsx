@@ -8,9 +8,14 @@ import { Link } from '@/components/ui/link';
 import { useLoginForm } from '@/features/auth/login/hooks/use-login-form';
 import { View } from 'react-native';
 import { LoginBanner } from '@/features/auth/login/components/login-banner';
+import { useDeviceConfigStore } from '@/store/device';
 
 export default function LoginScreen() {
   const { mutate, isPending } = useLoginForm();
+
+  const {expoPushToken} = useDeviceConfigStore(state=>state)
+
+  console.log(expoPushToken)
 
   return (
     <KeyboardAwareScrollView contentContainerClassName="flex-1 items-center justify-center p-2">
