@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@hookform/resolvers':
         specifier: ^5.2.2
-        version: 5.2.2(react-hook-form@7.70.0(react@19.1.0))
+        version: 5.2.2(react-hook-form@7.71.0(react@19.1.0))
       '@lovesworking/watermelondb-expo-plugin-sdk-52-plus':
         specifier: ^1.0.3
         version: 1.0.3
@@ -117,8 +117,8 @@ importers:
         specifier: 19.1.0
         version: 19.1.0(react@19.1.0)
       react-hook-form:
-        specifier: ^7.70.0
-        version: 7.70.0(react@19.1.0)
+        specifier: ^7.71.0
+        version: 7.71.0(react@19.1.0)
       react-native:
         specifier: 0.81.5
         version: 0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0)
@@ -171,8 +171,8 @@ importers:
         specifier: ^1.2.3
         version: 1.2.3(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(tailwindcss@4.1.18)
       use-debounce:
-        specifier: ^10.0.6
-        version: 10.0.6(react@19.1.0)
+        specifier: ^10.1.0
+        version: 10.1.0(react@19.1.0)
       zustand:
         specifier: ^5.0.9
         version: 5.0.9(@types/react@19.1.17)(react@19.1.0)(use-sync-external-store@1.6.0(react@19.1.0))
@@ -3894,8 +3894,8 @@ packages:
     peerDependencies:
       react: '>=17.0.0'
 
-  react-hook-form@7.70.0:
-    resolution: {integrity: sha512-COOMajS4FI3Wuwrs3GPpi/Jeef/5W1DRR84Yl5/ShlT3dKVFUfoGiEZ/QE6Uw8P4T2/CLJdcTVYKvWBMQTEpvw==}
+  react-hook-form@7.71.0:
+    resolution: {integrity: sha512-oFDt/iIFMV9ZfV52waONXzg4xuSlbwKUPvXVH2jumL1me5qFhBMc4knZxuXiZ2+j6h546sYe3ZKJcg/900/iHw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
@@ -4638,8 +4638,8 @@ packages:
       '@types/react':
         optional: true
 
-  use-debounce@10.0.6:
-    resolution: {integrity: sha512-C5OtPyhAZgVoteO9heXMTdW7v/IbFI+8bSVKYCJrSmiWWCLsbUxiBSp4t9v0hNBTGY97bT72ydDIDyGSFWfwXg==}
+  use-debounce@10.1.0:
+    resolution: {integrity: sha512-lu87Za35V3n/MyMoEpD5zJv0k7hCn0p+V/fK2kWD+3k2u3kOCwO593UArbczg1fhfs2rqPEnHpULJ3KmGdDzvg==}
     engines: {node: '>= 16.0.0'}
     peerDependencies:
       react: '*'
@@ -5844,10 +5844,10 @@ snapshots:
       find-up: 5.0.0
       js-yaml: 4.1.1
 
-  '@hookform/resolvers@5.2.2(react-hook-form@7.70.0(react@19.1.0))':
+  '@hookform/resolvers@5.2.2(react-hook-form@7.71.0(react@19.1.0))':
     dependencies:
       '@standard-schema/utils': 0.3.0
-      react-hook-form: 7.70.0(react@19.1.0)
+      react-hook-form: 7.71.0(react@19.1.0)
 
   '@humanfs/core@0.19.1': {}
 
@@ -9160,7 +9160,7 @@ snapshots:
     dependencies:
       react: 19.1.0
 
-  react-hook-form@7.70.0(react@19.1.0):
+  react-hook-form@7.71.0(react@19.1.0):
     dependencies:
       react: 19.1.0
 
@@ -9999,7 +9999,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.1.17
 
-  use-debounce@10.0.6(react@19.1.0):
+  use-debounce@10.1.0(react@19.1.0):
     dependencies:
       react: 19.1.0
 

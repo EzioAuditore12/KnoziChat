@@ -15,6 +15,7 @@ import {
 } from '../schemas/register-form/register-form-params.schema';
 
 interface RegisterFormProps extends ViewProps {
+  expoPushToken: string | null;
   isSubmitting: boolean;
   handleSubmit: (data: Except<RegisterFormParam, 'confirmPassword'>) => void;
 }
@@ -22,6 +23,7 @@ interface RegisterFormProps extends ViewProps {
 export function RegisterForm({
   className,
   handleSubmit,
+  expoPushToken,
   isSubmitting,
   ...props
 }: RegisterFormProps) {
@@ -44,6 +46,8 @@ export function RegisterForm({
 
   const onSubmit = (data: RegisterFormParam) => {
     const { confirmPassword, ...rest } = data;
+
+    if (expoPushToken !== null) data.expoPushToken = expoPushToken;
 
     handleSubmit(rest);
   };

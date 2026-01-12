@@ -10,6 +10,7 @@ export const registerFormParamSchema = type({
   phoneNumber: phoneSchema,
   password: strongPasswordSchema,
   confirmPassword: 'string',
+  expoPushToken: 'string?',
 }).narrow((data, ctx) => {
   if (data.password === data.confirmPassword) return true;
 
