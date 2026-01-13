@@ -15,6 +15,7 @@ export default function AppScreensLayout() {
         name="settings"
         options={{ headerShown: false, animation: 'slide_from_left' }}
       />
+      <Stack.Screen name="[id]" options={{ headerShown: false }} />
     </Stack>
   );
 }

@@ -1,7 +1,7 @@
 import { database } from '@/db';
 
 import { Conversation } from '@/db/models/conversation.model';
-import { CONVERSATION_TABLE_NAME } from '@/db/tables/conversation.table';
+import { CONVERSATION_TABLE_NAME } from '@/db/schemas/conversation-table.schema';
 
 import type { CreateConversationParam } from './schemas/create-conversation.schema';
 

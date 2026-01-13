@@ -1,9 +1,9 @@
-import { Model } from '@nozbe/watermelondb';
 import { date, text } from '@nozbe/watermelondb/decorators';
 
-import { USER_TABLE_NAME } from '../tables/user.table';
+import { USER_TABLE_NAME } from '../schemas/user-table.schema';
+import { BaseModel } from './base.model';
 
-export class User extends Model {
+export class User extends BaseModel {
   static table = USER_TABLE_NAME;
 
   @text('first_name')

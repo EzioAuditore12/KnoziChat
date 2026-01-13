@@ -1,13 +1,13 @@
-import { Model } from '@nozbe/watermelondb';
+import { BaseModel } from './base.model';
 import { date, field, relation, text } from '@nozbe/watermelondb/decorators';
 import { Associations } from '@nozbe/watermelondb/Model';
 
-import { DIRECT_CHAT_TABLE_NAME } from '../tables/direct-chat.table';
+import { DIRECT_CHAT_TABLE_NAME } from '../schemas/direct-chat-table.schema';
 
-import { CONVERSATION_TABLE_NAME } from '../tables/conversation.table';
+import { CONVERSATION_TABLE_NAME } from '../schemas/conversation-table.schema';
 import { Conversation } from './conversation.model';
 
-export class DirectChat extends Model {
+export class DirectChat extends BaseModel {
   static table = DIRECT_CHAT_TABLE_NAME;
 
   static associations: Associations = {

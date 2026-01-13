@@ -53,7 +53,7 @@
     "react-native-keyboard-controller": "1.18.5",
     "react-native-mmkv": "^4.1.1",
     "react-native-nitro-fetch": "^0.1.6",
-    "react-native-nitro-modules": "^0.32.1",
+    "react-native-nitro-modules": "^0.33.0",
     "react-native-reanimated": "~4.1.1",
     "react-native-safe-area-context": "~5.6.0",
     "react-native-screens": "~4.16.0",
@@ -66,10 +66,10 @@
     "type-fest": "^5.3.1",
     "uniwind": "^1.2.3",
     "use-debounce": "^10.1.0",
-    "zustand": "^5.0.9"
+    "zustand": "^5.0.10"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-decorators": "^7.28.0",
+    "@babel/plugin-proposal-decorators": "^7.28.6",
     "@types/react": "~19.1.0",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",

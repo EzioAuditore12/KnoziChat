@@ -2,7 +2,7 @@ import { type } from 'arktype';
 
 import { phoneSchema, watermelondbIdSchema } from '@/lib/schemas';
 
-import { userSchema } from '@/features/common/repositories/user/schemas/user.schema';
+import { userSchema } from '@/db/repositories/user/schemas/user.schema';
 
 export const conversationSchema = type({
   id: watermelondbIdSchema,

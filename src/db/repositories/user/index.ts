@@ -1,7 +1,7 @@
 import { database } from '@/db';
 
 import { User } from '@/db/models/user.model';
-import { USER_TABLE_NAME } from '@/db/tables/user.table';
+import { USER_TABLE_NAME } from '@/db/schemas/user-table.schema';
 
 import type { CreateUserParam } from './schemas/create-user.schema';
 

@@ -1,7 +1,7 @@
 import { database } from '@/db';
 
 import { DirectChat } from '@/db/models/direct-chat.model';
-import { DIRECT_CHAT_TABLE_NAME } from '@/db/tables/direct-chat.table';
+import { DIRECT_CHAT_TABLE_NAME } from '@/db/schemas/direct-chat-table.schema';
 
 import { CreateDirectChatParam } from './schemas/create-direct-chat.schema';
 

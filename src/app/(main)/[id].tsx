@@ -1,5 +1,5 @@
 import { useLocalSearchParams } from 'expo-router';
-import { View } from 'react-native';
+import { ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { UserProfile } from '@/features/common/components/user-profile';
@@ -20,15 +20,15 @@ export default function UserDetails() {
 
   if (!data)
     return (
-      <View className="flex-1 items-center justify-center">
+      <ScrollView className="flex-1 items-center justify-center">
         <Text variant={'h1'}>Not Found</Text>
-      </View>
+      </ScrollView>
     );
 
   return (
-    <View
+    <ScrollView
       style={{ marginTop: safeAreaInsets.top }}
-      className="flex-1 items-center justify-center p-2">
+      contentContainerClassName="flex-1 items-center justify-center gap-y-2 p-2">
       <UserProfile className="w-full max-w-4xl" data={data} />
 
       <Button
@@ -38,6 +38,6 @@ export default function UserDetails() {
         disabled={isPending}>
         <Text>Start Chatting</Text>
       </Button>
-    </View>
+    </ScrollView>
   );
 }

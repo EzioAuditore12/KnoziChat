@@ -3,7 +3,7 @@
     "name": "KnoziChat",
     "slug": "KnoziChat",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./public/images/icon.png",
     "scheme": "knozichat",
     "userInterfaceStyle": "automatic",
