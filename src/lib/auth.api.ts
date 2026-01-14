@@ -91,6 +91,16 @@ export const authenticatedFetch = async ({
     }
   }
 
+  if (!response.ok) {
+    const errorBody = await response.text();
+    try {
+      const errorJson = JSON.parse(errorBody);
+      throw new Error(errorJson.message || JSON.stringify(errorJson));
+    } catch {
+      throw new Error(errorBody || response.statusText);
+    }
+  }
+
   const json = await response.json();
 
   return json;
@@ -186,6 +196,16 @@ export const authenticatedTypedFetch = async <S extends s.StandardSchemaV1>({
       alert('Session expired. Please login again.');
       useAuthStore.getState().logout();
       throw error;
+    }
+  }
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    try {
+      const errorJson = JSON.parse(errorBody);
+      throw new Error(errorJson.message || JSON.stringify(errorJson));
+    } catch {
+      throw new Error(errorBody || response.statusText);
     }
   }
 

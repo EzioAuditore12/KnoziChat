@@ -24,7 +24,7 @@ export class User extends BaseModel {
   @text('avatar')
   avatar!: string | null;
 
-  @date('updated_at')
+  @date('created_at')
   createdAt!: Date;
 
   @date('updated_at')

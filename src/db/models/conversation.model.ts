@@ -1,7 +1,7 @@
-import { BaseModel } from './base.model';
 import { Relation } from '@nozbe/watermelondb';
-import { children, date, relation, text } from '@nozbe/watermelondb/decorators';
+import { children, date, relation } from '@nozbe/watermelondb/decorators';
 import { Associations } from '@nozbe/watermelondb/Model';
+import { BaseModel } from './base.model';
 
 import { CONVERSATION_TABLE_NAME } from '../schemas/conversation-table.schema';
 
@@ -32,9 +32,6 @@ export class Conversation extends BaseModel {
 
   @children(DIRECT_CHAT_TABLE_NAME)
   directChats!: Promise<DirectChat[]>;
-
-  @text('contact')
-  contact!: string;
 
   @date('created_at')
   createdAt!: Date;
