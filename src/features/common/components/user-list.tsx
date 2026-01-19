@@ -24,7 +24,7 @@ export function UserList({ className, isFetchingNextPage, data, ...props }: User
             className="mb-3"
             onPress={() =>
               router.push({
-                pathname: '/(main)/[id]',
+                pathname: '/(main)/user/[id]',
                 params: { id: item.id },
               })
             }

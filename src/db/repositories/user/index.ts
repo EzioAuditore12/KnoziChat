@@ -3,20 +3,22 @@ import { database } from '@/db';
 import { User } from '@/db/models/user.model';
 import { USER_TABLE_NAME } from '@/db/schemas/user-table.schema';
 
-import type { CreateUserParam } from './schemas/create-user.schema';
+import type { CreateUserDto } from './types';
 
 export class UserRepository {
-  async create(data: CreateUserParam) {
+  async create(createUserDto: CreateUserDto) {
     return await database.write(async () => {
       return await database.get<User>(USER_TABLE_NAME).create((user) => {
-        user._raw.id = data.id;
-        user.firstName = data.firstName;
-        user.middleName = data.middleName;
-        user.lastName = data.lastName;
-        user.phoneNumer = data.phoneNumber;
-        user.avatar = data.avatar;
-        user.createdAt = new Date(data.createdAt);
-        user.updatedAt = new Date(data.updatedAt);
+        if (createUserDto.id !== undefined) user._raw.id = createUserDto.id;
+
+        user.firstName = createUserDto.firstName;
+        user.middleName = createUserDto.middleName;
+        user.lastName = createUserDto.lastName;
+        user.phoneNumber = createUserDto.phoneNumber;
+        user.avatar = createUserDto.avatar;
+
+        user.createdAt = createUserDto.createdAt;
+        user.updatedAt = createUserDto.updatedAt;
       });
     });
   }

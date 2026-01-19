@@ -12,6 +12,7 @@ import 'react-native-reanimated';
 import { useUniwind } from 'uniwind';
 
 import { database } from '@/db';
+import { initializeSyncEngine } from '@/db/sync';
 import { registerForPushNotificationsAsync } from '@/lib/notification';
 import { NAV_THEME } from '@/lib/theme';
 import { TanstackReactQueryClientProvider } from '@/providers/tanstak-query-client.provider';
@@ -35,6 +36,10 @@ export default function RootLayout() {
         useDeviceConfigStore.getState().setExpoPushToken(token);
       }
     });
+  }, []);
+
+  useEffect(() => {
+    initializeSyncEngine();
   }, []);
 
   return (

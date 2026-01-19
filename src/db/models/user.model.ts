@@ -16,7 +16,7 @@ export class User extends BaseModel {
   lastName!: string;
 
   @text('phone_number')
-  phoneNumer!: string;
+  phoneNumber!: string;
 
   @text('email')
   email!: string | null;

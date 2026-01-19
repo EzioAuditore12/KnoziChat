@@ -25,14 +25,13 @@ export const useInitializeDirectChat = () => {
       });
 
       const savedConversation = await conversationRespository.create({
-        contact: savedReceiver.firstName,
         userId: savedReceiver.id,
         createdAt: new Date(data.data.createdAt),
         updatedAt: new Date(data.data.createdAt),
       });
 
       await directChatRepository.create({
-        _id: data.data._id,
+        id: data.data._id,
         conversationId: savedConversation.id,
         isDelivered: false,
         isSeen: false,
