@@ -17,7 +17,7 @@ export default function AppScreensLayout() {
       />
 
       <Stack.Screen name="user/[id]" options={{ headerShown: false }} />
-      <Stack.Screen name="chat/[id]" options={{ headerShown: false }} />
+      <Stack.Screen name="chat/[id]" />
       <Stack.Screen name="new-chat/[id]" />
     </Stack>
   );

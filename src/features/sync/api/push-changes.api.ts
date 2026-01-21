@@ -5,7 +5,7 @@ import { pushChangeResponse } from '../schemas/push-changes/response.schema';
 
 export const pushChangesApi = async (changes: PushChangeParam) => {
   return await authenticatedTypedFetch({
-    url: `/sync/push`,
+    url: `sync/push`,
     method: 'POST',
     body: changes,
     schema: pushChangeResponse,

@@ -2,7 +2,7 @@ import { Database, type TableSchema } from '@nozbe/watermelondb';
 
 import { createAdapter } from './adapter';
 import { migrations } from './migrations';
-import { createSchema } from './schemas';
+import { createSchema } from './schema';
 
 import { ConversationTable } from './schemas/conversation-table.schema';
 import { DirectChatTable } from './schemas/direct-chat-table.schema';

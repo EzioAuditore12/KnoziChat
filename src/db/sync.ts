@@ -14,7 +14,7 @@ const syncEngine = new SyncEngine({
   syncOnReconnect: true,
   tables: [USER_TABLE_NAME, CONVERSATION_TABLE_NAME, DIRECT_CHAT_TABLE_NAME],
   apiClient,
-  syncInterval: 15 * 60 * 1000, // 5 minutes
+  syncInterval: 15 * 60 * 1000, // 15 minutes
   conflictStrategy: ConflictStrategy.SERVER_WINS,
 });
 

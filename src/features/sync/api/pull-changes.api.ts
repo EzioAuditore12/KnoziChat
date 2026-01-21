@@ -9,9 +9,9 @@ export const pullChangesApi = async ({ lastSyncAt, tables }: PullChangesParam) =
   if (lastSyncAt === null || lastSyncAt === undefined) lastSyncAt = 0;
 
   return await authenticatedTypedFetch({
-    url: `/task/sync/pull`,
+    url: `sync/pull`,
     body: { lastSyncAt, tables },
-    method: 'GET',
+    method: 'POST',
     schema: pullChangesResponseSchema,
   });
 };

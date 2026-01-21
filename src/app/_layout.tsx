@@ -1,6 +1,5 @@
 import '../../global.css';
 
-import { DatabaseProvider } from '@nozbe/watermelondb/react';
 import { ThemeProvider } from '@react-navigation/native';
 import { PortalHost } from '@rn-primitives/portal';
 import * as Notifications from 'expo-notifications';
@@ -11,11 +10,11 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 import 'react-native-reanimated';
 import { useUniwind } from 'uniwind';
 
-import { database } from '@/db';
 import { initializeSyncEngine } from '@/db/sync';
 import { registerForPushNotificationsAsync } from '@/lib/notification';
 import { NAV_THEME } from '@/lib/theme';
 import { TanstackReactQueryClientProvider } from '@/providers/tanstak-query-client.provider';
+import { WatermelondbProvider } from '@/providers/watermelon-db.provider';
 import { useDeviceConfigStore } from '@/store/device';
 
 Notifications.setNotificationHandler({
@@ -46,11 +45,11 @@ export default function RootLayout() {
     <ThemeProvider value={NAV_THEME[theme ?? 'light']}>
       <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
       <KeyboardProvider>
-        <DatabaseProvider database={database}>
+        <WatermelondbProvider>
           <TanstackReactQueryClientProvider>
             <Stack initialRouteName="(main)" screenOptions={{ headerShown: false }} />
           </TanstackReactQueryClientProvider>
-        </DatabaseProvider>
+        </WatermelondbProvider>
       </KeyboardProvider>
       <PortalHost />
     </ThemeProvider>
