@@ -1,9 +1,8 @@
-import { Q } from '@nozbe/watermelondb';
-import { withObservables } from '@nozbe/watermelondb/react';
+import { Database, Q } from '@nozbe/watermelondb';
+import { withDatabase, withObservables } from '@nozbe/watermelondb/react';
 import { FlashList, type FlashListProps } from '@shopify/flash-list';
 import { router } from 'expo-router';
 
-import { database } from '@/db';
 import { Conversation } from '@/db/models/conversation.model';
 import { CONVERSATION_TABLE_NAME } from '@/db/schemas/conversation-table.schema';
 
@@ -16,13 +15,6 @@ interface ConversationListProps extends Omit<
   data: Conversation[];
   isFetchingNextPage?: boolean;
 }
-
-const enhance = withObservables([], () => ({
-  data: database
-    .get<Conversation>(CONVERSATION_TABLE_NAME)
-    .query(Q.sortBy('updated_at', Q.desc))
-    .observe(),
-}));
 
 function ConversationList({
   className,
@@ -53,4 +45,11 @@ function ConversationList({
   );
 }
 
-export const EnhancedConversationList = enhance(ConversationList);
+export const EnhancedConversationList = withDatabase(
+  withObservables([], ({ database }: { database: Database }) => ({
+    data: database.collections
+      .get<Conversation>(CONVERSATION_TABLE_NAME)
+      .query(Q.sortBy('updated_at', Q.desc))
+      .observe(),
+  }))(ConversationList)
+);

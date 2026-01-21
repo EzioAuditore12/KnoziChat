@@ -1,4 +1,4 @@
-import { withObservables } from '@nozbe/watermelondb/react';
+import { withDatabase, withObservables } from '@nozbe/watermelondb/react';
 import type { ComponentProps } from 'react';
 import { Pressable, View, type PressableProps } from 'react-native';
 
@@ -16,10 +16,6 @@ interface ConversationCardProps extends ComponentProps<typeof Card> {
   data: Conversation;
   user: User;
 }
-
-const enhance = withObservables(['data'], ({ data }: { data: Conversation }) => ({
-  user: data.user.observe(),
-}));
 
 export function ConversationCard({
   className,
@@ -62,4 +58,9 @@ export function ConversationCard({
   );
 }
 
-export const EnhancedConversationCard = enhance(ConversationCard);
+export const EnhancedConversationCard = withDatabase(
+  withObservables(['data'], ({ data }: { data: Conversation }) => ({
+    data: data.observe(), // <-- Observe the conversation model itself
+    user: data.user.observe(),
+  }))(ConversationCard)
+);

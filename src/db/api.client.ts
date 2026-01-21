@@ -15,6 +15,8 @@ export const apiClient: ApiClient = {
       tables: payload.tables as TableNamesSync[],
     });
 
+    console.log(changes.conversations);
+
     return { changes, timestamp };
   },
   push: async (payload) => {

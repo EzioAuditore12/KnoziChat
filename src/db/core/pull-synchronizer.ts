@@ -1,12 +1,14 @@
 import { Database, Model, Q, TableName } from '@nozbe/watermelondb';
 import { createMMKV } from 'react-native-mmkv';
-import { ApiClient, PullPayload, ConflictContext } from '../types';
 import { IConflictResolver } from '../stratergies/conflict-resolver';
+import { ApiClient, ConflictContext, PullPayload } from '../types';
 import { createLogger } from '../utils/logger';
 
-export const storage = createMMKV();
+export const storage = createMMKV({ id: '@offlineSync' });
 
-const LAST_SYNC_KEY = '@offlineSync:lastSyncAt';
+export const LAST_SYNC_KEY = '@offlineSync:lastSyncAt';
+
+export const setLastSyncZero = () => storage.set(LAST_SYNC_KEY, 0);
 
 /**
  * Pull synchronizer
@@ -233,16 +235,11 @@ export class PullSynchronizer {
    * Apply server data to a record
    */
   private applyServerData(record: any, serverData: Record<string, any>): void {
-    // Apply all server fields except metadata
     Object.keys(serverData).forEach((key) => {
       if (key === 'id' || key === 'created_at' || key === 'updated_at') {
-        return; // Skip these fields
+        return; // Skip these fields for now
       }
-
-      // Convert camelCase to snake_case for WatermelonDB
       const fieldName = key.replace(/([A-Z])/g, '_$1').toLowerCase();
-
-      // Use _raw to set fields directly, bypassing setters/getters
       if (record._raw) {
         record._raw[fieldName] = serverData[key];
       } else {
@@ -250,16 +247,19 @@ export class PullSynchronizer {
       }
     });
 
-    // Update sync metadata
+    // Set created_at and updated_at from server
     if (record._raw) {
+      record._raw.created_at = serverData.created_at;
+      record._raw.updated_at = serverData.updated_at;
       record._raw.server_id = serverData.id;
       record._raw.server_updated_at = serverData.updated_at || Date.now();
       record._raw.sync_status = 'synced';
       record._raw.last_sync_error = null;
     } else {
+      record.createdAt = serverData.created_at;
+      record.updatedAt = serverData.updated_at;
       record.serverId = serverData.id;
       record.serverUpdatedAt = serverData.updated_at || Date.now();
-      // Fix: Use offlineSyncStatus instead of commented out syncStatus
       record.offlineSyncStatus = 'synced';
       record.lastSyncError = null;
     }

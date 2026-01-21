@@ -1,6 +1,9 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
+import { database } from '@/db';
+
+import { setLastSyncZero } from '@/db/core/pull-synchronizer';
 import { zustandStorage } from '../storage';
 import type { AuthStore } from './types';
 
@@ -18,7 +21,13 @@ export const useAuthStore = create<AuthStore>()(
         set({ tokens: data });
       },
 
-      logout() {
+      logout: async () => {
+        await database.write(async () => {
+          await database.unsafeResetDatabase();
+        });
+
+        setLastSyncZero();
+
         set({ user: null, tokens: null });
       },
     }),
