@@ -11,11 +11,24 @@ import { EnhancedConversationList } from '@/features/home/components/conversatio
 import { useSyncEngine } from '@/db/hooks/use-sync-engine';
 
 import syncEngine from '@/db/sync';
+import { useEffect, useRef } from 'react';
+import { connectWebSocket, type Socket } from '@/lib/socket-io';
 
 export default function HomeScreen() {
   const { logout } = useAuthStore((state) => state);
 
   const { sync, pendingChanges, isSyncing } = useSyncEngine(syncEngine);
+
+  const socket = useRef<Socket>(null);
+
+  useEffect(() => {
+    socket.current = connectWebSocket();
+
+    return () => {
+      socket.current?.disconnect();
+      console.log('HomeScreen unmounted, socket disconnected');
+    };
+  }, []);
 
   return (
     <>

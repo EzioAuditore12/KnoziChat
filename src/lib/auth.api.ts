@@ -1,12 +1,8 @@
 import * as s from 'standard-parse';
-
 import { fetch, FetchProps, HttpMethods } from './fetch';
-
 import { env } from '@/env';
-
 import { useAuthStore } from '@/store/auth';
-
-import { refreshTokensApi } from '@/features/auth/refresh/api/refresh-tokens.api';
+import { refreshAccessToken } from './token-manager';
 
 interface AuthenticatedFetchProps extends Omit<FetchProps, 'body' | 'method'> {
   baseUrl?: string;
@@ -15,8 +11,6 @@ interface AuthenticatedFetchProps extends Omit<FetchProps, 'body' | 'method'> {
   method: HttpMethods;
   body?: object;
 }
-
-let refreshPromise: Promise<void> | null = null;
 
 export const authenticatedFetch = async ({
   baseUrl = env.API_URL,
@@ -52,57 +46,28 @@ export const authenticatedFetch = async ({
 
   if (response.status === responseStatus) {
     try {
-      if (!refreshPromise) {
-        refreshPromise = (async () => {
-          const refreshToken = useAuthStore.getState().tokens?.refreshToken;
+      // 1. Call the shared refresh logic
+      await refreshAccessToken();
 
-          if (!refreshToken) {
-            throw new Error('No refresh token available');
-          }
-
-          const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
-            await refreshTokensApi({ refreshToken });
-
-          useAuthStore.getState().setUserTokens({
-            accessToken: newAccessToken,
-            refreshToken: newRefreshToken,
-          });
-        })();
-      }
-
-      await refreshPromise;
-
-      refreshPromise = null;
-
+      // 2. Get new token
       const newAccessToken = useAuthStore.getState().tokens?.accessToken;
 
+      // 3. Update headers
       authHeaders.Authorization = `Bearer ${newAccessToken}`;
 
+      // 4. Retry request
       response = await fetch(apiUrl, {
         ...requestOptions,
         headers: authHeaders,
         ...props,
       });
     } catch (error) {
-      refreshPromise = null;
       alert('Session expired. Please login again.');
-      useAuthStore.getState().logout();
       throw error;
     }
   }
 
-  if (!response.ok) {
-    const errorBody = await response.text();
-    try {
-      const errorJson = JSON.parse(errorBody);
-      throw new Error(errorJson.message || JSON.stringify(errorJson));
-    } catch {
-      throw new Error(errorBody || response.statusText);
-    }
-  }
-
   const json = await response.json();
-
   return json;
 };
 
@@ -138,7 +103,6 @@ export const authenticatedTypedFetch = async <S extends s.StandardSchemaV1>({
 
   if (params !== undefined) {
     const paramsValues = new URLSearchParams(params as Record<string, string>).toString();
-
     url = url + (url.includes('?') ? '&' : '?') + paramsValues;
   }
 
@@ -157,63 +121,40 @@ export const authenticatedTypedFetch = async <S extends s.StandardSchemaV1>({
 
   if (response.status === responseStatus) {
     try {
-      if (!refreshPromise) {
-        refreshPromise = (async () => {
-          const refreshToken = useAuthStore.getState().tokens?.refreshToken;
+      // 1. Call shared refresh logic
+      await refreshAccessToken();
 
-          if (!refreshToken) {
-            throw new Error('No refresh token available');
-          }
-
-          const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
-            await refreshTokensApi({ refreshToken });
-
-          useAuthStore.getState().setUserTokens({
-            accessToken: newAccessToken,
-            refreshToken: newRefreshToken,
-          });
-        })();
-      }
-
-      await refreshPromise;
-      refreshPromise = null;
-
+      // 2. Get new token
       const newAccessToken = useAuthStore.getState().tokens?.accessToken;
 
+      // 3. Update headers
       authHeaders = {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${newAccessToken}`,
         ...(headers || {}),
       };
 
+      // 4. Retry request
       response = await fetch(apiUrl, {
         ...requestOptions,
         headers: authHeaders,
         ...props,
       });
     } catch (error) {
-      refreshPromise = null;
       alert('Session expired. Please login again.');
-      useAuthStore.getState().logout();
       throw error;
-    }
-  }
-
-  if (!response.ok) {
-    const errorBody = await response.text();
-    try {
-      const errorJson = JSON.parse(errorBody);
-      throw new Error(errorJson.message || JSON.stringify(errorJson));
-    } catch {
-      throw new Error(errorBody || response.statusText);
     }
   }
 
   const json = await response.json();
 
+  console.log(json);
+
   const result = s.safeParse(schema, json);
 
   if (result.issues) throw new Error(JSON.stringify(result.issues));
+
+  console.log('Result value', result.value);
 
   return result.value;
 };

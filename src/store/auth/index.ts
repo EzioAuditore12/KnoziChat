@@ -32,7 +32,7 @@ export const useAuthStore = create<AuthStore>()(
       },
     }),
     {
-      name: 'Knozichat',
+      name: 'knozichat-auth',
       storage: createJSONStorage(() => zustandStorage),
     }
   )
