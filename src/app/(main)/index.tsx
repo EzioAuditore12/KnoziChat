@@ -47,7 +47,7 @@ export default function HomeScreen() {
           headerRight: () => (
             <>
               <Pressable onPress={() => router.push('/settings')} className="mr-2">
-                <Avatar className='size-14' alt={user?.firstName ?? ''}>
+                <Avatar className="size-14" alt={user?.firstName ?? ''}>
                   <AvatarImage source={user?.avatar ? { uri: user.avatar } : undefined} />
                   <AvatarFallback>
                     <Text>{user?.firstName[0]}</Text>
