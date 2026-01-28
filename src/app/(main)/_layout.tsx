@@ -1,9 +1,15 @@
 import { Redirect, Stack } from 'expo-router';
 
+import { initializeSyncEngine } from '@/db/sync';
 import { useAuthStore } from '@/store/auth';
+import { useEffect } from 'react';
 
 export default function AppScreensLayout() {
   const { user } = useAuthStore((state) => state);
+
+  useEffect(() => {
+    initializeSyncEngine();
+  }, []);
 
   if (!user) return <Redirect href="/(auth)/login" />;
 

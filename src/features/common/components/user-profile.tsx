@@ -20,7 +20,7 @@ export function UserProfile({ className, data, ...props }: UserProfileProps) {
     <View
       key={id}
       className={cn(
-        'flex flex-col items-center space-y-4 rounded-2xl bg-white p-6 shadow-lg',
+        'flex flex-col items-center space-y-4 rounded-2xl  p-6 shadow-lg',
         className
       )}
       {...props}>
@@ -33,13 +33,13 @@ export function UserProfile({ className, data, ...props }: UserProfileProps) {
       <Text variant={'h3'} className="text-center">
         {firstName} {middleName} {lastName}
       </Text>
-      <Text variant={'large'} className="text-center text-gray-700">
+      <Text variant={'large'} className="text-center">
         {email}
       </Text>
-      <Text variant={'large'} className="text-center text-gray-700">
+      <Text variant={'large'} className="text-center">
         {phoneNumber}
       </Text>
-      <Text variant={'small'} className="mt-2 text-center text-gray-500">
+      <Text variant={'small'} className="mt-2 text-center">
         Joined: {new Date(createdAt).toLocaleDateString()}
       </Text>
     </View>

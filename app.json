@@ -7,9 +7,8 @@
     "icon": "./public/images/icon.png",
     "scheme": "knozichat",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "icon": "./assets/expo.icon"
     },
     "android": {
       "adaptiveIcon": {
@@ -32,18 +31,14 @@
       [
         "expo-splash-screen",
         {
-          "image": "./public/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
-          "dark": {
-            "backgroundColor": "#000000"
+          "backgroundColor": "#208AEF",
+          "android": {
+            "image": "./public/images/splash-icon.png",
+            "imageWidth": 76
           }
         }
       ],
-      [
-        "@lovesworking/watermelondb-expo-plugin-sdk-52-plus"
-      ],
+      ["@lovesworking/watermelondb-expo-plugin-sdk-52-plus"],
       [
         "expo-build-properties",
         {
@@ -51,10 +46,7 @@
             "extraPods": [
               {
                 "name": "simdjson",
-                "configurations": [
-                  "Debug",
-                  "Release"
-                ],
+                "configurations": ["Debug", "Release"],
                 "path": "../node_modules/@nozbe/simdjson",
                 "modular_headers": true
               }
@@ -62,9 +54,7 @@
           },
           "android": {
             "packagingOptions": {
-              "pickFirst": [
-                "**/libc++_shared.so"
-              ]
+              "pickFirst": ["**/libc++_shared.so"]
             }
           }
         }
