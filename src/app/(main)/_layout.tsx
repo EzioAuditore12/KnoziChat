@@ -4,7 +4,7 @@ import { initializeSyncEngine } from '@/db/sync';
 import { useAuthStore } from '@/store/auth';
 import { useEffect } from 'react';
 
-export default function AppScreensLayout() {
+export default function MainScreensLayout() {
   const { user } = useAuthStore((state) => state);
 
   useEffect(() => {
@@ -21,7 +21,6 @@ export default function AppScreensLayout() {
         name="settings"
         options={{ headerShown: false, animation: 'slide_from_left' }}
       />
-
       <Stack.Screen name="user/[id]" options={{ headerShown: false }} />
       <Stack.Screen name="chat/[id]" />
       <Stack.Screen name="new-chat/[id]" />

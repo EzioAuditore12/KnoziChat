@@ -1,35 +1,36 @@
 import { router, Stack } from 'expo-router';
+import { useEffect } from 'react';
 import { Pressable, View } from 'react-native';
 
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Link } from '@/components/ui/link';
 import { Text } from '@/components/ui/text';
 
+import { useSyncEngine } from '@/db/hooks/use-sync-engine';
+import syncEngine from '@/db/sync';
+
+import { useAuthStore } from '@/store/auth';
+
 import { EnhancedConversationList } from '@/features/home/components/conversation-list';
 
-import { useSyncEngine } from '@/db/hooks/use-sync-engine';
-
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import syncEngine from '@/db/sync';
-import { connectWebSocket, type Socket } from '@/lib/socket-io';
-import { useAuthStore } from '@/store/auth';
-import { useEffect, useRef } from 'react';
+import { useSocketState } from '@/store/socket';
 
 export default function HomeScreen() {
   const { sync, pendingChanges, isSyncing } = useSyncEngine(syncEngine);
-
   const { user } = useAuthStore((state) => state);
 
-  const socket = useRef<Socket>(null);
+  // Use useSocketState
+  const { connectSocket, disconnectSocket, onlineUsers } = useSocketState();
 
   useEffect(() => {
-    socket.current = connectWebSocket();
+    connectSocket();
 
     return () => {
-      socket.current?.disconnect();
+      disconnectSocket();
       console.log('HomeScreen unmounted, socket disconnected');
     };
-  }, []);
+  }, [connectSocket, disconnectSocket]);
 
   return (
     <>
@@ -59,6 +60,8 @@ export default function HomeScreen() {
         }}
       />
       <View className="flex-1 gap-y-2 p-1">
+        {/* Example: Show online users count */}
+        <Text>Online users: {onlineUsers.length}</Text>
         <EnhancedConversationList />
       </View>
     </>

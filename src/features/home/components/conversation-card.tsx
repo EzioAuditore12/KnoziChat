@@ -47,7 +47,7 @@ export function ConversationCard({
             <Text>{user.phoneNumber}</Text>
           </View>
         </CardContent>
-        <Text className="ml-auto mr-2">
+        <Text className="mr-2 ml-auto">
           {updatedAt.toLocaleTimeString([], {
             hour: '2-digit',
             minute: '2-digit',
@@ -60,7 +60,7 @@ export function ConversationCard({
 
 export const EnhancedConversationCard = withDatabase(
   withObservables(['data'], ({ data }: { data: Conversation }) => ({
-    data: data.observe(), // <-- Observe the conversation model itself
+    data: data.observe(),
     user: data.user.observe(),
   }))(ConversationCard)
 );

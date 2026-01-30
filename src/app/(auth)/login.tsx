@@ -1,22 +1,29 @@
+import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { Link } from '@/components/ui/link';
 import { Text } from '@/components/ui/text';
 
 import { LoginForm } from '@/features/auth/login/components/login-form';
 
-import { Link } from '@/components/ui/link';
 import { LoginBanner } from '@/features/auth/login/components/login-banner';
 import { useLoginForm } from '@/features/auth/login/hooks/use-login-form';
 import { useDeviceConfigStore } from '@/store/device';
-import { View } from 'react-native';
 
 export default function LoginScreen() {
+  const safeAreaInsets = useSafeAreaInsets();
+
   const { mutate, isPending } = useLoginForm();
 
   const { expoPushToken } = useDeviceConfigStore((state) => state);
 
   return (
-    <KeyboardAwareScrollView contentContainerClassName="flex-1 items-center justify-center p-2">
+    <KeyboardAwareScrollView
+      style={{
+        paddingTop: safeAreaInsets.top,
+      }}
+      contentContainerClassName="flex-grow-1 items-center justify-center p-2">
       <Text variant={'h2'}>Welcome Back !</Text>
 
       <LoginBanner />

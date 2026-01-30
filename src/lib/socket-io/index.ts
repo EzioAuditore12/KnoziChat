@@ -14,7 +14,6 @@ export function connectWebSocket() {
     throw new Error('No access token available');
   }
 
-  // Pass the generic types here
   const socket: Socket = io(env.SOCKET_URL, {
     auth: {
       token: accessToken,
@@ -29,6 +28,7 @@ export function connectWebSocket() {
 
 interface events {
   connect: string;
+  'online:users': (userIds: string[]) => void;
 }
 
 export type Socket = SocketType<events>;

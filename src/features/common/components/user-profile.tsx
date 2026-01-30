@@ -19,7 +19,7 @@ export function UserProfile({ className, data, ...props }: UserProfileProps) {
   return (
     <View
       key={id}
-      className={cn('flex flex-col items-center space-y-4 rounded-2xl  p-6 shadow-lg', className)}
+      className={cn('flex flex-col items-center space-y-4 rounded-2xl p-6 shadow-lg', className)}
       {...props}>
       <Avatar className="size-48" alt={firstName}>
         <AvatarImage src={avatar ?? ''} />

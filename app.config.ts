@@ -1,0 +1,76 @@
+import type { ConfigContext, ExpoConfig } from 'expo/config';
+
+export default ({ config }: ConfigContext): ExpoConfig => ({
+  ...config,
+  name: 'KnoziChat',
+  slug: 'KnoziChat',
+  version: '1.0.0',
+  orientation: 'default',
+  icon: './public/images/icon.png',
+  scheme: 'knozichat',
+  userInterfaceStyle: 'automatic',
+  ios: {
+    icon: './assets/expo.icon',
+  },
+  android: {
+    adaptiveIcon: {
+      backgroundColor: '#E6F4FE',
+      foregroundImage: './public/images/android-icon-foreground.png',
+      backgroundImage: './public/images/android-icon-background.png',
+      monochromeImage: './public/images/android-icon-monochrome.png',
+    },
+    edgeToEdgeEnabled: true,
+    predictiveBackGestureEnabled: false,
+    package: 'com.dakshpurohit.KnoziChat',
+    googleServicesFile: './google-services.json',
+  },
+  web: {
+    output: 'static',
+    favicon: './public/images/favicon.png',
+  },
+  plugins: [
+    'expo-router',
+    [
+      'expo-splash-screen',
+      {
+        backgroundColor: '#208AEF',
+        android: {
+          image: './public/images/splash-icon.png',
+          imageWidth: 76,
+        },
+      },
+    ],
+    ['@lovesworking/watermelondb-expo-plugin-sdk-52-plus'],
+    [
+      'expo-build-properties',
+      {
+        ios: {
+          extraPods: [
+            {
+              name: 'simdjson',
+              configurations: ['Debug', 'Release'],
+              path: '../node_modules/@nozbe/simdjson',
+              modular_headers: true,
+            },
+          ],
+        },
+        android: {
+          packagingOptions: {
+            pickFirst: ['**/libc++_shared.so'],
+          },
+        },
+      },
+    ],
+    'expo-secure-store',
+  ],
+  experiments: {
+    typedRoutes: true,
+    reactCompiler: true,
+  },
+  extra: {
+    router: {},
+    eas: {
+      projectId: process.env.EXPO_EAS_PROJECT_ID,
+    },
+  },
+});
