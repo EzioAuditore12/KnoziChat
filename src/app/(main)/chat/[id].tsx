@@ -10,6 +10,7 @@ import { EnhancedUserInfo } from '@/features/common/components/user-info';
 import { useSocketState } from '@/store/socket';
 
 import { Socket } from '@/lib/socket-io';
+
 import { sendMessageEvent } from '@/features/realtime/events/send-message.event';
 import { useReceiveMessageEvent } from '@/features/realtime/events/receive-message.event';
 
@@ -23,13 +24,19 @@ export default function ChattingScreen() {
 
   useEffect(() => {
     connectSocket();
+  }, [connectSocket]);
 
-    socket?.emit('conversation:join', id);
+  useEffect(() => {
+    if (socket?.connected) {
+      socket.emit('conversation:join', id);
+    }
 
     return () => {
-      socket?.emit('conversation:leave', id);
+      if (socket?.connected) {
+        socket.emit('conversation:leave', id);
+      }
     };
-  }, [connectSocket, socket, id]);
+  }, [socket, id, socket?.connected]);
 
   useReceiveMessageEvent(socket);
 

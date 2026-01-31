@@ -1,6 +1,6 @@
 import { withDatabase, withObservables } from '@nozbe/watermelondb/react';
 import type { ComponentProps } from 'react';
-import { Pressable, View, type PressableProps } from 'react-native';
+import { View } from 'react-native';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
@@ -10,9 +10,10 @@ import { cn } from '@/lib/utils';
 
 import { Conversation } from '@/db/models/conversation.model';
 import { User } from '@/db/models/user.model';
+import { ThrottledTouchable, type ThrottledTouchableProps } from '@/components/throttled-touchable';
 
 interface ConversationCardProps extends ComponentProps<typeof Card> {
-  onPress: PressableProps['onPress'];
+  onPress: ThrottledTouchableProps['onPress'];
   data: Conversation;
   user: User;
 }
@@ -29,7 +30,7 @@ export function ConversationCard({
   const { firstName, lastName, phoneNumber, avatar } = user;
 
   return (
-    <Pressable onPress={onPress}>
+    <ThrottledTouchable onPress={onPress}>
       <Card className={cn(className)} {...props}>
         <CardContent className="flex-row gap-x-2">
           <Avatar className="size-20" alt={firstName}>
@@ -56,7 +57,7 @@ export function ConversationCard({
           })}
         </Text>
       </Card>
-    </Pressable>
+    </ThrottledTouchable>
   );
 }
 

@@ -1,6 +1,6 @@
 import { router, Stack } from 'expo-router';
 import { useEffect } from 'react';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -15,12 +15,12 @@ import { useAuthStore } from '@/store/auth';
 import { EnhancedConversationList } from '@/features/home/components/conversation-list';
 
 import { useSocketState } from '@/store/socket';
+import { ThrottledTouchable } from '@/components/throttled-touchable';
 
 export default function HomeScreen() {
   const { sync, pendingChanges, isSyncing } = useSyncEngine(syncEngine);
   const { user } = useAuthStore((state) => state);
 
-  // Use useSocketState
   const { connectSocket, disconnectSocket, onlineUsers } = useSocketState();
 
   useEffect(() => {
@@ -47,14 +47,14 @@ export default function HomeScreen() {
           ),
           headerRight: () => (
             <>
-              <Pressable onPress={() => router.push('/settings')} className="mr-2">
+              <ThrottledTouchable onPress={() => router.push('/settings')} className="mr-2">
                 <Avatar className="size-14" alt={user?.firstName ?? ''}>
                   <AvatarImage source={user?.avatar ? { uri: user.avatar } : undefined} />
                   <AvatarFallback>
                     <Text>{user?.firstName[0]}</Text>
                   </AvatarFallback>
                 </Avatar>
-              </Pressable>
+              </ThrottledTouchable>
             </>
           ),
         }}
