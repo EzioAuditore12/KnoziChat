@@ -8,11 +8,10 @@ import { SendDirectMessage } from '@/features/chat/components/send-direct-messag
 import { EnhancedUserInfo } from '@/features/common/components/user-info';
 
 import { useSocketState } from '@/store/socket';
-import syncEngine from '@/db/sync';
-import { database } from '@/db';
-import { useOptimisticUpdate } from '@/db/hooks/use-optimistic-update';
+
 import { Socket } from '@/lib/socket-io';
 import { sendMessageEvent } from '@/features/realtime/events/send-message.event';
+import { useReceiveMessageEvent } from '@/features/realtime/events/receive-message.event';
 
 export default function ChattingScreen() {
   const { id, userId } = useLocalSearchParams() as unknown as {
@@ -31,6 +30,8 @@ export default function ChattingScreen() {
       socket?.emit('conversation:leave', id);
     };
   }, [connectSocket, socket, id]);
+
+  useReceiveMessageEvent(socket);
 
   return (
     <>

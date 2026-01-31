@@ -33,4 +33,12 @@ export class ConversationRepository {
       }))
     );
   }
+
+  async updateConversationTime(id: string, updatedAt: Date) {
+    await database.write(async () => {
+      (await database.get<Conversation>(CONVERSATION_TABLE_NAME).find(id)).update((convo) => {
+        convo.updatedAt = updatedAt;
+      });
+    });
+  }
 }

@@ -94,22 +94,33 @@ export class PullSynchronizer {
 
     for (const serverData of records) {
       try {
-        // Check if record already exists locally
-        const existing = await collection.query(Q.where('server_id', serverData.id)).fetch();
+        // Check if record already exists by id
+        const existingById = await collection.find(serverData.id).catch(() => null);
 
-        if (existing.length > 0) {
-          // Record exists - treat as update
-          await this.updateRecord(existing[0], serverData);
-        } else {
-          // Create new record
-          await collection.create((record: any) => {
-            // FORCE local ID to match Server ID
-            if (record._raw) {
-              record._raw.id = serverData.id;
-            }
-            this.applyServerData(record, serverData);
-          });
+        if (existingById) {
+          // Record exists by id - treat as update
+          await this.updateRecord(existingById, serverData);
+          continue;
         }
+
+        // Check if record exists by server_id
+        const existingByServerId = await collection
+          .query(Q.where('server_id', serverData.id))
+          .fetch();
+
+        if (existingByServerId.length > 0) {
+          // Record exists by server_id - treat as update
+          await this.updateRecord(existingByServerId[0], serverData);
+          continue;
+        }
+
+        // Create new record
+        await collection.create((record: any) => {
+          if (record._raw) {
+            record._raw.id = serverData.id;
+          }
+          this.applyServerData(record, serverData);
+        });
       } catch (error) {
         this.logger.error(`Failed to create record in ${tableName}:`, error);
       }
@@ -138,7 +149,6 @@ export class PullSynchronizer {
         } else {
           // Record doesn't exist locally - create it
           await collection.create((record: any) => {
-            // FORCE local ID to match Server ID
             if (record._raw) {
               record._raw.id = serverData.id;
             }
