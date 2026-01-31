@@ -68,7 +68,7 @@ export default function UserDetails() {
 
   if (!data)
     return (
-      <ScrollView contentContainerClassName="flex-1 items-center justify-center gap-y-2 p-2">
+      <ScrollView contentContainerClassName="flex-grow-1 items-center justify-center gap-y-2 p-2">
         <Text variant={'h1'}>Not Found</Text>
       </ScrollView>
     );
@@ -76,7 +76,7 @@ export default function UserDetails() {
   return (
     <ScrollView
       style={{ marginTop: safeAreaInsets.top }}
-      contentContainerClassName="flex-1 items-center justify-center gap-y-2 p-2">
+      contentContainerClassName="flex-grow-1 items-center justify-center gap-y-2 p-2">
       <UserProfile className="w-full max-w-4xl" data={data} />
 
       <Button

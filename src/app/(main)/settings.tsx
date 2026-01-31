@@ -19,7 +19,7 @@ export default function SettingsScreen() {
   return (
     <ScrollView
       style={{ marginTop: safeAreaInsets.top }}
-      contentContainerClassName="flex-1 items-center justify-center gap-y-2 p-2">
+      contentContainerClassName="flex-grow-1 items-center justify-center gap-y-2 p-2">
       <UserProfile className="w-full" data={data} />
 
       <Button variant={'destructive'} onPress={logout}>

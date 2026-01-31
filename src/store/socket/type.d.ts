@@ -1,4 +1,4 @@
-import { type Socket } from 'socket.io-client';
+import { type Socket } from '@/lib/socket-io';
 
 export interface SocketState {
   socket: Socket | null;

@@ -9,8 +9,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   icon: './public/images/icon.png',
   scheme: 'knozichat',
   userInterfaceStyle: 'automatic',
+  newArchEnabled: true,
   ios: {
-    icon: './assets/expo.icon',
+    supportsTablet: true,
   },
   android: {
     adaptiveIcon: {
@@ -33,10 +34,12 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       'expo-splash-screen',
       {
-        backgroundColor: '#208AEF',
-        android: {
-          image: './public/images/splash-icon.png',
-          imageWidth: 76,
+        image: './public/images/splash-icon.png',
+        imageWidth: 200,
+        resizeMode: 'contain',
+        backgroundColor: '#ffffff',
+        dark: {
+          backgroundColor: '#000000',
         },
       },
     ],

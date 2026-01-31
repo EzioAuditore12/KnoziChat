@@ -26,25 +26,27 @@ export function ConversationCard({
 }: ConversationCardProps) {
   const { updatedAt } = data;
 
+  const { firstName, lastName, phoneNumber, avatar } = user;
+
   return (
     <Pressable onPress={onPress}>
       <Card className={cn(className)} {...props}>
         <CardContent className="flex-row gap-x-2">
-          <Avatar className="size-20" alt={user.firstName}>
-            <AvatarImage source={{ uri: user.avatar ?? undefined }} />
+          <Avatar className="size-20" alt={firstName}>
+            <AvatarImage source={{ uri: avatar ?? undefined }} />
             <AvatarFallback>
-              <Text>{user.firstName[0]}</Text>
+              <Text>{firstName[0]}</Text>
             </AvatarFallback>
           </Avatar>
 
           <View className="flex-col">
-            <Text variant={'h3'}>{user.firstName}</Text>
+            <Text variant={'h3'}>{firstName}</Text>
 
             <Text>
-              {user.firstName} {user.lastName}
+              {firstName} {lastName}
             </Text>
 
-            <Text>{user.phoneNumber}</Text>
+            <Text>{phoneNumber}</Text>
           </View>
         </CardContent>
         <Text className="mr-2 ml-auto">

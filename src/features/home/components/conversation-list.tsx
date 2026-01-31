@@ -34,7 +34,7 @@ function ConversationList({
             onPress={() =>
               router.push({
                 pathname: '/chat/[id]',
-                params: { id: item.id },
+                params: { id: item.id, userId: item._getRaw('user_id') as string },
               })
             }
           />

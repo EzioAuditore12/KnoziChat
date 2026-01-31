@@ -4,6 +4,8 @@ import { env } from '@/env';
 
 import { useAuthStore } from '@/store/auth';
 import { handleWsTokenRefresh } from './ws-socket.refresh';
+import { SendMessageDto } from './dto/message-send.dto';
+import { ReceiveMessageDto } from './dto/receive-message.dto';
 
 type SocketError = Error & { data?: { status: number } };
 
@@ -26,9 +28,16 @@ export function connectWebSocket() {
   return socket;
 }
 
-interface events {
-  connect: string;
+export interface ServerToClientEvents {
+  connect: () => void;
   'online:users': (userIds: string[]) => void;
+  'message:receive': (message: ReceiveMessageDto) => void;
 }
 
-export type Socket = SocketType<events>;
+export interface ClientToServerEvents {
+  'conversation:join': (conversationId: string) => void;
+  'conversation:leave': (conversationId: string) => void;
+  'message:send': (dto: SendMessageDto) => void;
+}
+
+export type Socket = SocketType<ServerToClientEvents, ClientToServerEvents>;

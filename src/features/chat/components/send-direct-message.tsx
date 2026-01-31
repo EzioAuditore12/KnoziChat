@@ -12,15 +12,18 @@ import { Input } from '@/components/ui/input';
 
 import { Text } from '@/components/ui/text';
 import { type } from 'arktype';
+import { SendMessageEvent } from '@/features/realtime/events/send-message.event';
+import { Socket } from '@/lib/socket-io';
 
 interface SendDirectMessageProps extends ViewProps {
   conversationId: string;
-  handleSubmit: () => void;
+  socket: Socket;
+  handleSubmit: ({ socket, conversationId, text }: SendMessageEvent) => void;
 }
 
 export function SendDirectMessage({
   className,
-
+  socket,
   conversationId,
   handleSubmit,
   ...props
@@ -48,7 +51,7 @@ export function SendDirectMessage({
   const onSubmit = (data: { text: string }) => {
     reset();
 
-    handleSubmit();
+    handleSubmit({ socket, conversationId, text: data.text });
   };
 
   return (
