@@ -16,10 +16,13 @@ import { EnhancedConversationList } from '@/features/home/components/conversatio
 
 import { useSocketState } from '@/store/socket';
 import { ThrottledTouchable } from '@/components/throttled-touchable';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
   const { sync, pendingChanges, isSyncing } = useSyncEngine(syncEngine);
   const { user } = useAuthStore((state) => state);
+
+  const safeAreaInsets = useSafeAreaInsets();
 
   const { connectSocket, disconnectSocket, onlineUsers } = useSocketState();
 
@@ -59,7 +62,7 @@ export default function HomeScreen() {
           ),
         }}
       />
-      <View className="flex-1 gap-y-2 p-1">
+      <View className="flex-1 gap-y-2 p-1" style={{ paddingBottom: safeAreaInsets.bottom }}>
         {/* Example: Show online users count */}
         <Text>Online users: {onlineUsers.length}</Text>
         <EnhancedConversationList />

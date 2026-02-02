@@ -1,12 +1,14 @@
 import { Pressable, type PressableProps } from 'react-native';
 import { useThrottledCallback } from 'use-debounce';
 
+import { cn } from '@/lib/utils';
+
 export interface ThrottledTouchableProps extends PressableProps {
   throttleDelay?: number;
 }
-
 export function ThrottledTouchable({
   children,
+  className,
   onPress,
   throttleDelay = 1000,
   ...props
@@ -26,7 +28,7 @@ export function ThrottledTouchable({
   );
 
   return (
-    <Pressable onPress={handlePress} {...props}>
+    <Pressable className={cn('active:opacity-70', className)} onPress={handlePress} {...props}>
       {children}
     </Pressable>
   );

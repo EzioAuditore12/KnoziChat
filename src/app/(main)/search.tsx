@@ -22,7 +22,9 @@ export default function SearchScreen() {
   const users = data?.pages.flatMap((page) => page.data) ?? [];
 
   return (
-    <View style={{ marginTop: safeAreaInsets.top }} className="flex-1 p-2">
+    <View
+      style={{ paddingTop: safeAreaInsets.top, paddingBottom: safeAreaInsets.bottom }}
+      className="flex-1 p-2">
       <SearchUserInput
         placeholder="Search..."
         className="mb-5"
