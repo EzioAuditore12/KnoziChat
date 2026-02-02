@@ -31,12 +31,14 @@ function ConversationList({
           <EnhancedConversationCard
             data={item}
             className="mb-3"
-            onPress={() =>
+            onPress={() => {
+              console.log(item.id);
+
               router.push({
                 pathname: '/chat/[id]',
                 params: { id: item.id, userId: item._getRaw('user_id') as string },
-              })
-            }
+              });
+            }}
           />
         )}
         {...props}

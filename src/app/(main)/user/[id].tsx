@@ -9,17 +9,45 @@ import { Text } from '@/components/ui/text';
 
 import { useGetUser } from '@/features/common/hooks/queries/use-get-user';
 
-/*
-import { useOptimisticUpdate } from '@/db/hooks/use-optimistic-update';
+import { ConversationRepository } from '@/db/repositories/conversation';
 
-import { database } from '@/db';
-import syncEngine from '@/db/sync';
-import { useEffect } from 'react';
-import { USER_TABLE_NAME } from '@/db/schemas/user-table.schema';
-import { SyncOperation } from '@/db/types';
-import { Collection, Q } from '@nozbe/watermelondb';
-import { User } from '@/db/models/user.model';
-*/
+const conversationRepostiory = new ConversationRepository();
+
+const navgateToChat = async ({
+  userId,
+  avatar,
+  firstName,
+  lastName,
+}: {
+  userId: string;
+  avatar: string | null;
+  firstName: string;
+  lastName: string;
+}) => {
+  const existingCoversationWithUser =
+    await conversationRepostiory.getConversationWithUserId(userId);
+
+  router.dismissTo('/(main)');
+
+  if (existingCoversationWithUser) {
+    router.navigate({
+      pathname: '/(main)/chat/[id]',
+      params: {
+        id: existingCoversationWithUser.id,
+        userId: existingCoversationWithUser._getRaw('user_id') as string,
+      },
+    });
+    return;
+  }
+
+  router.navigate({
+    pathname: '/(main)/new-chat/[id]',
+    params: {
+      id: userId,
+      name: firstName,
+    },
+  });
+};
 
 export default function UserDetails() {
   const safeAreaInsets = useSafeAreaInsets();
@@ -27,44 +55,6 @@ export default function UserDetails() {
   const { id } = useLocalSearchParams() as unknown as { id: string };
 
   const { data } = useGetUser(id);
-  /*
-  const { execute } = useOptimisticUpdate(database, syncEngine);
-  useEffect(() => {
-    if (!data) return;
-
-    const saveUser = async () => {
-      execute(USER_TABLE_NAME, SyncOperation.CREATE, async (collection: Collection<User>) => {
-
-        const existing = await collection.query(Q.where('server_id', data.id)).fetch();
-
-        if (existing.length > 0) {
-          return existing[0].update((user) => {
-            user.firstName = data.firstName;
-            user.middleName = data.middleName;
-            user.lastName = data.lastName;
-            user.phoneNumber = data.phoneNumber;
-            user.email = data.email;
-            user.avatar = data.avatar;
-            user.createdAt = new Date(data.createdAt);
-            user.updatedAt = new Date(data.updatedAt);
-          });
-        }
-
-        return collection.create((user) => {
-          user.firstName = data.firstName;
-          user.middleName = data.middleName;
-          user.lastName = data.lastName;
-          user.phoneNumber = data.phoneNumber;
-          user.email = data.email;
-          user.avatar = data.avatar;
-          user.createdAt = new Date(data.createdAt);
-          user.updatedAt = new Date(data.updatedAt);
-        });
-      });
-    };
-
-    saveUser();
-  });*/
 
   if (!data)
     return (
@@ -81,12 +71,11 @@ export default function UserDetails() {
 
       <Button
         onPress={() =>
-          router.push({
-            pathname: '/(main)/new-chat/[id]',
-            params: {
-              id,
-              name: data.firstName,
-            },
+          navgateToChat({
+            userId: id,
+            avatar: data.avatar,
+            firstName: data.firstName,
+            lastName: data.lastName,
           })
         }>
         <Text>Start Chatting</Text>

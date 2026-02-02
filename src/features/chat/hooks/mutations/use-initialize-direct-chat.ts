@@ -8,15 +8,15 @@ import { UserRepository } from '@/db/repositories/user';
 import { ConversationRepository } from '@/db/repositories/conversation';
 import { DirectChatRepository } from '@/db/repositories/direct-chat';
 
-export const useInitializeDirectChat = () => {
-  const userRepository = new UserRepository();
-  const conversationRespository = new ConversationRepository();
-  const directChatRepository = new DirectChatRepository();
+const userRepository = new UserRepository();
+const conversationRespository = new ConversationRepository();
+const directChatRepository = new DirectChatRepository();
 
+export const useInitializeDirectChat = () => {
   return useMutation({
     mutationFn: initializeDirectChatApi,
     onSuccess: async (data) => {
-      const receiverDetails = await getUserApi(data.data.receiverId);
+      const receiverDetails = await getUserApi(data.receiverId);
 
       const savedReceiver = await userRepository.create({
         ...receiverDetails,
@@ -25,26 +25,28 @@ export const useInitializeDirectChat = () => {
       });
 
       const savedConversation = await conversationRespository.create({
+        id: data.conversationId,
         userId: savedReceiver.id,
-        createdAt: new Date(data.data.createdAt),
-        updatedAt: new Date(data.data.createdAt),
+        createdAt: new Date(data.createdAt),
+        updatedAt: new Date(data.updatedAt),
       });
 
       await directChatRepository.create({
-        id: data.data._id,
+        id: data._id,
         conversationId: savedConversation.id,
         isDelivered: false,
         isSeen: false,
         mode: 'SENT',
-        text: data.data.text,
-        createdAt: new Date(data.data.createdAt),
-        updatedAt: new Date(data.data.createdAt),
+        text: data.text,
+        createdAt: new Date(data.createdAt),
+        updatedAt: new Date(data.updatedAt),
       });
 
       router.replace({
         pathname: '/(main)/chat/[id]',
         params: {
           id: savedConversation.id,
+          userId: savedConversation._getRaw('user_id') as string,
         },
       });
     },

@@ -2,6 +2,7 @@ import { View, type ViewProps } from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
 import { arktypeResolver } from '@hookform/resolvers/arktype';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
+import { type } from 'arktype';
 
 import { cn } from '@/lib/utils';
 
@@ -10,23 +11,18 @@ import { useGradualAnimation } from '@/hooks/use-gradual-animation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
-import { type } from 'arktype';
-import { useOptimisticUpdate } from '@/db/hooks/use-optimistic-update';
-import { database } from '@/db';
-import syncEngine from '@/db/sync';
-import { USER_TABLE_NAME } from '@/db/schemas/user-table.schema';
-import { SyncOperation } from '@/db/types';
-import { Collection } from '@nozbe/watermelondb';
-import { User } from '@/db/models/user.model';
+import { InitializeDirectChatParam } from '../schemas/initialize-direct-chat/initialize-direct-chat-param.schema';
 
 interface SendFirstMessageProps extends ViewProps {
   receiverId: string;
-  handleSubmit: (text: string, receiverId: string) => void;
+  isPending: boolean;
+  handleSubmit: (data: InitializeDirectChatParam) => void;
 }
 
 export function SendFirstMessage({
   className,
   receiverId,
+  isPending,
   handleSubmit,
   ...props
 }: SendFirstMessageProps) {
@@ -40,7 +36,6 @@ export function SendFirstMessage({
 
   const {
     control,
-    reset,
 
     handleSubmit: handlFormSubmit,
   } = useForm({
@@ -50,9 +45,9 @@ export function SendFirstMessage({
     resolver: arktypeResolver(type({ text: '0 < string <= 1000' })),
   });
 
-  const { execute } = useOptimisticUpdate(database, syncEngine);
-
-  const onSubmit = (data: { text: string }) => {};
+  const onSubmit = (data: { text: string }) => {
+    handleSubmit({ receiverId, text: data.text });
+  };
 
   return (
     <View className={cn('border-t-2 border-gray-400', className)} {...props}>
@@ -75,7 +70,7 @@ export function SendFirstMessage({
           )}
         />
 
-        <Button onPress={handlFormSubmit(onSubmit)} size="sm">
+        <Button onPress={handlFormSubmit(onSubmit)} size="sm" disabled={isPending}>
           <Text>Send</Text>
         </Button>
       </View>

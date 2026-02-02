@@ -30,7 +30,7 @@
     "bson-objectid": "^2.0.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "expo": "~54.0.32",
+    "expo": "~54.0.33",
     "expo-build-properties": "~1.0.10",
     "expo-constants": "~18.0.13",
     "expo-device": "~8.0.10",
@@ -39,7 +39,7 @@
     "expo-image": "~3.0.11",
     "expo-linking": "~8.0.11",
     "expo-notifications": "~0.32.16",
-    "expo-router": "~6.0.22",
+    "expo-router": "~6.0.23",
     "expo-secure-store": "~15.0.8",
     "expo-splash-screen": "~31.0.13",
     "expo-status-bar": "~3.0.9",
@@ -68,10 +68,10 @@
     "tailwind-merge": "^3.4.0",
     "uniwind": "^1.2.7",
     "use-debounce": "^10.1.0",
-    "zustand": "^5.0.10"
+    "zustand": "^5.0.11"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-decorators": "^7.28.6",
+    "@babel/plugin-proposal-decorators": "^7.29.0",
     "@types/react": "~19.1.0",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",

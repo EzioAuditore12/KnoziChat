@@ -4,12 +4,15 @@ import { View } from 'react-native';
 import { Text } from '@/components/ui/text';
 
 import { SendFirstMessage } from '@/features/chat/components/send-first-message';
+import { useInitializeDirectChat } from '@/features/chat/hooks/mutations/use-initialize-direct-chat';
 
 export default function NewDirectChatScreen() {
   const { id, name } = useLocalSearchParams() as unknown as {
     id: string;
     name: string;
   };
+
+  const { mutate, isPending } = useInitializeDirectChat();
 
   return (
     <>
@@ -22,8 +25,9 @@ export default function NewDirectChatScreen() {
         </View>
         <SendFirstMessage
           className="items-center"
+          isPending={isPending}
           receiverId={id}
-          handleSubmit={() => console.log('Submit')}
+          handleSubmit={mutate}
         />
       </View>
     </>
