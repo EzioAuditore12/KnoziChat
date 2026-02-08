@@ -2,12 +2,10 @@ import { arktypeResolver } from '@hookform/resolvers/arktype';
 import { Controller, useForm } from 'react-hook-form';
 import { View, type ViewProps } from 'react-native';
 import type { Except } from 'type-fest';
-
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Text } from '@/components/ui/text';
-
-import { cn } from '@/lib/utils';
+import { Button } from 'heroui-native/button';
+import { Input } from 'heroui-native/input';
+import { Description } from 'heroui-native/description';
+import { cn } from 'tailwind-variants';
 
 import {
   registerFormParamSchema,
@@ -63,9 +61,7 @@ export function RegisterForm({
       />
 
       {errors.firstName && (
-        <Text variant={'small'} className="text-red-500">
-          {errors.firstName.message}
-        </Text>
+        <Description className="text-sm text-red-500">{errors.firstName.message}</Description>
       )}
 
       <Controller
@@ -83,9 +79,7 @@ export function RegisterForm({
       />
 
       {errors.middleName && (
-        <Text variant={'small'} className="text-red-500">
-          {errors.middleName.message}
-        </Text>
+        <Description className="text-sm text-red-500">{errors.middleName.message}</Description>
       )}
 
       <Controller
@@ -97,9 +91,7 @@ export function RegisterForm({
       />
 
       {errors.lastName && (
-        <Text variant={'small'} className="text-red-500">
-          {errors.lastName.message}
-        </Text>
+        <Description className="text-sm text-red-500">{errors.lastName.message}</Description>
       )}
 
       <Controller
@@ -111,9 +103,7 @@ export function RegisterForm({
       />
 
       {errors.phoneNumber && (
-        <Text variant={'small'} className="text-red-500">
-          {errors.phoneNumber.message}
-        </Text>
+        <Description className="text-sm text-red-500">{errors.phoneNumber.message}</Description>
       )}
 
       <Controller
@@ -131,9 +121,7 @@ export function RegisterForm({
       />
 
       {errors.email && (
-        <Text variant={'small'} className="text-red-500">
-          {errors.email.message}
-        </Text>
+        <Description className="text-sm text-red-500">{errors.email.message}</Description>
       )}
 
       <Controller
@@ -151,10 +139,10 @@ export function RegisterForm({
       />
 
       {errors.password && (
-        <Text variant={'small'} className="text-red-500">
+        <Description className="text-sm text-red-500">
           Password must be 8-16 characters, include uppercase, lowercase, number, and special
           character
-        </Text>
+        </Description>
       )}
 
       <Controller
@@ -172,13 +160,11 @@ export function RegisterForm({
       />
 
       {errors.confirmPassword && (
-        <Text variant={'small'} className="text-red-500">
-          {errors.confirmPassword.message}
-        </Text>
+        <Description className="text-sm text-red-500">{errors.confirmPassword.message}</Description>
       )}
 
-      <Button onPress={handleFormSubmit(onSubmit)} disabled={isSubmitting}>
-        <Text> {isSubmitting ? 'Submitting' : 'Submit'}</Text>
+      <Button onPress={handleFormSubmit(onSubmit)} isDisabled={isSubmitting}>
+        {isSubmitting ? 'Submitting' : 'Submit'}
       </Button>
     </View>
   );

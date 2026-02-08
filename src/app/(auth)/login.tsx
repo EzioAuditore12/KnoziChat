@@ -1,9 +1,9 @@
 import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Description } from 'heroui-native/description';
 
-import { Link } from '@/components/ui/link';
-import { Text } from '@/components/ui/text';
+import { Link } from '@/components/link';
 
 import { LoginForm } from '@/features/auth/login/components/login-form';
 
@@ -24,7 +24,7 @@ export default function LoginScreen() {
         paddingTop: safeAreaInsets.top,
       }}
       contentContainerClassName="flex-grow-1 items-center justify-center p-2">
-      <Text variant={'h2'}>Welcome Back !</Text>
+      <Description className="text-2xl font-bold">Welcome Back !</Description>
 
       <LoginBanner />
 
@@ -36,7 +36,7 @@ export default function LoginScreen() {
       />
 
       <View className="flex-row gap-x-1">
-        <Text>Don&apos;t have an account</Text>
+        <Description>Don&apos;t have an account</Description>
         <Link href={'/register'} className="text-blue-500 underline">
           Register Here
         </Link>

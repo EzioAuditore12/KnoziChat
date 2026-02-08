@@ -1,12 +1,10 @@
 import { arktypeResolver } from '@hookform/resolvers/arktype';
 import { Controller, useForm } from 'react-hook-form';
 import { View, type ViewProps } from 'react-native';
-
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Text } from '@/components/ui/text';
-
-import { cn } from '@/lib/utils';
+import { Button } from 'heroui-native/button';
+import { Input } from 'heroui-native/input';
+import { Description } from 'heroui-native/description';
+import { cn } from 'tailwind-variants';
 
 import { loginParamSchema, type LoginParam } from '../schemas/login-param.schema';
 
@@ -51,9 +49,7 @@ export function LoginForm({
       />
 
       {errors.phoneNumber && (
-        <Text variant={'small'} className="text-red-500">
-          {errors.phoneNumber.message}
-        </Text>
+        <Description className="text-sm text-red-500">{errors.phoneNumber.message}</Description>
       )}
 
       <Controller
@@ -71,13 +67,11 @@ export function LoginForm({
       />
 
       {errors.password && (
-        <Text variant={'small'} className="text-red-500">
-          {errors.password.message}
-        </Text>
+        <Description className="text-sm text-red-500">{errors.password.message}</Description>
       )}
 
-      <Button onPress={handleFormSubmit(onSubmit)} disabled={isSubmitting}>
-        <Text> {isSubmitting ? 'Submitting' : 'Submit'}</Text>
+      <Button onPress={handleFormSubmit(onSubmit)} isDisabled={isSubmitting}>
+        {isSubmitting ? 'Submitting' : 'Submit'}
       </Button>
     </View>
   );

@@ -1,9 +1,9 @@
 import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Description } from 'heroui-native/description';
 
-import { Link } from '@/components/ui/link';
-import { Text } from '@/components/ui/text';
+import { Link } from '@/components/link';
 
 import { RegisterForm } from '@/features/auth/register/components/register-form';
 import { useRegisterForm } from '@/features/auth/register/hooks/use-register-form';
@@ -31,7 +31,7 @@ export default function RegisterFormScreen() {
       />
 
       <View className="flex-row gap-x-1">
-        <Text>Already have an account</Text>
+        <Description>Already have an account</Description>
         <Link href={'/login'} className="text-blue-500 underline">
           Login
         </Link>

@@ -3,14 +3,12 @@ import { Controller, useForm } from 'react-hook-form';
 import { arktypeResolver } from '@hookform/resolvers/arktype';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { type } from 'arktype';
-
-import { cn } from '@/lib/utils';
+import { cn } from 'tailwind-variants';
+import { Button } from 'heroui-native/button';
+import { Input } from 'heroui-native/input';
 
 import { useGradualAnimation } from '@/hooks/use-gradual-animation';
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Text } from '@/components/ui/text';
 import { InitializeDirectChatParam } from '../schemas/initialize-direct-chat/initialize-direct-chat-param.schema';
 
 interface SendFirstMessageProps extends ViewProps {
@@ -70,8 +68,8 @@ export function SendFirstMessage({
           )}
         />
 
-        <Button onPress={handlFormSubmit(onSubmit)} size="sm" disabled={isPending}>
-          <Text>Send</Text>
+        <Button onPress={handlFormSubmit(onSubmit)} size="sm" isDisabled={isPending}>
+          Send
         </Button>
       </View>
 

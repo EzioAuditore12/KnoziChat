@@ -1,11 +1,10 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Button } from 'heroui-native/button';
+import { Description } from 'heroui-native/description';
 
 import { UserProfile } from '@/features/common/components/user-profile';
-
-import { Button } from '@/components/ui/button';
-import { Text } from '@/components/ui/text';
 
 import { useGetUser } from '@/features/common/hooks/queries/use-get-user';
 
@@ -59,7 +58,7 @@ export default function UserDetails() {
   if (!data)
     return (
       <ScrollView contentContainerClassName="flex-grow-1 items-center justify-center gap-y-2 p-2">
-        <Text variant={'h1'}>Not Found</Text>
+        <Description className="text-xl">Not Found</Description>
       </ScrollView>
     );
 
@@ -78,7 +77,7 @@ export default function UserDetails() {
             lastName: data.lastName,
           })
         }>
-        <Text>Start Chatting</Text>
+        Start Chatting
       </Button>
     </ScrollView>
   );

@@ -1,8 +1,7 @@
 import { useLocalSearchParams } from 'expo-router';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-import { Text } from '@/components/ui/text';
+import { Description } from 'heroui-native/description';
 
 import { VerificationRegisterationForm } from '@/features/auth/register/components/verify-registeration-form';
 import { useVerifyRegisterForm } from '@/features/auth/register/hooks/use-verify-register-form';
@@ -31,7 +30,7 @@ export default function VerifyRegisterScreen() {
         isSubmitting={isPending}
       />
 
-      <Text>Duration is : {duration} </Text>
+      <Description>Duration is : {duration} </Description>
     </KeyboardAwareScrollView>
   );
 }

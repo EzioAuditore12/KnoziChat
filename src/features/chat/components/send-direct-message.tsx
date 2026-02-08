@@ -2,15 +2,12 @@ import { View, type ViewProps } from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
 import { arktypeResolver } from '@hookform/resolvers/arktype';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
-
-import { cn } from '@/lib/utils';
+import { cn } from 'tailwind-variants';
+import { Button } from 'heroui-native/button';
+import { Input } from 'heroui-native/input';
 
 import { useGradualAnimation } from '@/hooks/use-gradual-animation';
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-
-import { Text } from '@/components/ui/text';
 import { type } from 'arktype';
 import { SendMessageEvent } from '@/features/realtime/events/send-message.event';
 import { Socket } from '@/lib/socket-io';
@@ -76,7 +73,7 @@ export function SendDirectMessage({
         />
 
         <Button onPress={handlFormSubmit(onSubmit)} size="sm">
-          <Text>Send</Text>
+          Send
         </Button>
       </View>
 

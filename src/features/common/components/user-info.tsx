@@ -3,18 +3,15 @@ import { withDatabase, withObservables } from '@nozbe/watermelondb/react';
 import { View, type ViewProps } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { ArrowBigLeft } from 'lucide-react-native';
-
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Text } from '@/components/ui/text';
+import { Ionicons } from '@expo/vector-icons';
+import { Avatar } from 'heroui-native/avatar';
+import { cn } from 'tailwind-variants';
 
 import { User } from '@/db/models/user.model';
-import { cn } from '@/lib/utils';
 
 import { USER_TABLE_NAME } from '@/db/schemas/user-table.schema';
-import { Icon } from '@/components/ui/icon';
-
-import { Button } from '@/components/ui/button';
+import { Description } from 'heroui-native/description';
+import { ThrottledTouchable } from '@/components/throttled-touchable';
 
 interface UserInfoProps extends ViewProps {
   data: User;
@@ -33,24 +30,22 @@ export function UserInfo({ className, data, ...props }: UserInfoProps) {
       )}
       style={{ paddingTop: safeAreaInsets.top }}
       {...props}>
-      <Button variant={'link'} className="bg-muted rounded-full p-2" onPress={() => router.back()}>
-        <Icon as={ArrowBigLeft} />
-      </Button>
+      <ThrottledTouchable className="bg-muted rounded-full p-2" onPress={() => router.back()}>
+        <Ionicons name="arrow-back" size={28} />
+      </ThrottledTouchable>
 
       <Avatar alt={firstName} className="size-14">
-        <AvatarImage source={{ uri: avatar ?? '' }} />
-        <AvatarFallback>
-          <Text>{firstName[0]}</Text>
-        </AvatarFallback>
+        <Avatar.Image source={{ uri: avatar ?? '' }} />
+        <Avatar.Fallback>{firstName[0]}</Avatar.Fallback>
       </Avatar>
 
       <View className="flex-col">
         <View className="flex-row gap-x-2">
-          <Text>{firstName}</Text>
-          <Text>{lastName}</Text>
+          <Description>{firstName}</Description>
+          <Description>{lastName}</Description>
         </View>
 
-        <Text>{phoneNumber}</Text>
+        <Description>{phoneNumber}</Description>
       </View>
     </View>
   );

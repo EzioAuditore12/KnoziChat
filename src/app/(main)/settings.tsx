@@ -1,8 +1,6 @@
 import { ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-import { Button } from '@/components/ui/button';
-import { Text } from '@/components/ui/text';
+import { Button } from 'heroui-native/button';
 
 import { UserProfile } from '@/features/common/components/user-profile';
 import { useGetProfile } from '@/features/settings/hooks/queries/use-get-profile';
@@ -22,8 +20,8 @@ export default function SettingsScreen() {
       contentContainerClassName="flex-grow-1 items-center justify-center gap-y-2 p-2">
       <UserProfile className="w-full" data={data} />
 
-      <Button variant={'destructive'} onPress={logout}>
-        <Text>Logout</Text>
+      <Button className="bg-red-500" onPress={logout}>
+        Logout
       </Button>
     </ScrollView>
   );

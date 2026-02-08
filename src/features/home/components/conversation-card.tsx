@@ -1,12 +1,10 @@
 import { withDatabase, withObservables } from '@nozbe/watermelondb/react';
 import type { ComponentProps } from 'react';
 import { View } from 'react-native';
-
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Card, CardContent } from '@/components/ui/card';
-import { Text } from '@/components/ui/text';
-
-import { cn } from '@/lib/utils';
+import { Avatar } from 'heroui-native/avatar';
+import { Description } from 'heroui-native/description';
+import { Card } from 'heroui-native/card';
+import { cn } from 'tailwind-variants';
 
 import { Conversation } from '@/db/models/conversation.model';
 import { User } from '@/db/models/user.model';
@@ -32,30 +30,28 @@ export function ConversationCard({
   return (
     <ThrottledTouchable onPress={onPress}>
       <Card className={cn(className)} {...props}>
-        <CardContent className="flex-row gap-x-2">
+        <Card.Body className="flex-row gap-x-2">
           <Avatar className="size-20" alt={firstName}>
-            <AvatarImage source={{ uri: avatar ?? undefined }} />
-            <AvatarFallback>
-              <Text>{firstName[0]}</Text>
-            </AvatarFallback>
+            <Avatar.Image source={{ uri: avatar ?? undefined }} />
+            <Avatar.Fallback>{firstName[0]}</Avatar.Fallback>
           </Avatar>
 
           <View className="flex-col">
-            <Text variant={'h3'}>{firstName}</Text>
+            <Description className="text-lg">{firstName}</Description>
 
-            <Text>
+            <Description>
               {firstName} {lastName}
-            </Text>
+            </Description>
 
-            <Text>{phoneNumber}</Text>
+            <Description>{phoneNumber}</Description>
           </View>
-        </CardContent>
-        <Text className="mr-2 ml-auto">
+        </Card.Body>
+        <Description className="mr-2 ml-auto">
           {updatedAt.toLocaleTimeString([], {
             hour: '2-digit',
             minute: '2-digit',
           })}
-        </Text>
+        </Description>
       </Card>
     </ThrottledTouchable>
   );
