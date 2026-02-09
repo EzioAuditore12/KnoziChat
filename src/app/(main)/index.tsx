@@ -61,7 +61,6 @@ export default function HomeScreen() {
         }}
       />
       <View className="flex-1 gap-y-2 p-1" style={{ paddingBottom: safeAreaInsets.bottom }}>
-        {/* Example: Show online users count */}
         <Description>Online users: {onlineUsers.length}</Description>
         <EnhancedConversationList />
       </View>

@@ -3,7 +3,9 @@ import { Controller, useForm } from 'react-hook-form';
 import { View, type ViewProps } from 'react-native';
 import { Button } from 'heroui-native/button';
 import { Input } from 'heroui-native/input';
-import { Description } from 'heroui-native/description';
+import { FieldError } from 'heroui-native/field-error';
+import { TextField } from 'heroui-native/text-field';
+import { Label } from 'heroui-native/label';
 import { cn } from 'tailwind-variants';
 
 import { loginParamSchema, type LoginParam } from '../schemas/login-param.schema';
@@ -44,31 +46,36 @@ export function LoginForm({
         control={control}
         name="phoneNumber"
         render={({ field: { value, onChange, onBlur } }) => (
-          <Input placeholder="Phone Number" value={value} onChangeText={onChange} onBlur={onBlur} />
+          <TextField isRequired isInvalid={errors.phoneNumber ? true : false}>
+            <Label>Phone Number</Label>
+            <Input
+              placeholder="Enter phone number"
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+            />
+            <FieldError>{errors.phoneNumber?.message}</FieldError>
+          </TextField>
         )}
       />
-
-      {errors.phoneNumber && (
-        <Description className="text-sm text-red-500">{errors.phoneNumber.message}</Description>
-      )}
 
       <Controller
         control={control}
         name="password"
         render={({ field: { value, onBlur, onChange } }) => (
-          <Input
-            value={value}
-            placeholder="Password"
-            onChangeText={onChange}
-            onBlur={onBlur}
-            secureTextEntry
-          />
+          <TextField isRequired isInvalid={errors.password ? true : false}>
+            <Label>Password</Label>
+            <Input
+              value={value}
+              placeholder="Password"
+              onChangeText={onChange}
+              onBlur={onBlur}
+              secureTextEntry
+            />
+            <FieldError>{errors.password?.message}</FieldError>
+          </TextField>
         )}
       />
-
-      {errors.password && (
-        <Description className="text-sm text-red-500">{errors.password.message}</Description>
-      )}
 
       <Button onPress={handleFormSubmit(onSubmit)} isDisabled={isSubmitting}>
         {isSubmitting ? 'Submitting' : 'Submit'}

@@ -22,6 +22,7 @@ export default function LoginScreen() {
     <KeyboardAwareScrollView
       style={{
         paddingTop: safeAreaInsets.top,
+        paddingBottom: safeAreaInsets.bottom,
       }}
       contentContainerClassName="flex-grow-1 items-center justify-center p-2">
       <Description className="text-2xl font-bold">Welcome Back !</Description>
@@ -35,7 +36,7 @@ export default function LoginScreen() {
         isSubmitting={isPending}
       />
 
-      <View className="flex-row gap-x-1">
+      <View className="flex-row items-center gap-x-1">
         <Description>Don&apos;t have an account</Description>
         <Link href={'/register'} className="text-blue-500 underline">
           Register Here

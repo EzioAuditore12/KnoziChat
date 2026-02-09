@@ -20,7 +20,7 @@ export default function SettingsScreen() {
       contentContainerClassName="flex-grow-1 items-center justify-center gap-y-2 p-2">
       <UserProfile className="w-full" data={data} />
 
-      <Button className="bg-red-500" onPress={logout}>
+      <Button variant='danger' onPress={logout}>
         Logout
       </Button>
     </ScrollView>

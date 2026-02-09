@@ -11,6 +11,7 @@ export const useRegisterForm = () => {
         pathname: '/(auth)/register/verify-register',
         params: {
           phoneNumber: data.phoneNumber,
+          duration: data.duration,
         },
       });
     },

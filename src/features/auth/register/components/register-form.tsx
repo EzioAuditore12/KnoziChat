@@ -1,10 +1,11 @@
 import { arktypeResolver } from '@hookform/resolvers/arktype';
 import { Controller, useForm } from 'react-hook-form';
 import { View, type ViewProps } from 'react-native';
-import type { Except } from 'type-fest';
 import { Button } from 'heroui-native/button';
 import { Input } from 'heroui-native/input';
-import { Description } from 'heroui-native/description';
+import { Label } from 'heroui-native/label';
+import { TextField } from 'heroui-native/text-field';
+import { FieldError } from 'heroui-native/field-error';
 import { cn } from 'tailwind-variants';
 
 import {
@@ -15,7 +16,7 @@ import {
 interface RegisterFormProps extends ViewProps {
   expoPushToken: string | null;
   isSubmitting: boolean;
-  handleSubmit: (data: Except<RegisterFormParam, 'confirmPassword'>) => void;
+  handleSubmit: (data: Omit<RegisterFormParam, 'confirmPassword'>) => void;
 }
 
 export function RegisterForm({
@@ -56,112 +57,125 @@ export function RegisterForm({
         control={control}
         name="firstName"
         render={({ field: { value, onChange, onBlur } }) => (
-          <Input placeholder="First Name" value={value} onChangeText={onChange} onBlur={onBlur} />
+          <TextField isRequired isInvalid={errors.firstName ? true : false}>
+            <Label>First Name</Label>
+            <Input
+              placeholder="Enter first name"
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+            />
+            <FieldError>{errors.firstName?.message}</FieldError>
+          </TextField>
         )}
       />
-
-      {errors.firstName && (
-        <Description className="text-sm text-red-500">{errors.firstName.message}</Description>
-      )}
 
       <Controller
         control={control}
         name="middleName"
         render={({ field: { value, onChange, onBlur } }) => (
-          <Input
-            placeholder="Middle Name (Optional)"
-            className="bg-transparent"
-            value={value}
-            onChangeText={onChange}
-            onBlur={onBlur}
-          />
+          <TextField isInvalid={errors.middleName ? true : false}>
+            <Label>Middle Name</Label>
+            <Input
+              placeholder="Middle Name (Optional)"
+              variant="secondary"
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+            />
+            <FieldError>{errors.middleName?.message}</FieldError>
+          </TextField>
         )}
       />
-
-      {errors.middleName && (
-        <Description className="text-sm text-red-500">{errors.middleName.message}</Description>
-      )}
 
       <Controller
         control={control}
         name="lastName"
         render={({ field: { value, onChange, onBlur } }) => (
-          <Input placeholder="Last Name" value={value} onChangeText={onChange} onBlur={onBlur} />
+          <TextField isRequired isInvalid={errors.lastName ? true : false}>
+            <Label>Last Name</Label>
+            <Input
+              placeholder="Enter last name"
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+            />
+            <FieldError>{errors.lastName?.message}</FieldError>
+          </TextField>
         )}
       />
-
-      {errors.lastName && (
-        <Description className="text-sm text-red-500">{errors.lastName.message}</Description>
-      )}
 
       <Controller
         control={control}
         name="phoneNumber"
         render={({ field: { value, onChange, onBlur } }) => (
-          <Input placeholder="Phone Number" value={value} onChangeText={onChange} onBlur={onBlur} />
+          <TextField isRequired isInvalid={errors.phoneNumber ? true : false}>
+            <Label>Phone Number</Label>
+            <Input
+              placeholder="Phone Number"
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+            />
+            <FieldError>{errors.phoneNumber?.message}</FieldError>
+          </TextField>
         )}
       />
-
-      {errors.phoneNumber && (
-        <Description className="text-sm text-red-500">{errors.phoneNumber.message}</Description>
-      )}
 
       <Controller
         control={control}
         name="email"
         render={({ field: { value, onChange, onBlur } }) => (
-          <Input
-            placeholder="Email (Optional)"
-            keyboardType="email-address"
-            value={value}
-            onChangeText={onChange}
-            onBlur={onBlur}
-          />
+          <TextField isInvalid={errors.email ? true : false}>
+            <Label>Email</Label>
+            <Input
+              placeholder="Email (Optional)"
+              keyboardType="email-address"
+              variant="secondary"
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+            />
+            <FieldError>{errors.email?.message}</FieldError>
+          </TextField>
         )}
       />
-
-      {errors.email && (
-        <Description className="text-sm text-red-500">{errors.email.message}</Description>
-      )}
 
       <Controller
         control={control}
         name="password"
         render={({ field: { value, onBlur, onChange } }) => (
-          <Input
-            value={value}
-            placeholder="Password"
-            onChangeText={onChange}
-            onBlur={onBlur}
-            secureTextEntry
-          />
+          <TextField isRequired isInvalid={errors.password ? true : false}>
+            <Label>Password</Label>
+            <Input
+              value={value}
+              placeholder="Password"
+              onChangeText={onChange}
+              onBlur={onBlur}
+              secureTextEntry
+            />
+            <FieldError>{errors.password?.message}</FieldError>
+          </TextField>
         )}
       />
-
-      {errors.password && (
-        <Description className="text-sm text-red-500">
-          Password must be 8-16 characters, include uppercase, lowercase, number, and special
-          character
-        </Description>
-      )}
 
       <Controller
         control={control}
         name="confirmPassword"
         render={({ field: { value, onBlur, onChange } }) => (
-          <Input
-            value={value}
-            placeholder="Confirm Password"
-            onChangeText={onChange}
-            onBlur={onBlur}
-            secureTextEntry
-          />
+          <TextField isRequired isInvalid={errors.confirmPassword ? true : false}>
+            <Label>Confirm Password</Label>
+            <Input
+              value={value}
+              placeholder="Confirm Password"
+              onChangeText={onChange}
+              onBlur={onBlur}
+              secureTextEntry
+            />
+            <FieldError>{errors.confirmPassword?.message}</FieldError>
+          </TextField>
         )}
       />
-
-      {errors.confirmPassword && (
-        <Description className="text-sm text-red-500">{errors.confirmPassword.message}</Description>
-      )}
 
       <Button onPress={handleFormSubmit(onSubmit)} isDisabled={isSubmitting}>
         {isSubmitting ? 'Submitting' : 'Submit'}

@@ -37,7 +37,7 @@ export function ConversationCard({
           </Avatar>
 
           <View className="flex-col">
-            <Description className="text-lg">{firstName}</Description>
+            <Description className="text-lg font-bold">{firstName}</Description>
 
             <Description>
               {firstName} {lastName}
