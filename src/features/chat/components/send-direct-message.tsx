@@ -52,7 +52,7 @@ export function SendDirectMessage({
   };
 
   return (
-    <View className={cn('border-t-2 border-background-tertiary', className)} {...props}>
+    <View className={cn('border-background-tertiary border-t-2', className)} {...props}>
       <View className="flex-row items-center p-2">
         <Controller
           control={control}

@@ -32,7 +32,7 @@ export function UserInfo({ className, data, ...props }: UserInfoProps) {
       style={{ paddingTop: safeAreaInsets.top }}
       {...props}>
       <ThrottledTouchable className="bg-background rounded-full p-2" onPress={() => router.back()}>
-        <Ionicons name="arrow-back" size={22}/>
+        <Ionicons name="arrow-back" size={22} />
       </ThrottledTouchable>
 
       <Avatar alt={firstName} className="size-14">
