@@ -1,11 +1,11 @@
 import { router, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { View } from 'react-native';
+import { Button } from 'heroui-native/button';
+import { Avatar } from 'heroui-native/avatar';
+import { Description } from 'heroui-native/description';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Link } from '@/components/ui/link';
-import { Text } from '@/components/ui/text';
+import { Link } from '@/components/link';
 
 import { useSyncEngine } from '@/db/hooks/use-sync-engine';
 import syncEngine from '@/db/sync';
@@ -43,8 +43,8 @@ export default function HomeScreen() {
           headerLeft: () => (
             <>
               <Link href={'/search'}>Search</Link>
-              <Button onPress={sync} disabled={isSyncing} className="ml-2">
-                <Text> {isSyncing ? 'Syncing...' : `Sync (${pendingChanges} pending)`}</Text>
+              <Button onPress={sync} isDisabled={isSyncing} className="ml-2">
+                {isSyncing ? 'Syncing...' : `Sync (${pendingChanges} pending)`}
               </Button>
             </>
           ),
@@ -52,10 +52,8 @@ export default function HomeScreen() {
             <>
               <ThrottledTouchable onPress={() => router.push('/settings')} className="mr-2">
                 <Avatar className="size-14" alt={user?.firstName ?? ''}>
-                  <AvatarImage source={user?.avatar ? { uri: user.avatar } : undefined} />
-                  <AvatarFallback>
-                    <Text>{user?.firstName[0]}</Text>
-                  </AvatarFallback>
+                  <Avatar.Image source={user?.avatar ? { uri: user.avatar } : undefined} />
+                  <Avatar.Fallback>{user?.firstName[0]}</Avatar.Fallback>
                 </Avatar>
               </ThrottledTouchable>
             </>
@@ -63,8 +61,7 @@ export default function HomeScreen() {
         }}
       />
       <View className="flex-1 gap-y-2 p-1" style={{ paddingBottom: safeAreaInsets.bottom }}>
-        {/* Example: Show online users count */}
-        <Text>Online users: {onlineUsers.length}</Text>
+        <Description>Online users: {onlineUsers.length}</Description>
         <EnhancedConversationList />
       </View>
     </>

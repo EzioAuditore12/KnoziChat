@@ -1,9 +1,7 @@
 import { View, type ViewProps } from 'react-native';
-
-import { cn } from '@/lib/utils';
-
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Text } from '@/components/ui/text';
+import { cn } from 'tailwind-variants';
+import { Avatar } from 'heroui-native/avatar';
+import { Description } from 'heroui-native/description';
 
 import type { User } from '../schemas/user.schema';
 
@@ -22,23 +20,17 @@ export function UserProfile({ className, data, ...props }: UserProfileProps) {
       className={cn('flex flex-col items-center space-y-4 rounded-2xl p-6 shadow-lg', className)}
       {...props}>
       <Avatar className="size-48" alt={firstName}>
-        <AvatarImage src={avatar ?? ''} />
-        <AvatarFallback>
-          <Text>{firstName ? firstName[0] : '?'} </Text>
-        </AvatarFallback>
+        <Avatar.Image src={avatar ?? ''} />
+        <Avatar.Fallback>{firstName[0]}</Avatar.Fallback>
       </Avatar>
-      <Text variant={'h3'} className="text-center">
+      <Description className="text-center text-lg">
         {firstName} {middleName} {lastName}
-      </Text>
-      <Text variant={'large'} className="text-center">
-        {email}
-      </Text>
-      <Text variant={'large'} className="text-center">
-        {phoneNumber}
-      </Text>
-      <Text variant={'small'} className="mt-2 text-center">
+      </Description>
+      <Description className="text-center text-lg">{email}</Description>
+      <Description className="text-center text-lg">{phoneNumber}</Description>
+      <Description className="mt-2 text-center text-sm">
         Joined: {new Date(createdAt).toLocaleDateString()}
-      </Text>
+      </Description>
     </View>
   );
 }

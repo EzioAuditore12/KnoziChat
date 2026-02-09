@@ -2,8 +2,8 @@ import { DirectChat } from '@/db/models/direct-chat.model';
 import { FlashList, FlashListProps } from '@shopify/flash-list';
 import { Q } from '@nozbe/watermelondb';
 import { useMemo, useState } from 'react';
+import { cn } from 'tailwind-variants';
 
-import { cn } from '@/lib/utils';
 import { ChatText } from './chat-text';
 import { DIRECT_CHAT_TABLE_NAME } from '@/db/schemas/direct-chat-table.schema';
 import { database } from '@/db';

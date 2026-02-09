@@ -1,9 +1,9 @@
 import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-import { Link } from '@/components/ui/link';
-import { Text } from '@/components/ui/text';
+import { Description } from 'heroui-native/description';
+import { Button } from 'heroui-native/button';
+import { router } from 'expo-router';
 
 import { RegisterForm } from '@/features/auth/register/components/register-form';
 import { useRegisterForm } from '@/features/auth/register/hooks/use-register-form';
@@ -21,6 +21,7 @@ export default function RegisterFormScreen() {
     <KeyboardAwareScrollView
       style={{
         paddingTop: safeAreaInsets.top,
+        paddingBottom: safeAreaInsets.bottom,
       }}
       contentContainerClassName="flex-grow-1 gap-y-2 items-center justify-center p-2">
       <RegisterForm
@@ -30,11 +31,11 @@ export default function RegisterFormScreen() {
         isSubmitting={isPending}
       />
 
-      <View className="flex-row gap-x-1">
-        <Text>Already have an account</Text>
-        <Link href={'/login'} className="text-blue-500 underline">
-          Login
-        </Link>
+      <View className="flex-row items-center gap-x-1">
+        <Description>Already have an account</Description>
+        <Button variant="ghost" className="p-0" onPress={() => router.dismissTo('/login')}>
+          <Description className="text-[16px] text-blue-500 underline">Login</Description>
+        </Button>
       </View>
     </KeyboardAwareScrollView>
   );

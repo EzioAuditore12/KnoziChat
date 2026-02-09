@@ -2,16 +2,13 @@ import { View, type ViewProps } from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
 import { arktypeResolver } from '@hookform/resolvers/arktype';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
-
-import { cn } from '@/lib/utils';
+import { cn } from 'tailwind-variants';
+import { Button } from 'heroui-native/button';
+import { Input } from 'heroui-native/input';
+import { type } from 'arktype';
 
 import { useGradualAnimation } from '@/hooks/use-gradual-animation';
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-
-import { Text } from '@/components/ui/text';
-import { type } from 'arktype';
 import { SendMessageEvent } from '@/features/realtime/events/send-message.event';
 import { Socket } from '@/lib/socket-io';
 
@@ -45,7 +42,7 @@ export function SendDirectMessage({
     defaultValues: {
       text: '',
     },
-    resolver: arktypeResolver(type({ text: 'string' })),
+    resolver: arktypeResolver(type({ text: '0 < string <=100' })),
   });
 
   const onSubmit = (data: { text: string }) => {
@@ -55,7 +52,7 @@ export function SendDirectMessage({
   };
 
   return (
-    <View className={cn('border-t-2 border-gray-400', className)} {...props}>
+    <View className={cn('border-background-tertiary border-t-2', className)} {...props}>
       <View className="flex-row items-center p-2">
         <Controller
           control={control}
@@ -71,12 +68,13 @@ export function SendDirectMessage({
               multiline
               numberOfLines={8}
               maxLength={1000}
+              scrollEnabled
             />
           )}
         />
 
         <Button onPress={handlFormSubmit(onSubmit)} size="sm">
-          <Text>Send</Text>
+          Send
         </Button>
       </View>
 
