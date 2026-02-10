@@ -10,7 +10,10 @@ export default function AppScreensLayout() {
   return (
     <Stack initialRouteName="login">
       <Stack.Screen name="login" options={{ headerShown: false }} />
-      <Stack.Screen name="register" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="register"
+        options={{ headerShown: false, animation: 'slide_from_bottom' }}
+      />
     </Stack>
   );
 }

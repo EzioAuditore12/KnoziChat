@@ -22,7 +22,7 @@ export default function VerifyRegisterScreen() {
       style={{
         paddingTop: safeAreaInsets.top,
       }}
-      contentContainerClassName="flex-1 gap-y-2 items-center justify-center p-2">
+      contentContainerClassName="flex-grow-1 items-center justify-center p-2">
       <VerificationRegisterationForm
         duration={duration}
         phoneNumber={phoneNumber}
