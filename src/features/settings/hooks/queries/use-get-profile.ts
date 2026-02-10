@@ -1,20 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { useRefreshOnFocus } from '@/hooks/use-refresh-on-focus';
-
 import { userProfileApi } from '../../api/get-profile.api';
 
 export const useGetProfile = () => {
-  const { data, isError, error, refetch } = useQuery({
+  return useQuery({
     queryKey: ['profile'],
     queryFn: userProfileApi,
   });
-
-  useRefreshOnFocus(refetch);
-
-  return {
-    data,
-    isError,
-    error,
-  };
 };

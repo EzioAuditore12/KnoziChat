@@ -9,6 +9,8 @@ import { UserProfile } from '@/features/common/components/user-profile';
 import { useGetUser } from '@/features/common/hooks/queries/use-get-user';
 
 import { ConversationRepository } from '@/db/repositories/conversation';
+import { useRefreshOnFocus } from '@/hooks/use-refresh-on-focus';
+import { UserProfileLoading } from '@/features/common/components/user-profile-loading';
 
 const conversationRepostiory = new ConversationRepository();
 
@@ -53,12 +55,21 @@ export default function UserDetails() {
 
   const { id } = useLocalSearchParams() as unknown as { id: string };
 
-  const { data } = useGetUser(id);
+  const { data, refetch, isLoading, error } = useGetUser(id);
 
-  if (!data)
+  useRefreshOnFocus(refetch);
+
+  if (isLoading)
     return (
       <ScrollView contentContainerClassName="flex-grow-1 items-center justify-center gap-y-2 p-2">
-        <Description className="text-xl">Not Found</Description>
+        <UserProfileLoading className="w-full max-w-4xl" variant="pulse" isLoading={isLoading} />
+      </ScrollView>
+    );
+
+  if (error || !data)
+    return (
+      <ScrollView contentContainerClassName="flex-grow-1 items-center justify-center gap-y-2 p-2">
+        <Description>Something went</Description>
       </ScrollView>
     );
 

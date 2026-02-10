@@ -1,7 +1,5 @@
 import { env } from '@/env';
-
 import { typedFetch } from '@/lib/fetch';
-
 import { userSchema } from '../schemas/user.schema';
 
 export const getUserApi = async (id: string) => {

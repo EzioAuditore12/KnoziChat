@@ -8,8 +8,8 @@ export default function MainScreensLayout() {
   const { user } = useAuthStore((state) => state);
 
   useEffect(() => {
-    initializeSyncEngine();
-  }, []);
+    if (user) initializeSyncEngine();
+  }, [user]);
 
   if (!user) return <Redirect href="/(auth)/login" />;
 

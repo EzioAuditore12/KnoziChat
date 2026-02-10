@@ -1,10 +1,10 @@
-import { View, type ViewProps } from 'react-native';
 import { cn } from 'tailwind-variants';
 import { Description } from 'heroui-native/description';
+import { Surface, type SurfaceRootProps } from 'heroui-native/surface';
 
 import { DirectChat } from '@/db/models/direct-chat.model';
 
-interface ChatTextProps extends ViewProps {
+interface ChatTextProps extends SurfaceRootProps {
   data: DirectChat;
 }
 
@@ -12,7 +12,7 @@ export function ChatText({ data, className, ...props }: ChatTextProps) {
   const { mode, text, createdAt } = data;
 
   return (
-    <View
+    <Surface
       className={cn(
         'my-1 max-w-xs rounded-xl p-3',
         mode === 'SENT' ? 'self-end' : 'self-start',
@@ -30,6 +30,6 @@ export function ChatText({ data, className, ...props }: ChatTextProps) {
         }}>
         {createdAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
       </Description>
-    </View>
+    </Surface>
   );
 }
