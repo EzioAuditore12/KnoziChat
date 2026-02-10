@@ -14,14 +14,16 @@ import { Socket } from '@/lib/socket-io';
 
 interface SendDirectMessageProps extends ViewProps {
   conversationId: string;
+  receiverId: string;
   socket: Socket;
-  handleSubmit: ({ socket, conversationId, text }: SendMessageEvent) => void;
+  handleSubmit: ({ socket, conversationId, receiverId, text }: SendMessageEvent) => void;
 }
 
 export function SendDirectMessage({
   className,
   socket,
   conversationId,
+  receiverId,
   handleSubmit,
   ...props
 }: SendDirectMessageProps) {
@@ -48,7 +50,7 @@ export function SendDirectMessage({
   const onSubmit = (data: { text: string }) => {
     reset();
 
-    handleSubmit({ socket, conversationId, text: data.text });
+    handleSubmit({ socket, conversationId, receiverId, text: data.text });
   };
 
   return (

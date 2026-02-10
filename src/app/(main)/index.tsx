@@ -1,5 +1,4 @@
 import { router, Stack } from 'expo-router';
-import { useEffect } from 'react';
 import { View } from 'react-native';
 import { Button } from 'heroui-native/button';
 import { Avatar } from 'heroui-native/avatar';
@@ -24,16 +23,7 @@ export default function HomeScreen() {
 
   const safeAreaInsets = useSafeAreaInsets();
 
-  const { connectSocket, disconnectSocket, onlineUsers } = useSocketState();
-
-  useEffect(() => {
-    connectSocket();
-
-    return () => {
-      disconnectSocket();
-      console.log('HomeScreen unmounted, socket disconnected');
-    };
-  }, [connectSocket, disconnectSocket]);
+  const { onlineUsers } = useSocketState();
 
   return (
     <>

@@ -12,7 +12,6 @@ import { useSocketState } from '@/store/socket';
 import { Socket } from '@/lib/socket-io';
 
 import { sendMessageEvent } from '@/features/realtime/events/send-message.event';
-import { useReceiveMessageEvent } from '@/features/realtime/events/receive-message.event';
 
 export default function ChattingScreen() {
   const { id, userId } = useLocalSearchParams() as unknown as {
@@ -20,11 +19,7 @@ export default function ChattingScreen() {
     userId: string;
   };
 
-  const { socket, connectSocket } = useSocketState();
-
-  useEffect(() => {
-    connectSocket();
-  }, [connectSocket]);
+  const { socket } = useSocketState();
 
   useEffect(() => {
     if (socket?.connected) {
@@ -38,8 +33,6 @@ export default function ChattingScreen() {
     };
   }, [socket, id, socket?.connected]);
 
-  useReceiveMessageEvent(socket);
-
   return (
     <>
       <Stack.Screen
@@ -51,6 +44,7 @@ export default function ChattingScreen() {
         <EnhancedDirectChatList conversationId={id} />
         <SendDirectMessage
           socket={socket as Socket}
+          receiverId={userId}
           conversationId={id}
           className="items-center"
           handleSubmit={sendMessageEvent}
