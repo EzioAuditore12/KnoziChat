@@ -1,7 +1,7 @@
 import { DirectChat } from '@/db/models/direct-chat.model';
 import { FlashList, FlashListProps } from '@shopify/flash-list';
 import { Q } from '@nozbe/watermelondb';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { cn } from 'tailwind-variants';
 
 import { ChatText } from './chat-text';
@@ -16,19 +16,16 @@ interface DirectChatListProps extends Omit<FlashListProps<DirectChat>, 'data' | 
 export function DirectChatList({ className, conversationId, ...props }: DirectChatListProps) {
   const [data, setData] = useState<DirectChat[]>([]);
 
-  // Create a reversed set callback because we want the UI list to be [Oldest ... Newest],
-  // but we query [Newest ... Oldest] to get the latest messages efficiently.
   const handleDataChange = (items: DirectChat[]) => {
     // Reverse logic implies strictly copying array to avoid mutating WatermelonDB internals if shared
     setData([...items].reverse());
   };
 
-  const query = useMemo(
-    () => [Q.where('conversation_id', conversationId), Q.sortBy('created_at', Q.desc)],
-    [conversationId]
-  );
+  // 1. Use DESC so 'take(limit)' grabs the NEWEST messages
+  const query = [Q.where('conversation_id', conversationId), Q.sortBy('created_at', Q.desc)];
 
-  const { next } = useWatermelonModelsPage({
+  // 2. Destructure 'next' to load more items
+  const { prev } = useWatermelonModelsPage({
     collection: DIRECT_CHAT_TABLE_NAME,
     database,
     query,
@@ -39,21 +36,18 @@ export function DirectChatList({ className, conversationId, ...props }: DirectCh
     <FlashList
       data={data}
       className={cn('p-2', className)}
-      maintainVisibleContentPosition={{
-        autoscrollToBottomThreshold: 0.2,
-        startRenderingFromBottom: true,
-      }}
-      // Trigger next page when scrolling to current top (start of list in this context)
-      onStartReached={next}
-      onStartReachedThreshold={0.5}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => <ChatText data={item} />}
-      contentContainerStyle={{ paddingBottom: 20 }}
+      maintainVisibleContentPosition={{
+        startRenderingFromBottom: true,
+      }}
+      centerContent
+      initialScrollIndex={data.length - 1}
+      onStartReached={prev}
+      onEndReachedThreshold={0.5}
       {...props}
     />
   );
 }
 
-// Export as EnhancedDirectChatList for backward compatibility if needed,
-// though now it's just the plain component.
 export const EnhancedDirectChatList = DirectChatList;

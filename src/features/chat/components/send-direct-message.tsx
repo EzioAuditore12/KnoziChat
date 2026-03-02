@@ -44,7 +44,7 @@ export function SendDirectMessage({
     defaultValues: {
       text: '',
     },
-    resolver: arktypeResolver(type({ text: '0 < string <=100' })),
+    resolver: arktypeResolver(type({ text: '0 < string <= 1000' })),
   });
 
   const onSubmit = (data: { text: string }) => {

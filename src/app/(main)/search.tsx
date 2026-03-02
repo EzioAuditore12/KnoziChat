@@ -8,16 +8,20 @@ import { UserList } from '@/features/common/components/user-list';
 
 import { useGetUsers } from '@/features/common/hooks/queries/use-get-users';
 
+import { useRefreshOnFocus } from '@/hooks/use-refresh-on-focus';
+
 export default function SearchScreen() {
   const safeAreaInsets = useSafeAreaInsets();
 
   const [search, setSearch] = useState('');
   const [searchValue] = useDebounce(search, 300);
 
-  const { data, fetchNextPage, isFetchingNextPage } = useGetUsers({
+  const { data, fetchNextPage, isFetchingNextPage, refetch } = useGetUsers({
     search: searchValue,
     limit: 10,
   });
+
+  useRefreshOnFocus(refetch);
 
   const users = data?.pages.flatMap((page) => page.data) ?? [];
 
