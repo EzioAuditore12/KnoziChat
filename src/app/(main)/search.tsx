@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useDebounce } from 'use-debounce';
+import { SearchField } from 'heroui-native/search-field';
 
-import { SearchUserInput } from '@/features/common/components/search-user';
 import { UserList } from '@/features/common/components/user-list';
 
 import { useGetUsers } from '@/features/common/hooks/queries/use-get-users';
@@ -29,12 +29,15 @@ export default function SearchScreen() {
     <View
       style={{ paddingTop: safeAreaInsets.top, paddingBottom: safeAreaInsets.bottom }}
       className="flex-1 p-2">
-      <SearchUserInput
-        placeholder="Search..."
-        className="mb-5"
-        value={search}
-        onChangeText={setSearch}
-      />
+      <SearchField className="mb-3" value={search} onChange={setSearch}>
+        <SearchField.Group>
+          <SearchField.SearchIcon>
+            <Text className="text-base">🔍</Text>
+          </SearchField.SearchIcon>
+          <SearchField.Input className="pl-10" />
+          <SearchField.ClearButton />
+        </SearchField.Group>
+      </SearchField>
 
       <UserList
         data={users}

@@ -17,12 +17,18 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.71.2(react@19.2.0))
-      '@lovesworking/watermelondb-expo-plugin-sdk-52-plus':
-        specifier: ^1.0.3
-        version: 1.0.3
-      '@nozbe/watermelondb':
-        specifier: ^0.28.0
-        version: 0.28.0
+      '@op-engineering/op-sqlite':
+        specifier: ^15.2.5
+        version: 15.2.5(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
+      '@powersync/drizzle-driver':
+        specifier: ^0.7.3
+        version: 0.7.3(@powersync/common@1.47.0)(drizzle-orm@0.45.1(@op-engineering/op-sqlite@15.2.5(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)))
+      '@powersync/op-sqlite':
+        specifier: ^0.9.1
+        version: 0.9.1(@op-engineering/op-sqlite@15.2.5(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(@powersync/common@1.47.0)(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
+      '@powersync/react-native':
+        specifier: ^1.30.2
+        version: 1.30.2(@powersync/common@1.47.0)(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
       '@react-native-community/netinfo':
         specifier: 11.5.2
         version: 11.5.2(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
@@ -47,15 +53,15 @@ importers:
       arktype:
         specifier: ^2.1.29
         version: 2.1.29
-      bson-objectid:
-        specifier: ^2.0.4
-        version: 2.0.4
+      drizzle-arktype:
+        specifier: ^0.1.3
+        version: 0.1.3(arktype@2.1.29)(drizzle-orm@0.45.1(@op-engineering/op-sqlite@15.2.5(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)))
+      drizzle-orm:
+        specifier: ^0.45.1
+        version: 0.45.1(@op-engineering/op-sqlite@15.2.5(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))
       expo:
         specifier: ~55.0.4
         version: 55.0.4(@babel/core@7.28.5)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.6)(expo-router@55.0.3)(react-dom@19.2.0(react@19.2.0))(react-native-webview@13.16.0(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
-      expo-build-properties:
-        specifier: ~55.0.9
-        version: 55.0.9(expo@55.0.4)
       expo-constants:
         specifier: ~55.0.7
         version: 55.0.7(expo@55.0.4)(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(typescript@5.9.3)
@@ -122,6 +128,12 @@ importers:
       react-native-mmkv:
         specifier: ^4.1.2
         version: 4.1.2(react-native-nitro-modules@0.34.1(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
+      react-native-nitro-buffer:
+        specifier: ^0.0.15
+        version: 0.0.15(react-native-nitro-modules@0.34.1(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
+      react-native-nitro-crypto:
+        specifier: ^0.2.4
+        version: 0.2.4(react-native-nitro-modules@0.34.1(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
       react-native-nitro-fetch:
         specifier: ^0.1.7
         version: 0.1.7(react-native-nitro-modules@0.34.1(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(react-native-worklets-core@1.6.3(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
@@ -171,9 +183,6 @@ importers:
         specifier: ^5.0.11
         version: 5.0.11(@types/react@19.2.14)(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
     devDependencies:
-      '@babel/plugin-proposal-decorators':
-        specifier: ^7.29.0
-        version: 7.29.0(@babel/core@7.28.5)
       '@types/react':
         specifier: ~19.2.14
         version: 19.2.14
@@ -709,10 +718,6 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
 
-  '@babel/runtime@7.26.0':
-    resolution: {integrity: sha512-FDSOghenHTiToteC/QRlv2q3DhPZ/oOXTBoirfWNx1Cx3TMVcGWQtMMmQcSvb/JjpNeGzx8Pq/b4fKEJuWm1sw==}
-    engines: {node: '>=6.9.0'}
-
   '@babel/runtime@7.28.4':
     resolution: {integrity: sha512-Q/N6JNWvIvPnLDvjlE1OUBLPQHH6l3CltCEsHIujp45zQUSSh8K+gHnaEX45yAT1nyngnINhvWtzN+Nb9D8RAQ==}
     engines: {node: '>=6.9.0'}
@@ -1057,9 +1062,6 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@lovesworking/watermelondb-expo-plugin-sdk-52-plus@1.0.3':
-    resolution: {integrity: sha512-1sr/dg1T+EM1C6gWd9Mxtsut3Q2c9797d85WWEWijX1r0lgbuIjvXl4I8R59Oi/4bgpyAj20iSzKVClGbfhUVw==}
-
   '@napi-rs/wasm-runtime@0.2.12':
     resolution: {integrity: sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ==}
 
@@ -1067,18 +1069,45 @@ packages:
     resolution: {integrity: sha512-nn5ozdjYQpUCZlWGuxcJY/KpxkWQs4DcbMCmKojjyrYDEAGy4Ce19NN4v5MduafTwJlbKc99UA8YhSVqq9yPZA==}
     engines: {node: '>=12.4.0'}
 
-  '@nozbe/lokijs@1.5.12-wmelon6':
-    resolution: {integrity: sha512-GXsaqY8qTJ6xdCrGyno2t+ON2aj6PrUDdvhbrkxK/0Fp12C4FGvDg1wS+voLU9BANYHEnr7KRWfItDZnQkjoAg==}
+  '@op-engineering/op-sqlite@15.2.5':
+    resolution: {integrity: sha512-Vmgwt0AzY7qoge3X6EONhsb5NlM2yoQUF0/lseUWBelfc9BUili7/DFsFsS73cvtYWlwPpqeTGOoce5mzHozBw==}
+    peerDependencies:
+      react: '*'
+      react-native: '*'
 
-  '@nozbe/simdjson@3.9.4':
-    resolution: {integrity: sha512-/3oCP8GBpdyeiBMEnuI6S0yl0yekD6Qxfed67hZqU1GIVn3o/vZgE8qANm69THfw7JgHLS9zjx56F/dO3q+koA==}
+  '@powersync/common@1.47.0':
+    resolution: {integrity: sha512-fL7NcjCMONaFmag5pPAHyIjY5uR56E2wo2RzxckrayevQS/emqKryQusQMZKkw0e8oCGHtUZSOH76zXe9zyw8w==}
 
-  '@nozbe/sqlite@3.46.0':
-    resolution: {integrity: sha512-ntt8eNp5hh+axX9+kFb5uwyVE0edyfhiYYr+zHDzzFleGC7Qm+a2wHDWDtmRr5nSfbgomhY1uh30kpsHEIR3Mw==}
+  '@powersync/drizzle-driver@0.7.3':
+    resolution: {integrity: sha512-s/JuurgeQrWgY9nSfTAPq2f0sMFuvDD4pMDljDSrxRJeHBA2Q9dLuwPNxGU2yIIfrbVTJcQuNPtVUyDdF5xnFw==}
+    peerDependencies:
+      '@powersync/common': ^1.47.0
+      drizzle-orm: <1.0.0
 
-  '@nozbe/watermelondb@0.28.0':
-    resolution: {integrity: sha512-40ttcqPOLCTGnbfCQAXSEo8J4KlH/QQhwTfTb9E21CyX/driMEZueiJSI2rSkHICZrI2vnu52aRubNbI3UAzQQ==}
-    engines: {node: '>=18'}
+  '@powersync/op-sqlite@0.9.1':
+    resolution: {integrity: sha512-6jWDm1EvDbCNqyzqwKV2vKvJQm8fVywPbBYu1Qp16k7QXp6ar9uCznxCDCC7rCavHBR63YbAVM3kkyDSpwyKdQ==}
+    peerDependencies:
+      '@op-engineering/op-sqlite': ^13.0.0 || ^14.0.0 || ^15.0.0
+      '@powersync/common': ^1.47.0
+      react: '*'
+      react-native: '*'
+
+  '@powersync/react-native@1.30.2':
+    resolution: {integrity: sha512-ILWY72Eze11OJ0SFbbzFo0AWz6qRgM9CphmamNec0WF8RqX8PFssi/R/L/IB2Mjx9FZlHWfkpCls90QhWuUVjA==}
+    peerDependencies:
+      '@journeyapps/react-native-quick-sqlite': ^2.5.1
+      '@powersync/common': ^1.47.0
+      react: '*'
+      react-native: '*'
+    peerDependenciesMeta:
+      '@journeyapps/react-native-quick-sqlite':
+        optional: true
+
+  '@powersync/react@1.9.0':
+    resolution: {integrity: sha512-FypJ1RSQXhbpLJ1WOSLi1ph+q6JXAX5GHqXhczaOr0dhngsr1zHIsFTANh6N0tfx838SM+MDgYO1d0LZxv1WWw==}
+    peerDependencies:
+      '@powersync/common': ^1.47.0
+      react: '*'
 
   '@radix-ui/primitive@1.1.3':
     resolution: {integrity: sha512-JTF99U/6XIjCBo0wqkU5sK10glYe27MRRsfwoiq5zzOEZLHU3A3KCMa5X/azekYRCJ0HlwI0crAXS/5dEHTzDg==}
@@ -1884,6 +1913,9 @@ packages:
     resolution: {integrity: sha512-hsU18Ae8CDTR6Kgu9DYf0EbCr/a5iGL0rytQDobUcdpYOKokk8LEjVphnXkDkgpi0wYVsqrXuP0bZxJaTqdgoA==}
     engines: {node: '>= 0.4'}
 
+  async-mutex@0.5.0:
+    resolution: {integrity: sha512-1A94B18jkJ3DYq284ohPxoXbfTA5HsQ7/Mf4DEhcyLx3Bz27Rh59iScbB6EPiP+B+joue6YCxcMXSbFC1tZKwA==}
+
   available-typed-arrays@1.0.7:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
@@ -2018,9 +2050,6 @@ packages:
 
   bser@2.1.1:
     resolution: {integrity: sha512-gQxTNE/GAfIIrmHLUE3oJyp5FO6HRBfhjnw4/wMmA63ZGDJnWBmgY/lyQBpnDUkGmAhbSe39tx2d/iTOAfglwQ==}
-
-  bson-objectid@2.0.4:
-    resolution: {integrity: sha512-vgnKAUzcDoa+AeyYwXCoHyF2q6u/8H46dxu5JN+4/TZeq/Dlinn0K6GvxsCLb3LHUJl0m/TLiEK31kUwtgocMQ==}
 
   buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
@@ -2279,6 +2308,104 @@ packages:
   domutils@3.2.2:
     resolution: {integrity: sha512-6kZKyUajlDuqlHKVX1w7gyslj9MPIXzIFiz/rGu35uC1wMi+kMhQwGhl4lt9unC9Vb9INnY9Z3/ZA3+FhASLaw==}
 
+  drizzle-arktype@0.1.3:
+    resolution: {integrity: sha512-X66GB2pz7Nb+NmCZefDXpdoglxjGYnB2yRU5umAK2stVkl4rvV6i6XbMg1+w1HiY/ydC8gJVq4jKAARYazpb3g==}
+    peerDependencies:
+      arktype: '>=2.0.0'
+      drizzle-orm: '>=0.36.0'
+
+  drizzle-orm@0.45.1:
+    resolution: {integrity: sha512-Te0FOdKIistGNPMq2jscdqngBRfBpC8uMFVwqjf6gtTVJHIQ/dosgV/CLBU2N4ZJBsXL5savCba9b0YJskKdcA==}
+    peerDependencies:
+      '@aws-sdk/client-rds-data': '>=3'
+      '@cloudflare/workers-types': '>=4'
+      '@electric-sql/pglite': '>=0.2.0'
+      '@libsql/client': '>=0.10.0'
+      '@libsql/client-wasm': '>=0.10.0'
+      '@neondatabase/serverless': '>=0.10.0'
+      '@op-engineering/op-sqlite': '>=2'
+      '@opentelemetry/api': ^1.4.1
+      '@planetscale/database': '>=1.13'
+      '@prisma/client': '*'
+      '@tidbcloud/serverless': '*'
+      '@types/better-sqlite3': '*'
+      '@types/pg': '*'
+      '@types/sql.js': '*'
+      '@upstash/redis': '>=1.34.7'
+      '@vercel/postgres': '>=0.8.0'
+      '@xata.io/client': '*'
+      better-sqlite3: '>=7'
+      bun-types: '*'
+      expo-sqlite: '>=14.0.0'
+      gel: '>=2'
+      knex: '*'
+      kysely: '*'
+      mysql2: '>=2'
+      pg: '>=8'
+      postgres: '>=3'
+      prisma: '*'
+      sql.js: '>=1'
+      sqlite3: '>=5'
+    peerDependenciesMeta:
+      '@aws-sdk/client-rds-data':
+        optional: true
+      '@cloudflare/workers-types':
+        optional: true
+      '@electric-sql/pglite':
+        optional: true
+      '@libsql/client':
+        optional: true
+      '@libsql/client-wasm':
+        optional: true
+      '@neondatabase/serverless':
+        optional: true
+      '@op-engineering/op-sqlite':
+        optional: true
+      '@opentelemetry/api':
+        optional: true
+      '@planetscale/database':
+        optional: true
+      '@prisma/client':
+        optional: true
+      '@tidbcloud/serverless':
+        optional: true
+      '@types/better-sqlite3':
+        optional: true
+      '@types/pg':
+        optional: true
+      '@types/sql.js':
+        optional: true
+      '@upstash/redis':
+        optional: true
+      '@vercel/postgres':
+        optional: true
+      '@xata.io/client':
+        optional: true
+      better-sqlite3:
+        optional: true
+      bun-types:
+        optional: true
+      expo-sqlite:
+        optional: true
+      gel:
+        optional: true
+      knex:
+        optional: true
+      kysely:
+        optional: true
+      mysql2:
+        optional: true
+      pg:
+        optional: true
+      postgres:
+        optional: true
+      prisma:
+        optional: true
+      sql.js:
+        optional: true
+      sqlite3:
+        optional: true
+
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
     engines: {node: '>= 0.4'}
@@ -2490,6 +2617,9 @@ packages:
     resolution: {integrity: sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg==}
     engines: {node: '>= 0.6'}
 
+  event-iterator@2.0.0:
+    resolution: {integrity: sha512-KGft0ldl31BZVV//jj+IAIGCxkvvUkkON+ScH6zfoX+l+omX6001ggyRSpI0Io2Hlro0ThXotswCtfzS8UkIiQ==}
+
   event-target-shim@5.0.1:
     resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}
     engines: {node: '>=6'}
@@ -2505,11 +2635,6 @@ packages:
       expo: '*'
       react: '*'
       react-native: '*'
-
-  expo-build-properties@55.0.9:
-    resolution: {integrity: sha512-p0rNHW/6ghKsvjlUn2DQfbLYuTB6ba+15SeTPOz5BYbyU1F/0F/YyxBtHdmWitqgDPn6VgXQeKhiNC1fMwYDpg==}
-    peerDependencies:
-      expo: '*'
 
   expo-constants@55.0.7:
     resolution: {integrity: sha512-kdcO4TsQRRqt0USvjaY5vgQMO9H52K3kBZ/ejC7F6rz70mv08GoowrZ1CYOr5O4JpPDRlIpQfZJUucaS/c+KWQ==}
@@ -3899,6 +4024,18 @@ packages:
       react-native: '*'
       react-native-nitro-modules: '*'
 
+  react-native-nitro-buffer@0.0.15:
+    resolution: {integrity: sha512-AafYtMRS3PE13ppFUxi/mbRXCLzwDYwuefHGrNLxNF+NAz0wYXkbuugCtsFQLMGtWCuKidt4DRkzUhPa3Pr2Qw==}
+    peerDependencies:
+      react: '*'
+      react-native: '*'
+      react-native-nitro-modules: ^0.32.0
+
+  react-native-nitro-crypto@0.2.4:
+    resolution: {integrity: sha512-ZlZRYyVzkEMeIeSBgLYmv9Ci9lBiY9EukLRqwDJoI7EU1A7OyIKIs8Dq5asS1E7wPsBB0vpzGsoragQRFuxUpg==}
+    peerDependencies:
+      react-native-nitro-modules: ^0.32.0
+
   react-native-nitro-fetch@0.1.7:
     resolution: {integrity: sha512-4kdDgo8CBaR3SaxIcvQxUVDIUFDr4UierJHigV9jr59jj9wnf7O1gUGcbmBJmE1M2EkVSe4nUU8Fq5tbSMg4kw==}
     peerDependencies:
@@ -4035,9 +4172,6 @@ packages:
   regenerator-runtime@0.13.11:
     resolution: {integrity: sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==}
 
-  regenerator-runtime@0.14.1:
-    resolution: {integrity: sha512-dYnhHh0nJoMfnkZs6GmmhFknAGRrLznOu5nc9ML+EJxGvrx6H7teuevqVqCuPcPK//3eDrrjQhehXVx9cnkGdw==}
-
   regexp.prototype.flags@1.5.4:
     resolution: {integrity: sha512-dYqgNSZbDwkaJ2ceRd9ojCGjBq+mOm9LmtXnAnEGyHhN/5R7iDW2TRw3h+o/jCFxus3P2LfWIIiwowAjANm7IA==}
     engines: {node: '>= 0.4'}
@@ -4088,9 +4222,6 @@ packages:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
     deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
-
-  rxjs@7.8.2:
-    resolution: {integrity: sha512-dhKf903U/PQZY6boNNtAGdWbG85WAbjT/1xYoZIC7FAY0yWapOBQVsVrDl58W86//e1VpMNBtRV4MaXfdMySFA==}
 
   safe-array-concat@1.1.3:
     resolution: {integrity: sha512-AURm5f0jYEOydBj7VQlVvDrjeFgthDdEF5H1dP+6mNpoXOMo1quQqJ4wvJDyRZ9+pO3kGWoOdmV08cSv2aJV6Q==}
@@ -4251,9 +4382,6 @@ packages:
 
   sprintf-js@1.0.3:
     resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
-
-  sql-escape-string@1.1.0:
-    resolution: {integrity: sha512-/kqO4pLZSLfV0KsBM2xkVh2S3GbjJJone37d7gYwLyP0c+REh3vnmkhQ7VwNrX76igC0OhJWpTg0ukkdef9vvA==}
 
   stable-hash@0.0.5:
     resolution: {integrity: sha512-+L3ccpzibovGXFK+Ap/f8LOS0ahMrHTf3xu7mMLSpEGU0EO9ucaysSylKo9eRDFNhWve/y275iPmIZ4z39a9iA==}
@@ -5363,10 +5491,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@babel/runtime@7.26.0':
-    dependencies:
-      regenerator-runtime: 0.14.1
-
   '@babel/runtime@7.28.4': {}
 
   '@babel/template@7.27.2':
@@ -5948,8 +6072,6 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@lovesworking/watermelondb-expo-plugin-sdk-52-plus@1.0.3': {}
-
   '@napi-rs/wasm-runtime@0.2.12':
     dependencies:
       '@emnapi/core': 1.7.1
@@ -5959,21 +6081,42 @@ snapshots:
 
   '@nolyfill/is-core-module@1.0.39': {}
 
-  '@nozbe/lokijs@1.5.12-wmelon6': {}
-
-  '@nozbe/simdjson@3.9.4': {}
-
-  '@nozbe/sqlite@3.46.0': {}
-
-  '@nozbe/watermelondb@0.28.0':
+  '@op-engineering/op-sqlite@15.2.5(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)':
     dependencies:
-      '@babel/runtime': 7.26.0
-      '@nozbe/simdjson': 3.9.4
-      '@nozbe/sqlite': 3.46.0
-      hoist-non-react-statics: 3.3.2
-      lokijs: '@nozbe/lokijs@1.5.12-wmelon6'
-      rxjs: 7.8.2
-      sql-escape-string: 1.1.0
+      react: 19.2.0
+      react-native: 0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0)
+
+  '@powersync/common@1.47.0':
+    dependencies:
+      async-mutex: 0.5.0
+      event-iterator: 2.0.0
+
+  '@powersync/drizzle-driver@0.7.3(@powersync/common@1.47.0)(drizzle-orm@0.45.1(@op-engineering/op-sqlite@15.2.5(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)))':
+    dependencies:
+      '@powersync/common': 1.47.0
+      drizzle-orm: 0.45.1(@op-engineering/op-sqlite@15.2.5(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))
+      tslib: 2.8.1
+
+  '@powersync/op-sqlite@0.9.1(@op-engineering/op-sqlite@15.2.5(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(@powersync/common@1.47.0)(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)':
+    dependencies:
+      '@op-engineering/op-sqlite': 15.2.5(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
+      '@powersync/common': 1.47.0
+      async-mutex: 0.5.0
+      react: 19.2.0
+      react-native: 0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0)
+
+  '@powersync/react-native@1.30.2(@powersync/common@1.47.0)(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)':
+    dependencies:
+      '@powersync/common': 1.47.0
+      '@powersync/react': 1.9.0(@powersync/common@1.47.0)(react@19.2.0)
+      async-mutex: 0.5.0
+      react: 19.2.0
+      react-native: 0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0)
+
+  '@powersync/react@1.9.0(@powersync/common@1.47.0)(react@19.2.0)':
+    dependencies:
+      '@powersync/common': 1.47.0
+      react: 19.2.0
 
   '@radix-ui/primitive@1.1.3': {}
 
@@ -6819,6 +6962,10 @@ snapshots:
 
   async-function@1.0.0: {}
 
+  async-mutex@0.5.0:
+    dependencies:
+      tslib: 2.8.1
+
   available-typed-arrays@1.0.7:
     dependencies:
       possible-typed-array-names: 1.1.0
@@ -7013,8 +7160,6 @@ snapshots:
   bser@2.1.1:
     dependencies:
       node-int64: 0.4.0
-
-  bson-objectid@2.0.4: {}
 
   buffer-from@1.1.2: {}
 
@@ -7281,6 +7426,15 @@ snapshots:
       dom-serializer: 2.0.0
       domelementtype: 2.3.0
       domhandler: 5.0.3
+
+  drizzle-arktype@0.1.3(arktype@2.1.29)(drizzle-orm@0.45.1(@op-engineering/op-sqlite@15.2.5(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))):
+    dependencies:
+      arktype: 2.1.29
+      drizzle-orm: 0.45.1(@op-engineering/op-sqlite@15.2.5(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))
+
+  drizzle-orm@0.45.1(@op-engineering/op-sqlite@15.2.5(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)):
+    optionalDependencies:
+      '@op-engineering/op-sqlite': 15.2.5(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
 
   dunder-proto@1.0.1:
     dependencies:
@@ -7621,6 +7775,8 @@ snapshots:
 
   etag@1.8.1: {}
 
+  event-iterator@2.0.0: {}
+
   event-target-shim@5.0.1: {}
 
   expo-application@55.0.8(expo@55.0.4):
@@ -7637,13 +7793,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
       - typescript
-
-  expo-build-properties@55.0.9(expo@55.0.4):
-    dependencies:
-      '@expo/schema-utils': 55.0.2
-      expo: 55.0.4(@babel/core@7.28.5)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.6)(expo-router@55.0.3)(react-dom@19.2.0(react@19.2.0))(react-native-webview@13.16.0(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
-      resolve-from: 5.0.0
-      semver: 7.7.3
 
   expo-constants@55.0.7(expo@55.0.4)(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(typescript@5.9.3):
     dependencies:
@@ -9105,6 +9254,20 @@ snapshots:
       react-native: 0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0)
       react-native-nitro-modules: 0.34.1(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
 
+  react-native-nitro-buffer@0.0.15(react-native-nitro-modules@0.34.1(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0):
+    dependencies:
+      react: 19.2.0
+      react-native: 0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0)
+      react-native-nitro-modules: 0.34.1(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
+
+  react-native-nitro-crypto@0.2.4(react-native-nitro-modules@0.34.1(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0):
+    dependencies:
+      react-native-nitro-buffer: 0.0.15(react-native-nitro-modules@0.34.1(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
+      react-native-nitro-modules: 0.34.1(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
+    transitivePeerDependencies:
+      - react
+      - react-native
+
   react-native-nitro-fetch@0.1.7(react-native-nitro-modules@0.34.1(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(react-native-worklets-core@1.6.3(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0):
     dependencies:
       react: 19.2.0
@@ -9297,8 +9460,6 @@ snapshots:
 
   regenerator-runtime@0.13.11: {}
 
-  regenerator-runtime@0.14.1: {}
-
   regexp.prototype.flags@1.5.4:
     dependencies:
       call-bind: 1.0.8
@@ -9353,10 +9514,6 @@ snapshots:
   rimraf@3.0.2:
     dependencies:
       glob: 7.2.3
-
-  rxjs@7.8.2:
-    dependencies:
-      tslib: 2.8.1
 
   safe-array-concat@1.1.3:
     dependencies:
@@ -9556,8 +9713,6 @@ snapshots:
   split-on-first@1.1.0: {}
 
   sprintf-js@1.0.3: {}
-
-  sql-escape-string@1.1.0: {}
 
   stable-hash@0.0.5: {}
 

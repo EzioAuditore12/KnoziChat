@@ -1,29 +1,38 @@
 import { router, Stack } from 'expo-router';
 import { View } from 'react-native';
-import { Button } from 'heroui-native/button';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Avatar } from 'heroui-native/avatar';
-import { Description } from 'heroui-native/description';
+import { desc, eq } from 'drizzle-orm';
 
 import { Link } from '@/components/link';
 
-import { useSyncEngine } from '@/db/hooks/use-sync-engine';
-import syncEngine from '@/db/sync';
-
 import { useAuthStore } from '@/store/auth';
 
-import { EnhancedConversationList } from '@/features/home/components/conversation-list';
+import { ConversationList } from '@/features/home/components/conversation-list';
 
-import { useSocketState } from '@/store/socket';
 import { ThrottledTouchable } from '@/components/throttled-touchable';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { useLiveInfiniteQuery } from '@/db/hooks/use-live-infinite-query';
+
+import { db } from '@/db';
+import { conversationOneToOneTable } from '@/db/tables/conversation-one-to-one.table';
+import { userTable } from '@/db/tables/user.table';
+import { Button } from 'heroui-native';
+import { pullChanges } from '@/db/sync';
 
 export default function HomeScreen() {
-  const { sync, pendingChanges, isSyncing } = useSyncEngine(syncEngine);
-  const { user } = useAuthStore((state) => state);
-
   const safeAreaInsets = useSafeAreaInsets();
 
-  const { onlineUsers } = useSocketState();
+  const { user } = useAuthStore((state) => state);
+
+  const { data, isLoading, fetchNextPage, isFetching } = useLiveInfiniteQuery({
+    query: db
+      .select()
+      .from(conversationOneToOneTable)
+      .leftJoin(userTable, eq(conversationOneToOneTable.userId, userTable.id))
+      .orderBy(desc(conversationOneToOneTable.updatedAt)),
+    pageSize: 10,
+  });
 
   return (
     <>
@@ -33,8 +42,8 @@ export default function HomeScreen() {
           headerLeft: () => (
             <>
               <Link href={'/search'}>Search</Link>
-              <Button onPress={sync} isDisabled={isSyncing} className="ml-2">
-                {isSyncing ? 'Syncing...' : `Sync (${pendingChanges} pending)`}
+              <Button className="ml-2" onPress={pullChanges}>
+                Sync
               </Button>
             </>
           ),
@@ -51,8 +60,12 @@ export default function HomeScreen() {
         }}
       />
       <View className="flex-1 gap-y-2 p-1" style={{ paddingBottom: safeAreaInsets.bottom }}>
-        <Description>Online users: {onlineUsers.length}</Description>
-        <EnhancedConversationList />
+        <ConversationList
+          data={data}
+          onEndReached={fetchNextPage}
+          isLoading={isLoading}
+          isFetchingNextPage={isFetching}
+        />
       </View>
     </>
   );

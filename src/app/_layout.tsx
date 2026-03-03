@@ -7,10 +7,12 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 import 'react-native-reanimated';
 
 import { registerForPushNotificationsAsync } from '@/lib/notification';
+
 import { HeroUIThemeProvider } from '@/lib/theme';
-import { TanstackReactQueryClientProvider } from '@/providers/tanstak-query-client.provider';
-import { WatermelondbProvider } from '@/providers/watermelon-db.provider';
+import { TanstackReactQueryClientProvider } from '@/lib/tanstack/query';
+
 import { useDeviceConfigStore } from '@/store/device';
+import { PowerSyncDatabaseProvider } from '@/db';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -33,11 +35,11 @@ export default function RootLayout() {
   return (
     <HeroUIThemeProvider>
       <KeyboardProvider>
-        <WatermelondbProvider>
+        <PowerSyncDatabaseProvider>
           <TanstackReactQueryClientProvider>
             <Stack initialRouteName="(main)" screenOptions={{ headerShown: false }} />
           </TanstackReactQueryClientProvider>
-        </WatermelondbProvider>
+        </PowerSyncDatabaseProvider>
       </KeyboardProvider>
     </HeroUIThemeProvider>
   );

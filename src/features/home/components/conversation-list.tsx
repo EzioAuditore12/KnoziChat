@@ -1,59 +1,45 @@
-import { Database, Q } from '@nozbe/watermelondb';
-import { withDatabase } from '@nozbe/watermelondb/react';
 import { FlashList, type FlashListProps } from '@shopify/flash-list';
 import { router } from 'expo-router';
-import { useMemo, useState } from 'react';
 
-import { Conversation } from '@/db/models/conversation.model';
-import { CONVERSATION_TABLE_NAME } from '@/db/schemas/conversation-table.schema';
-import { useWatermelonModelsPage } from '@/db/hooks/use-watermelondb-pages';
-
-import { EnhancedConversationCard } from './conversation-card';
+import { ConversationCard } from './conversation-card';
+import type { ConversationOneToOneJoinWithUser } from '@/db/tables/conversation-one-to-one.table';
+import { Description } from 'heroui-native/description';
 
 interface ConversationListProps extends Omit<
-  FlashListProps<Conversation>,
+  FlashListProps<ConversationOneToOneJoinWithUser>,
   'data' | 'children' | 'keyExtractor' | 'renderItem'
 > {
-  // Data is now managed internally, but we need the database prop
-  database: Database;
+  data: ConversationOneToOneJoinWithUser[];
+  isLoading?: boolean;
   isFetchingNextPage?: boolean;
 }
 
-function ConversationList({
+export function ConversationList({
+  data,
   className,
+  isLoading,
   isFetchingNextPage,
-  database, // Database is injected by withDatabase
   ...props
 }: ConversationListProps) {
-  const [data, setData] = useState<Conversation[]>([]);
-
-  // Sort conversations by newest update first
-  const query = useMemo(() => [Q.sortBy('updated_at', Q.desc)], []);
-
-  // Use the pagination hook
-  const { next } = useWatermelonModelsPage({
-    collection: CONVERSATION_TABLE_NAME,
-    database,
-    query,
-    onChange: setData,
-  });
+  if (isLoading) return <Description className="mt-2">Loading all your chats</Description>;
 
   return (
     <>
       <FlashList
         data={data}
-        // Trigger next page when scrolling to bottom
-        onEndReached={next}
         onEndReachedThreshold={0.5}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.conversation_one_to_one.id}
         renderItem={({ item }) => (
-          <EnhancedConversationCard
+          <ConversationCard
             data={item}
             className="mb-3"
             onPress={() => {
               router.push({
                 pathname: '/chat/[id]',
-                params: { id: item.id, userId: item._getRaw('user_id') as string },
+                params: {
+                  id: item.conversation_one_to_one.id,
+                  userId: item.conversation_one_to_one.userId,
+                },
               });
             }}
           />
@@ -63,6 +49,3 @@ function ConversationList({
     </>
   );
 }
-
-// Only wrap withDatabase now, no need for withObservables
-export const EnhancedConversationList = withDatabase(ConversationList);

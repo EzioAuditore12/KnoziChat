@@ -1,29 +1,35 @@
-import { SyncEngine } from './core/sync-engine';
-import { ConflictStrategy } from './types';
+import { db } from '@/db';
 
-import { database } from '@/db';
-import { apiClient } from './api.client';
+import { userTable } from './tables/user.table';
+import { conversationOneToOneTable } from './tables/conversation-one-to-one.table';
+import { chatOneToOneTable } from './tables/chat-one-to-one.table';
 
-import { CONVERSATION_TABLE_NAME } from './schemas/conversation-table.schema';
-import { DIRECT_CHAT_TABLE_NAME } from './schemas/direct-chat-table.schema';
-import { USER_TABLE_NAME } from './schemas/user-table.schema';
+export async function pullChanges() {
+  await db.transaction(async (transaction) => {
+    const user = await transaction
+      .insert(userTable)
+      .values({
+        firstName: 'Aman',
+        lastName: 'Bisht',
+        phoneNumber: '+916398322319',
+        email: 'aman@gmail.com',
+      })
+      .returning()
+      .get();
 
-const syncEngine = new SyncEngine({
-  database,
-  enableBackgroundSync: true,
-  syncOnReconnect: true,
-  tables: [USER_TABLE_NAME, CONVERSATION_TABLE_NAME, DIRECT_CHAT_TABLE_NAME],
-  apiClient,
-  syncInterval: 15 * 60 * 1000, // 15 minutes
-  conflictStrategy: ConflictStrategy.SERVER_WINS,
-});
+    const conversation = await transaction
+      .insert(conversationOneToOneTable)
+      .values({
+        userId: user.id,
+      })
+      .returning()
+      .get();
 
-export async function initializeSyncEngine() {
-  try {
-    await syncEngine.initialize();
-  } catch (error) {
-    console.error('Failed to initialize sync engine:', error);
-  }
+    await transaction.insert(chatOneToOneTable).values({
+      conversationId: conversation.id,
+      mode: 'SENT',
+      status: 'SENT',
+      text: 'Hello',
+    });
+  });
 }
-
-export default syncEngine;

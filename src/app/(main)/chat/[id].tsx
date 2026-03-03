@@ -1,17 +1,30 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { useEffect } from 'react';
 import { View } from 'react-native';
+import { desc, eq } from 'drizzle-orm';
 
-import { EnhancedDirectChatList } from '@/features/chat/components/direct-chat-list';
-import { SendDirectMessage } from '@/features/chat/components/send-direct-message';
+import { ChatOneToOneList } from '@/features/chat/components/one-to-one/list';
+import { SendOneToOneMessage } from '@/features/chat/components/one-to-one/send-one-to-one-message';
+import { ChatterInfo } from '@/features/chat/components/one-to-one/chatter-info';
 
-import { EnhancedUserInfo } from '@/features/common/components/user-info';
+import { db } from '@/db';
+import { useLiveInfiniteQuery } from '@/db/hooks/use-live-infinite-query';
+import { chatOneToOneTable } from '@/db/tables/chat-one-to-one.table';
 
-import { useSocketState } from '@/store/socket';
+import { chatOneToOneRepository } from '@/db/repositories/chat-one-to-one.repository';
+import { conversationOneToOneRepository } from '@/db/repositories/conversation-one-to-one.repository';
 
-import { Socket } from '@/lib/socket-io';
+const sendMessage = async (data: { conversationId: string; text: string }) => {
+  const { text, conversationId } = data;
 
-import { sendMessageEvent } from '@/features/realtime/events/send-message.event';
+  const chat = await chatOneToOneRepository.create({
+    text,
+    status: 'SENT',
+    conversationId,
+    mode: 'SENT',
+  });
+
+  await conversationOneToOneRepository.updateTime(chat.conversationId, chat.createdAt);
+};
 
 export default function ChattingScreen() {
   const { id, userId } = useLocalSearchParams() as unknown as {
@@ -19,36 +32,27 @@ export default function ChattingScreen() {
     userId: string;
   };
 
-  const { socket } = useSocketState();
+  const { data: chats, fetchNextPage: fetchNextChats } = useLiveInfiniteQuery({
+    query: db
+      .select()
+      .from(chatOneToOneTable)
+      .orderBy(desc(chatOneToOneTable.createdAt))
+      .where(eq(chatOneToOneTable.conversationId, id)),
+    pageSize: 20,
+  });
 
-  useEffect(() => {
-    if (socket?.connected) {
-      socket.emit('conversation:join', id);
-    }
-
-    return () => {
-      if (socket?.connected) {
-        socket.emit('conversation:leave', id);
-      }
-    };
-  }, [socket, id, socket?.connected]);
+  const reversedChats = chats.flat().reverse();
 
   return (
     <>
       <Stack.Screen
         options={{
-          header: () => <EnhancedUserInfo id={userId} />,
+          header: () => <ChatterInfo userId={userId} />,
         }}
       />
       <View className="flex-1">
-        <EnhancedDirectChatList conversationId={id} />
-        <SendDirectMessage
-          socket={socket as Socket}
-          receiverId={userId}
-          conversationId={id}
-          className="items-center"
-          handleSubmit={sendMessageEvent}
-        />
+        <ChatOneToOneList data={reversedChats} onStartReached={fetchNextChats} />
+        <SendOneToOneMessage conversationId={id} handleSubmit={sendMessage} />
       </View>
     </>
   );

@@ -4,50 +4,45 @@ import { router } from 'expo-router';
 import { getUserApi } from '@/features/common/api/get-user.api';
 import { initializeDirectChatApi } from '../../api/initialize-direct-chat.api';
 
-import { UserRepository } from '@/db/repositories/user';
-import { ConversationRepository } from '@/db/repositories/conversation';
-import { DirectChatRepository } from '@/db/repositories/direct-chat';
-
-const userRepository = new UserRepository();
-const conversationRespository = new ConversationRepository();
-const directChatRepository = new DirectChatRepository();
+import { db } from '@/db';
+import { userTable } from '@/db/tables/user.table';
+import { conversationOneToOneTable } from '@/db/tables/conversation-one-to-one.table';
+import { chatOneToOneTable } from '@/db/tables/chat-one-to-one.table';
 
 export const useInitializeDirectChat = () => {
   return useMutation({
     mutationFn: initializeDirectChatApi,
     onSuccess: async (data) => {
-      const receiverDetails = await getUserApi(data.receiverId);
+      const userDetails = await getUserApi(data.receiverId);
 
-      const savedReceiver = await userRepository.create({
-        ...receiverDetails,
-        createdAt: new Date(receiverDetails.createdAt),
-        updatedAt: new Date(receiverDetails.updatedAt),
-      });
+      await db.transaction(async (transaction) => {
+        await transaction.insert(userTable).values({
+          ...userDetails,
+          createdAt: new Date(userDetails.createdAt).getTime(),
+          updatedAt: new Date(userDetails.updatedAt).getTime(),
+        });
 
-      const savedConversation = await conversationRespository.create({
-        id: data.conversationId,
-        userId: savedReceiver.id,
-        createdAt: new Date(data.createdAt),
-        updatedAt: new Date(data.updatedAt),
-      });
+        await transaction.insert(conversationOneToOneTable).values({
+          id: data.conversationId,
+          userId: userDetails.id,
+          createdAt: new Date(data.createdAt).getTime(),
+          updatedAt: new Date(data.updatedAt).getTime(),
+        });
 
-      await directChatRepository.create({
-        id: data._id,
-        conversationId: savedConversation.id,
-        isDelivered: false,
-        isSeen: false,
-        mode: 'SENT',
-        text: data.text,
-        createdAt: new Date(data.createdAt),
-        updatedAt: new Date(data.updatedAt),
+        await transaction.insert(chatOneToOneTable).values({
+          id: data._id,
+          conversationId: data.conversationId,
+          mode: 'SENT',
+          status: 'DELIVERED',
+          text: data.text,
+          createdAt: new Date(data.createdAt).getTime(),
+          updatedAt: new Date(data.updatedAt).getTime(),
+        });
       });
 
       router.replace({
         pathname: '/(main)/chat/[id]',
-        params: {
-          id: savedConversation.id,
-          userId: savedConversation._getRaw('user_id') as string,
-        },
+        params: { id: data.conversationId, userId: data.receiverId },
       });
     },
     onError: (error) => {

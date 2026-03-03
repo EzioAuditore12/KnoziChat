@@ -39,27 +39,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         },
       },
     ],
-    ['@lovesworking/watermelondb-expo-plugin-sdk-52-plus'],
-    [
-      'expo-build-properties',
-      {
-        ios: {
-          extraPods: [
-            {
-              name: 'simdjson',
-              configurations: ['Debug', 'Release'],
-              path: '../node_modules/@nozbe/simdjson',
-              modular_headers: true,
-            },
-          ],
-        },
-        android: {
-          packagingOptions: {
-            pickFirst: ['**/libc++_shared.so'],
-          },
-        },
-      },
-    ],
     'expo-secure-store',
   ],
   experiments: {
