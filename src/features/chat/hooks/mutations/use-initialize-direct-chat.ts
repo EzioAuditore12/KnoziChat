@@ -30,7 +30,7 @@ export const useInitializeDirectChat = () => {
         });
 
         await transaction.insert(chatOneToOneTable).values({
-          id: data._id,
+          id: data.id,
           conversationId: data.conversationId,
           mode: 'SENT',
           status: 'DELIVERED',
