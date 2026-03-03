@@ -9,15 +9,22 @@ import { type } from 'arktype';
 
 import { useGradualAnimation } from '@/hooks/use-gradual-animation';
 
+import { Socket } from '@/lib/socket-io';
+import { SendMessageEvent } from '../../events/send-message.event';
+
 interface SendOneToOneMessageProps extends ViewProps {
   conversationId: string;
-  handleSubmit: (data: { conversationId: string; text: string }) => void;
+  receiverId: string;
+  socket: Socket;
+  handleSubmit: (data: SendMessageEvent) => void;
 }
 
 export function SendOneToOneMessage({
   className,
   handleSubmit,
   conversationId,
+  receiverId,
+  socket,
   ...props
 }: SendOneToOneMessageProps) {
   const { height } = useGradualAnimation();
@@ -40,7 +47,7 @@ export function SendOneToOneMessage({
   });
 
   const onSubmit = (data: { text: string }) => {
-    handleSubmit({ conversationId, text: data.text });
+    handleSubmit({ conversationId, receiverId, socket, text: data.text });
 
     reset();
   };

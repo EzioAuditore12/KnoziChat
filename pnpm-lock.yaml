@@ -5507,8 +5507,8 @@ snapshots:
 
   '@babel/traverse@7.28.5':
     dependencies:
-      '@babel/code-frame': 7.27.1
-      '@babel/generator': 7.28.5
+      '@babel/code-frame': 7.28.6
+      '@babel/generator': 7.28.6
       '@babel/helper-globals': 7.28.0
       '@babel/parser': 7.28.5
       '@babel/template': 7.27.2
@@ -5815,7 +5815,7 @@ snapshots:
       debug: 4.4.3
       getenv: 2.0.0
       glob: 13.0.0
-      hermes-parser: 0.32.0
+      hermes-parser: 0.32.1
       jsc-safe-url: 0.2.4
       lightningcss: 1.30.2
       picomatch: 4.0.3

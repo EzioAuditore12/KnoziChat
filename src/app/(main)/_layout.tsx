@@ -1,9 +1,22 @@
 import { Redirect, Stack } from 'expo-router';
 
 import { useAuthStore } from '@/store/auth';
+import { useEffect } from 'react';
+import { useSocketState } from '@/store/socket';
+import { useReceiveMessageEvent } from '@/features/chat/events/receive-message.event';
 
 export default function MainScreensLayout() {
   const { user } = useAuthStore((state) => state);
+
+  const { socket, connectSocket, disconnectSocket } = useSocketState();
+
+  useEffect(() => {
+    if (user) connectSocket();
+
+    return () => disconnectSocket();
+  }, [user, connectSocket, disconnectSocket]);
+
+  useReceiveMessageEvent(socket);
 
   if (!user) return <Redirect href="/(auth)/login" />;
 

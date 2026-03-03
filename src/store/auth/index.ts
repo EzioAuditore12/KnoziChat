@@ -5,6 +5,7 @@ import { zustandStorage } from '../storage';
 import type { AuthStore } from './types';
 
 import { powerSyncDb } from '@/db';
+import { useDeviceConfigStore } from '../device';
 
 export const useAuthStore = create<AuthStore>()(
   persist(
@@ -22,6 +23,8 @@ export const useAuthStore = create<AuthStore>()(
 
       logout: async () => {
         await powerSyncDb.disconnectAndClear();
+
+        useDeviceConfigStore.getState().resetTimeStamp();
 
         set({ user: null, tokens: null });
       },
