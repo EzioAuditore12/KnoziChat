@@ -2,14 +2,14 @@ import { FlashList, type FlashListProps } from '@shopify/flash-list';
 import { router } from 'expo-router';
 
 import { ConversationCard } from './conversation-card';
-import type { ConversationOneToOneJoinWithUser } from '@/db/tables/conversation-one-to-one.table';
 import { Description } from 'heroui-native/description';
+import type { Conversation } from '@/features/chat/types/conversation.type';
 
 interface ConversationListProps extends Omit<
-  FlashListProps<ConversationOneToOneJoinWithUser>,
+  FlashListProps<Conversation>,
   'data' | 'children' | 'keyExtractor' | 'renderItem'
 > {
-  data: ConversationOneToOneJoinWithUser[];
+  data: Conversation[];
   isLoading?: boolean;
   isFetchingNextPage?: boolean;
 }
@@ -28,7 +28,7 @@ export function ConversationList({
       <FlashList
         data={data}
         onEndReachedThreshold={0.5}
-        keyExtractor={(item) => item.conversation_one_to_one.id}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <ConversationCard
             data={item}
@@ -37,8 +37,8 @@ export function ConversationList({
               router.push({
                 pathname: '/chat/[id]',
                 params: {
-                  id: item.conversation_one_to_one.id,
-                  userId: item.conversation_one_to_one.userId,
+                  id: item.id,
+                  userId: item.userId,
                 },
               });
             }}

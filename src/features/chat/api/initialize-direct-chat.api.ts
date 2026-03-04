@@ -5,7 +5,7 @@ import { initializeDirectChatResponseSchema } from '../schemas/initialize-direct
 
 export const initializeDirectChatApi = async (data: InitializeDirectChatParam) => {
   return await authenticatedTypedFetch({
-    url: `chat/direct`,
+    url: 'direct',
     method: 'POST',
     body: data,
     schema: initializeDirectChatResponseSchema,

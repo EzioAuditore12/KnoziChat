@@ -7,37 +7,35 @@ import { cn } from 'tailwind-variants';
 
 import { ThrottledTouchable, type ThrottledTouchableProps } from '@/components/throttled-touchable';
 
-import type { ConversationOneToOneJoinWithUser } from '@/db/tables/conversation-one-to-one.table';
+import { Conversation } from '../../chat/types/conversation.type';
 
 interface ConversationCardProps extends ComponentProps<typeof Card> {
   onPress: ThrottledTouchableProps['onPress'];
-  data: ConversationOneToOneJoinWithUser;
+  data: Conversation;
 }
 
 export function ConversationCard({ className, data, onPress, ...props }: ConversationCardProps) {
-  const { user, conversation_one_to_one } = data;
+  const { name, type, updatedAt } = data;
 
   return (
     <ThrottledTouchable onPress={onPress}>
       <Card className={cn(className)} {...props}>
         <Card.Body className="flex-row gap-x-2">
-          <Avatar className="size-20" alt={user?.firstName ?? ''}>
-            <Avatar.Image source={{ uri: user?.avatar ?? undefined }} />
-            <Avatar.Fallback>{user?.firstName[0]}</Avatar.Fallback>
+          <Avatar className="size-20" alt={name ?? ''}>
+            <Avatar.Image source={{ uri: undefined }} />
+            <Avatar.Fallback>{name[0]}</Avatar.Fallback>
           </Avatar>
 
           <View className="flex-col">
-            <Description className="text-lg font-bold">{user?.firstName}</Description>
+            <Description className="text-lg font-bold">{name}</Description>
 
-            <Description>
-              {user?.firstName} {user?.lastName}
-            </Description>
+            <Description>{name}</Description>
 
-            <Description>{user?.phoneNumber}</Description>
+            <Description>{type}</Description>
           </View>
         </Card.Body>
         <Description className="mr-2 ml-auto">
-          {new Date(conversation_one_to_one?.updatedAt).toLocaleTimeString([], {
+          {new Date(updatedAt).toLocaleTimeString([], {
             hour: '2-digit',
             minute: '2-digit',
           })}
