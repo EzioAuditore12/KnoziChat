@@ -24,11 +24,11 @@ importers:
         specifier: ^0.7.3
         version: 0.7.3(@powersync/common@1.47.0)(drizzle-orm@0.45.1(@op-engineering/op-sqlite@15.2.5(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)))
       '@powersync/op-sqlite':
-        specifier: ^0.9.1
-        version: 0.9.1(@op-engineering/op-sqlite@15.2.5(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(@powersync/common@1.47.0)(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
+        specifier: ^0.9.2
+        version: 0.9.2(@op-engineering/op-sqlite@15.2.5(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(@powersync/common@1.47.0)(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
       '@powersync/react-native':
-        specifier: ^1.30.2
-        version: 1.30.2(@powersync/common@1.47.0)(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
+        specifier: ^1.31.0
+        version: 1.31.0(@powersync/common@1.47.0)(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
       '@react-native-community/netinfo':
         specifier: 11.5.2
         version: 11.5.2(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
@@ -1084,19 +1084,19 @@ packages:
       '@powersync/common': ^1.47.0
       drizzle-orm: <1.0.0
 
-  '@powersync/op-sqlite@0.9.1':
-    resolution: {integrity: sha512-6jWDm1EvDbCNqyzqwKV2vKvJQm8fVywPbBYu1Qp16k7QXp6ar9uCznxCDCC7rCavHBR63YbAVM3kkyDSpwyKdQ==}
+  '@powersync/op-sqlite@0.9.2':
+    resolution: {integrity: sha512-V/2XisXBFXxtWVPEEO1euHpVBYy5dM1G5e8u5YUpxfiEaLZl4KXH1L5Qxi8uLKhCvYw+X6ftggRgDVOqLEkGGA==}
     peerDependencies:
       '@op-engineering/op-sqlite': ^13.0.0 || ^14.0.0 || ^15.0.0
-      '@powersync/common': ^1.47.0
+      '@powersync/common': ^1.48.0
       react: '*'
       react-native: '*'
 
-  '@powersync/react-native@1.30.2':
-    resolution: {integrity: sha512-ILWY72Eze11OJ0SFbbzFo0AWz6qRgM9CphmamNec0WF8RqX8PFssi/R/L/IB2Mjx9FZlHWfkpCls90QhWuUVjA==}
+  '@powersync/react-native@1.31.0':
+    resolution: {integrity: sha512-RtqUH0tY3X2VY3iTu2M1TYzz7kE5dsxV2Q+xLNn4xz9F8soo5C3HK3+WdeIn+bc3Dq59cx4ij3L6OREIGZhxlg==}
     peerDependencies:
       '@journeyapps/react-native-quick-sqlite': ^2.5.1
-      '@powersync/common': ^1.47.0
+      '@powersync/common': ^1.48.0
       react: '*'
       react-native: '*'
     peerDependenciesMeta:
@@ -6097,7 +6097,7 @@ snapshots:
       drizzle-orm: 0.45.1(@op-engineering/op-sqlite@15.2.5(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))
       tslib: 2.8.1
 
-  '@powersync/op-sqlite@0.9.1(@op-engineering/op-sqlite@15.2.5(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(@powersync/common@1.47.0)(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)':
+  '@powersync/op-sqlite@0.9.2(@op-engineering/op-sqlite@15.2.5(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(@powersync/common@1.47.0)(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)':
     dependencies:
       '@op-engineering/op-sqlite': 15.2.5(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
       '@powersync/common': 1.47.0
@@ -6105,7 +6105,7 @@ snapshots:
       react: 19.2.0
       react-native: 0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0)
 
-  '@powersync/react-native@1.30.2(@powersync/common@1.47.0)(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)':
+  '@powersync/react-native@1.31.0(@powersync/common@1.47.0)(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)':
     dependencies:
       '@powersync/common': 1.47.0
       '@powersync/react': 1.9.0(@powersync/common@1.47.0)(react@19.2.0)

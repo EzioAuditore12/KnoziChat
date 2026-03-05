@@ -27,7 +27,7 @@ export function Header({ className, ...props }: ViewProps) {
         </Avatar>
       </ThrottledTouchable>
 
-      <Button onPress={() => router.push('/(main)/new-group-chat')}>Create Group</Button>
+      <Button onPress={() => router.push('/(main)/new-chat-group')}>Create Group</Button>
     </View>
   );
 }

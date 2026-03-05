@@ -10,8 +10,12 @@ import { useGetUsers } from '@/features/common/hooks/queries/use-get-users';
 
 import { useRefreshOnFocus } from '@/hooks/use-refresh-on-focus';
 
+import { useAuthStore } from '@/store/auth';
+
 export default function SearchScreen() {
   const safeAreaInsets = useSafeAreaInsets();
+
+  const { user: operatingUser } = useAuthStore((state) => state);
 
   const [search, setSearch] = useState('');
   const [searchValue] = useDebounce(search, 300);
@@ -23,7 +27,9 @@ export default function SearchScreen() {
 
   useRefreshOnFocus(refetch);
 
-  const users = data?.pages.flatMap((page) => page.data) ?? [];
+  const users = (data?.pages.flatMap((page) => page.data) ?? []).filter(
+    (u) => u.id !== operatingUser?.id
+  );
 
   return (
     <View

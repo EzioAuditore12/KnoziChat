@@ -24,6 +24,10 @@ export default function SettingsScreen() {
         style={{ marginTop: safeAreaInsets.top }}
         contentContainerClassName="flex-grow-1 items-center justify-center gap-y-2 p-2">
         <UserProfileLoading className="w-full max-w-4xl" variant="pulse" isLoading={isLoading} />
+
+        <Button variant="danger" onPress={logout}>
+          Logout
+        </Button>
       </ScrollView>
     );
 
