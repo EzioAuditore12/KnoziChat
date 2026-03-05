@@ -29,9 +29,7 @@ export function ConversationCard({ className, data, onPress, ...props }: Convers
           <View className="flex-col">
             <Description className="text-lg font-bold">{name}</Description>
 
-            <Description>{name}</Description>
-
-            <Description>{type}</Description>
+            <Description>Type: {type}</Description>
           </View>
         </Card.Body>
         <Description className="mr-2 ml-auto">

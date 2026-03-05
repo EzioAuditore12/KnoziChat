@@ -34,12 +34,20 @@ export function ConversationList({
             data={item}
             className="mb-3"
             onPress={() => {
+              if (item.type === 'direct') {
+                router.push({
+                  pathname: '/chat/[id]',
+                  params: {
+                    id: item.id,
+                    userId: item.userId,
+                  },
+                });
+                return;
+              }
+
               router.push({
-                pathname: '/chat/[id]',
-                params: {
-                  id: item.id,
-                  userId: item.userId,
-                },
+                pathname: '/(main)/chat-group/[id]',
+                params: { id: item.id },
               });
             }}
           />

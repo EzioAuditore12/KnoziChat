@@ -10,19 +10,19 @@ import { useQuery } from '@powersync/react-native';
 import { toCompilableQuery } from '@powersync/drizzle-driver';
 import { eq } from 'drizzle-orm';
 import { db } from '@/db';
-import { userTable } from '@/db/tables/user.table';
+import { conversationGroupTable } from '@/db/tables/conversation-group.table';
 
-const query = db.select().from(userTable);
+const query = db.select().from(conversationGroupTable);
 
-interface ChatterInfoProps extends ViewProps {
-  userId: string;
+interface GroupInfoProps extends ViewProps {
+  id: string;
 }
 
-export function ChatterInfo({ className, userId, ...props }: ChatterInfoProps) {
+export function GroupInfo({ className, id, ...props }: GroupInfoProps) {
   const safeAreaInsets = useSafeAreaInsets();
 
   const { data, isLoading } = useQuery(
-    toCompilableQuery(query.where(eq(userTable.id, userId)).limit(1))
+    toCompilableQuery(query.where(eq(conversationGroupTable.id, id)).limit(1))
   );
 
   if (isLoading) return <Description>Data being loaded</Description>;
@@ -40,19 +40,15 @@ export function ChatterInfo({ className, userId, ...props }: ChatterInfoProps) {
         <Ionicons name="arrow-back" size={22} />
       </ThrottledTouchable>
 
-      <Avatar alt={data[0].firstName ?? ''} className="size-14">
+      <Avatar alt={data[0].avatar ?? ''} className="size-14">
         <Avatar.Image />
-        <Avatar.Fallback>{data[0].firstName[0]}</Avatar.Fallback>
+        <Avatar.Fallback>{data[0].name[0]}</Avatar.Fallback>
       </Avatar>
 
       <View className="flex-col">
         <View className="flex-row gap-x-2">
-          <Description className="font-bold">
-            {data[0].firstName} {data[0].lastName}
-          </Description>
+          <Description className="font-bold">{data[0].name}</Description>
         </View>
-
-        <Description>{data[0].phoneNumber}</Description>
       </View>
     </View>
   );

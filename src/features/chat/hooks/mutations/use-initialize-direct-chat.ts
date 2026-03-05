@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { router } from 'expo-router';
+import { eq } from 'drizzle-orm';
 
 import { getUserApi } from '@/features/common/api/get-user.api';
 import { initializeDirectChatApi } from '../../api/initialize-direct-chat.api';
@@ -13,18 +14,26 @@ export const useInitializeDirectChat = () => {
   return useMutation({
     mutationFn: initializeDirectChatApi,
     onSuccess: async (data) => {
-      const userDetails = await getUserApi(data.receiverId);
-
       await db.transaction(async (transaction) => {
-        await transaction.insert(userTable).values({
-          ...userDetails,
-          createdAt: new Date(userDetails.createdAt).getTime(),
-          updatedAt: new Date(userDetails.updatedAt).getTime(),
-        });
+        const isExistingUser = await transaction
+          .select({ id: userTable.id })
+          .from(userTable)
+          .where(eq(userTable.id, data.receiverId))
+          .get();
+
+        if (!isExistingUser) {
+          const userDetails = await getUserApi(data.receiverId);
+
+          await transaction.insert(userTable).values({
+            ...userDetails,
+            createdAt: new Date(userDetails.createdAt).getTime(),
+            updatedAt: new Date(userDetails.updatedAt).getTime(),
+          });
+        }
 
         await transaction.insert(conversationOneToOneTable).values({
           id: data.conversationId,
-          userId: userDetails.id,
+          userId: data.receiverId,
           createdAt: new Date(data.createdAt).getTime(),
           updatedAt: new Date(data.updatedAt).getTime(),
         });
