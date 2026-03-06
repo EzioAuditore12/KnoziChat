@@ -57,6 +57,7 @@ export default function ChattingScreen() {
       <View className="flex-1">
         <ChatOneToOneList data={reversedChats} onStartReached={fetchNextChats} />
         <SendOneToOneMessage
+          className="items-center"
           conversationId={id}
           receiverId={userId}
           socket={socket as Socket}

@@ -3,6 +3,7 @@ import { eq } from 'drizzle-orm';
 import { db } from '@/db';
 import {
   conversationGroupTable,
+  UpdateConversationGroup,
   type ConversationGroup,
   type InsertConversationGroup,
 } from '../tables/conversation-group.table';
@@ -19,6 +20,13 @@ export class ConversationGroupRepository {
 
   public async findOne(id: string): Promise<ConversationGroup | undefined> {
     return await this.database.select().from(this.table).where(eq(this.table.id, id)).get();
+  }
+
+  public async update(id: string, updateConversationGroup: Omit<UpdateConversationGroup, 'id'>) {
+    await this.database
+      .update(this.table)
+      .set(updateConversationGroup)
+      .where(eq(this.table.id, id));
   }
 }
 

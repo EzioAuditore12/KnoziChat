@@ -9,14 +9,14 @@ import { ThrottledTouchable } from '@/components/throttled-touchable';
 
 import { useAuthStore } from '@/store/auth';
 
-import { pullChanges } from '@/db/sync';
+import { syncDatabase } from '@/db/sync';
 
 export function Header({ className, ...props }: ViewProps) {
   const { user } = useAuthStore((state) => state);
   return (
     <View className={cn('flex-row items-center', className)} {...props}>
       <Link href={'/search'}>Search</Link>
-      <Button className="ml-2" onPress={pullChanges}>
+      <Button className="ml-2" onPress={() => syncDatabase.pullChanges()}>
         Sync
       </Button>
 
