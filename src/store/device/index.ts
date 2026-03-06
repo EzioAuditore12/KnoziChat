@@ -6,13 +6,24 @@ import type { DeviceConfigStoreType } from './type';
 
 export const useDeviceConfigStore = create<DeviceConfigStoreType>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       expoPushToken: null,
+      lastSyncedAt: 0,
       setExpoPushToken: (token: string) => {
         set({ expoPushToken: token });
       },
       clearExpoPushToken: () => {
         set({ expoPushToken: null });
+      },
+      getLastSyncedAt() {
+        const { lastSyncedAt } = get();
+        return lastSyncedAt;
+      },
+      updateLastSynedAt(data) {
+        set({ lastSyncedAt: data });
+      },
+      resetTimeStamp() {
+        set({ lastSyncedAt: 0 });
       },
     }),
     {

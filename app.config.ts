@@ -6,61 +6,36 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   slug: 'KnoziChat',
   version: '1.0.0',
   orientation: 'default',
-  icon: './public/images/icon.png',
+  icon: './assets/images/icon.png',
   scheme: 'knozichat',
   userInterfaceStyle: 'automatic',
-  newArchEnabled: true,
   ios: {
-    supportsTablet: true,
+    icon: './assets/expo.icon',
   },
   android: {
     adaptiveIcon: {
       backgroundColor: '#E6F4FE',
-      foregroundImage: './public/images/android-icon-foreground.png',
-      backgroundImage: './public/images/android-icon-background.png',
-      monochromeImage: './public/images/android-icon-monochrome.png',
+      foregroundImage: './assets/images/android-icon-foreground.png',
+      backgroundImage: './assets/images/android-icon-background.png',
+      monochromeImage: './assets/images/android-icon-monochrome.png',
     },
-    edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,
     package: 'com.dakshpurohit.KnoziChat',
     googleServicesFile: './google-services.json',
   },
   web: {
     output: 'static',
-    favicon: './public/images/favicon.png',
+    favicon: './assets/images/favicon.png',
   },
   plugins: [
     'expo-router',
     [
       'expo-splash-screen',
       {
-        image: './public/images/splash-icon.png',
-        imageWidth: 200,
-        resizeMode: 'contain',
-        backgroundColor: '#ffffff',
-        dark: {
-          backgroundColor: '#000000',
-        },
-      },
-    ],
-    ['@lovesworking/watermelondb-expo-plugin-sdk-52-plus'],
-    [
-      'expo-build-properties',
-      {
-        ios: {
-          extraPods: [
-            {
-              name: 'simdjson',
-              configurations: ['Debug', 'Release'],
-              path: '../node_modules/@nozbe/simdjson',
-              modular_headers: true,
-            },
-          ],
-        },
+        backgroundColor: '#208AEF',
         android: {
-          packagingOptions: {
-            pickFirst: ['**/libc++_shared.so'],
-          },
+          image: './assets/images/splash-icon.png',
+          imageWidth: 76,
         },
       },
     ],

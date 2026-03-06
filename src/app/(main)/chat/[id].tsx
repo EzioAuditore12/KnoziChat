@@ -1,17 +1,20 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { useEffect } from 'react';
 import { View } from 'react-native';
+import { desc, eq } from 'drizzle-orm';
+import { useEffect } from 'react';
+import { Socket } from 'socket.io-client';
 
-import { EnhancedDirectChatList } from '@/features/chat/components/direct-chat-list';
-import { SendDirectMessage } from '@/features/chat/components/send-direct-message';
+import { ChatOneToOneList } from '@/features/chat/components/one-to-one/list';
+import { SendOneToOneMessage } from '@/features/chat/components/one-to-one/send-one-to-one-message';
+import { ChatterInfo } from '@/features/chat/components/one-to-one/chatter-info';
 
-import { EnhancedUserInfo } from '@/features/common/components/user-info';
+import { db } from '@/db';
+import { useLiveInfiniteQuery } from '@/db/hooks/use-live-infinite-query';
+import { chatOneToOneTable } from '@/db/tables/chat-one-to-one.table';
 
 import { useSocketState } from '@/store/socket';
 
-import { Socket } from '@/lib/socket-io';
-
-import { sendMessageEvent } from '@/features/realtime/events/send-message.event';
+import { sendMessageEvent } from '@/features/chat/events/send-message.event';
 
 export default function ChattingScreen() {
   const { id, userId } = useLocalSearchParams() as unknown as {
@@ -33,20 +36,31 @@ export default function ChattingScreen() {
     };
   }, [socket, id, socket?.connected]);
 
+  const { data: chats, fetchNextPage: fetchNextChats } = useLiveInfiniteQuery({
+    query: db
+      .select()
+      .from(chatOneToOneTable)
+      .orderBy(desc(chatOneToOneTable.createdAt))
+      .where(eq(chatOneToOneTable.conversationId, id)),
+    pageSize: 20,
+  });
+
+  const reversedChats = chats.flat().reverse();
+
   return (
     <>
       <Stack.Screen
         options={{
-          header: () => <EnhancedUserInfo id={userId} />,
+          header: () => <ChatterInfo userId={userId} />,
         }}
       />
       <View className="flex-1">
-        <EnhancedDirectChatList conversationId={id} />
-        <SendDirectMessage
-          socket={socket as Socket}
-          receiverId={userId}
-          conversationId={id}
+        <ChatOneToOneList data={reversedChats} onStartReached={fetchNextChats} />
+        <SendOneToOneMessage
           className="items-center"
+          conversationId={id}
+          receiverId={userId}
+          socket={socket as Socket}
           handleSubmit={sendMessageEvent}
         />
       </View>

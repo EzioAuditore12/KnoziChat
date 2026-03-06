@@ -1,15 +1,29 @@
 import { type } from 'arktype';
+import { createChangesSchema } from '../create-change.schema';
+import { selectUserSchema } from '@/db/tables/user.table';
+import { selectConversationOneToOneSchema } from '@/db/tables/conversation-one-to-one.table';
+import { selectChatOneToOneSchema } from '@/db/tables/chat-one-to-one.table';
+import { selectConversationGroupSchema } from '@/db/tables/conversation-group.table';
+import { selectChatGroupSchema } from '@/db/tables/chat-group.table';
 
-import { conversationsChangeSchema } from '../changes/conversations-change.schema';
-import { directChatChangeSchema } from '../changes/direct-chats-change.schema';
-import { usersChangeSchema } from '../changes/users-change.schema';
+const userChangeSchema = createChangesSchema(selectUserSchema);
+
+const conversationOneToOneChangeSchema = createChangesSchema(selectConversationOneToOneSchema);
+
+const conversationGroupChangeSchema = createChangesSchema(selectConversationGroupSchema);
+
+const chatOneToOneChangeSchema = createChangesSchema(selectChatOneToOneSchema);
+
+const chatGroupChangeSchema = createChangesSchema(selectChatGroupSchema);
 
 export const pullChangesResponseSchema = type({
   timestamp: 'number',
   changes: {
-    users: usersChangeSchema,
-    conversations: conversationsChangeSchema,
-    direct_chats: directChatChangeSchema,
+    user: userChangeSchema,
+    conversationOneToOne: conversationOneToOneChangeSchema,
+    conversationGroup: conversationGroupChangeSchema,
+    chatsOneToOne: chatOneToOneChangeSchema,
+    chatsGroup: chatGroupChangeSchema,
   },
 });
 

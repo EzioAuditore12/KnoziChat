@@ -8,11 +8,9 @@ import { UserProfile } from '@/features/common/components/user-profile';
 
 import { useGetUser } from '@/features/common/hooks/queries/use-get-user';
 
-import { ConversationRepository } from '@/db/repositories/conversation';
+import { conversationOneToOneRepository } from '@/db/repositories/conversation-one-to-one.repository';
 import { useRefreshOnFocus } from '@/hooks/use-refresh-on-focus';
 import { UserProfileLoading } from '@/features/common/components/user-profile-loading';
-
-const conversationRepostiory = new ConversationRepository();
 
 const navgateToChat = async ({
   userId,
@@ -25,8 +23,7 @@ const navgateToChat = async ({
   firstName: string;
   lastName: string;
 }) => {
-  const existingCoversationWithUser =
-    await conversationRepostiory.getConversationWithUserId(userId);
+  const existingCoversationWithUser = await conversationOneToOneRepository.getByUserId(userId);
 
   router.dismissTo('/(main)');
 
@@ -35,7 +32,7 @@ const navgateToChat = async ({
       pathname: '/(main)/chat/[id]',
       params: {
         id: existingCoversationWithUser.id,
-        userId: existingCoversationWithUser._getRaw('user_id') as string,
+        userId: existingCoversationWithUser.userId,
       },
     });
     return;

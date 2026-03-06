@@ -1,9 +1,10 @@
 import { type } from 'arktype';
-import { tableNamesSyncSchema } from '../table-names-sync.schema';
 
 export const pullChangesParamSchema = type({
-  lastSyncAt: 'number | null | undefined',
-  tables: tableNamesSyncSchema.array(),
+  lastSyncedAt: 'number',
+  tableNames: type(
+    "'CONVERSATION-ONE-TO-ONE' | 'CHAT-ONE-TO-ONE' | 'USER' | 'CONVERSATION-GROUP' | 'CHAT-GROUP'"
+  ).array(),
 });
 
 export type PullChangesParam = typeof pullChangesParamSchema.infer;
