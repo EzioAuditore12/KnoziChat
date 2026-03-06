@@ -4,6 +4,7 @@ import { useAuthStore } from '@/store/auth';
 import { useEffect } from 'react';
 import { useSocketState } from '@/store/socket';
 import { useReceiveMessageEvent } from '@/features/chat/events/receive-message.event';
+import { useReceiveGroupMessageEvent } from '@/features/chat/events/receive-group-message.event';
 
 export default function MainScreensLayout() {
   const { user } = useAuthStore((state) => state);
@@ -17,6 +18,7 @@ export default function MainScreensLayout() {
   }, [user, connectSocket, disconnectSocket]);
 
   useReceiveMessageEvent(socket);
+  useReceiveGroupMessageEvent(socket);
 
   if (!user) return <Redirect href="/(auth)/login" />;
 

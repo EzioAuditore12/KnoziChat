@@ -1,33 +1,37 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { View } from 'react-native';
+import { useEffect } from 'react';
 
 import { GroupInfo } from '@/features/chat/components/group/group-info';
 import { SendGroupMessage } from '@/features/chat/components/group/send-group-message';
-import { chatGroupRepository } from '@/db/repositories/chat-group.repository';
-import { conversationGroupRepository } from '@/db/repositories/conversation-group.repository';
+
 import { useAuthStore } from '@/store/auth';
 
 import { useLiveGroupConversationChats } from '@/features/chat/hooks/database/use-live-group-conversation-chats';
 
 import { ChatGroupList } from '@/features/chat/components/group/list';
-
-const sendGroupMessage = async (data: { id: string; senderId: string; text: string }) => {
-  const { id: conversationId, senderId, text: messageText } = data;
-  const chat = await chatGroupRepository.create({
-    conversationId,
-    senderId,
-    text: messageText,
-  });
-
-  await conversationGroupRepository.update(chat.conversationId, {
-    updatedAt: chat.createdAt,
-  });
-};
+import { useSocketState } from '@/store/socket';
+import { sendGroupMessageEvent } from '@/features/chat/events/send-group-message.event';
+import { Socket } from '@/lib/socket-io';
 
 export default function ChattingGroupScreen() {
   const { id } = useLocalSearchParams() as unknown as { id: string };
 
   const { user } = useAuthStore((state) => state);
+
+  const { socket } = useSocketState();
+
+  useEffect(() => {
+    if (socket?.connected) {
+      socket.emit('conversation-group:join', id);
+    }
+
+    return () => {
+      if (socket?.connected) {
+        socket.emit('conversation-group:leave', id);
+      }
+    };
+  }, [socket, id, socket?.connected]);
 
   const { data: chats, fetchNextPage: fetchNextChats } = useLiveGroupConversationChats({
     id,
@@ -35,8 +39,6 @@ export default function ChattingGroupScreen() {
   });
 
   const reversedChats = chats.flat().reverse();
-
-  console.log(reversedChats);
 
   return (
     <>
@@ -47,7 +49,8 @@ export default function ChattingGroupScreen() {
           className="items-center"
           id={id}
           senderId={user?.id as string}
-          handleSubmit={sendGroupMessage}
+          socket={socket as Socket}
+          handleSubmit={sendGroupMessageEvent}
         />
       </View>
     </>

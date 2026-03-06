@@ -8,17 +8,21 @@ import { Button } from 'heroui-native/button';
 import { Input } from 'heroui-native/input';
 
 import { useGradualAnimation } from '@/hooks/use-gradual-animation';
+import { Socket } from '@/lib/socket-io';
+import { SendGroupMessageEvent } from '../../events/send-group-message.event';
 
 interface SendGroupMessageProps extends ViewProps {
   id: string;
   senderId: string;
-  handleSubmit: (data: { id: string; senderId: string; text: string }) => void;
+  socket: Socket;
+  handleSubmit: (data: SendGroupMessageEvent) => void;
 }
 
 export function SendGroupMessage({
   className,
   id,
   senderId,
+  socket,
   handleSubmit,
   ...props
 }: SendGroupMessageProps) {
@@ -42,7 +46,7 @@ export function SendGroupMessage({
   });
 
   const onSubmit = (data: { text: string }) => {
-    handleSubmit({ id, senderId, text: data.text });
+    handleSubmit({ conversationId: id, senderId, socket, text: data.text });
     reset();
   };
 

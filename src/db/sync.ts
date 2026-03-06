@@ -28,6 +28,12 @@ export class SyncDatabase {
 
     const { changes, timestamp } = await this.pullChangesRequestApi(lastSyncedAt);
 
+    console.log(
+      changes.chatsOneToOne.created,
+      changes.conversationGroup.updated,
+      changes.chatsGroup.created
+    );
+
     await this.database.transaction(async (transaction) => {
       await this.synchronizeRecords(transaction, this.userTable, changes.user);
 
@@ -98,10 +104,7 @@ export class SyncDatabase {
   >(transaction: TransactionType, table: TTable, data: any[]): Promise<void> {
     if (data.length > 0) {
       for (const record of data) {
-        await transaction
-          .update(table)
-          .set(record)
-          .where(eq(conversationOneToOneTable.id, record.id));
+        await transaction.update(table).set(record).where(eq(table.id, record.id));
       }
     }
   }
