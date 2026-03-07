@@ -41,7 +41,7 @@ export function ChatGroupList({ data, className, ...props }: ChatGroupListProps)
 
   return (
     <View
-      className={cn('relative flex-1', className)}
+      className={cn('relative flex-1 p-1', className)}
       onLayout={(e) => setViewHeight(e.nativeEvent.layout.height)}>
       <FlashList
         ref={ref}

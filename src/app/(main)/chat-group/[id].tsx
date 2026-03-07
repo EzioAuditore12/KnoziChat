@@ -40,6 +40,8 @@ export default function ChattingGroupScreen() {
 
   const reversedChats = chats.flat().reverse();
 
+  console.log(chats);
+
   return (
     <>
       <Stack.Screen options={{ header: () => <GroupInfo id={id} /> }} />

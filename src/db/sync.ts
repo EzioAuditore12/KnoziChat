@@ -28,12 +28,6 @@ export class SyncDatabase {
 
     const { changes, timestamp } = await this.pullChangesRequestApi(lastSyncedAt);
 
-    console.log(
-      changes.chatsOneToOne.created,
-      changes.conversationGroup.updated,
-      changes.chatsGroup.created
-    );
-
     await this.database.transaction(async (transaction) => {
       await this.synchronizeRecords(transaction, this.userTable, changes.user);
 

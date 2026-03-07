@@ -6,4 +6,5 @@ export type Conversation = {
   updatedAt: number;
   type: ConversationType;
   userId: string;
+  lastMessage: string | null;
 };

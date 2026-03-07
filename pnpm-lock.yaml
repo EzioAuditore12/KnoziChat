@@ -53,6 +53,9 @@ importers:
       arktype:
         specifier: ^2.2.0
         version: 2.2.0
+      date-fns:
+        specifier: ^4.1.0
+        version: 4.1.0
       drizzle-arktype:
         specifier: ^0.1.3
         version: 0.1.3(arktype@2.2.0)(drizzle-orm@0.45.1(@op-engineering/op-sqlite@15.2.5(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)))
@@ -105,8 +108,8 @@ importers:
         specifier: ~55.0.9
         version: 55.0.9(expo@55.0.5)(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))
       heroui-native:
-        specifier: 1.0.0-rc.3
-        version: 1.0.0-rc.3(495c14a233ee4487e4aae50634156fa9)
+        specifier: 1.0.0-rc.4
+        version: 1.0.0-rc.4(495c14a233ee4487e4aae50634156fa9)
       react:
         specifier: 19.2.0
         version: 19.2.0
@@ -2222,6 +2225,9 @@ packages:
     resolution: {integrity: sha512-BS8PfmtDGnrgYdOonGZQdLZslWIeCGFP9tpan0hi1Co2Zr2NKADsvGYA8XxuG/4UWgJ6Cjtv+YJnB6MM69QGlQ==}
     engines: {node: '>= 0.4'}
 
+  date-fns@4.1.0:
+    resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
+
   debug@2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
     peerDependencies:
@@ -3025,8 +3031,8 @@ packages:
   hermes-parser@0.32.1:
     resolution: {integrity: sha512-175dz634X/W5AiwrpLdoMl/MOb17poLHyIqgyExlE8D9zQ1OPnoORnGMB5ltRKnpvQzBjMYvT2rN/sHeIfZW5Q==}
 
-  heroui-native@1.0.0-rc.3:
-    resolution: {integrity: sha512-UjQCUrNjpuWJva8rmqxB9rUw3Man/el4hYJVIMc5zLazEQU3gw22yGUSPvNcque96PUtdeKKngQnkjJytcbRpw==}
+  heroui-native@1.0.0-rc.4:
+    resolution: {integrity: sha512-jufoDSZiPGlxpnUxprzuc62ylnRwHcZc84vglE1HhUIZAkFsq17QVpmPUwqt8jTcJcP8s+/GNRYqgX6B0X8/3A==}
     peerDependencies:
       '@gorhom/bottom-sheet': ^5.2.8
       react: '>=19.0.0'
@@ -7359,6 +7365,8 @@ snapshots:
       es-errors: 1.3.0
       is-data-view: 1.0.2
 
+  date-fns@4.1.0: {}
+
   debug@2.6.9:
     dependencies:
       ms: 2.0.0
@@ -8232,7 +8240,7 @@ snapshots:
     dependencies:
       hermes-estree: 0.32.1
 
-  heroui-native@1.0.0-rc.3(495c14a233ee4487e4aae50634156fa9):
+  heroui-native@1.0.0-rc.4(495c14a233ee4487e4aae50634156fa9):
     dependencies:
       '@gorhom/bottom-sheet': 5.2.8(@types/react@19.2.14)(react-native-gesture-handler@2.30.0(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(react-native-reanimated@4.2.1(react-native-worklets@0.7.2(@babel/core@7.28.5)(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(react-native@0.83.2(@babel/core@7.28.5)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
       react: 19.2.0
