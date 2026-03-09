@@ -5,9 +5,12 @@ import { useEffect } from 'react';
 import { useSocketState } from '@/store/socket';
 import { useReceiveMessageEvent } from '@/features/chat/events/receive-message.event';
 import { useReceiveGroupMessageEvent } from '@/features/chat/events/receive-group-message.event';
+import { useSyncEngine } from '@/db/sync/hook';
 
 export default function MainScreensLayout() {
   const { user } = useAuthStore((state) => state);
+
+  useSyncEngine();
 
   const { socket, connectSocket, disconnectSocket } = useSocketState();
 

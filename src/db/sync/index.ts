@@ -9,8 +9,8 @@ import { useDeviceConfigStore } from '@/store/device';
 import { userTable } from '@/db/tables/user.table';
 import { conversationOneToOneTable } from '@/db/tables/conversation-one-to-one.table';
 import { chatOneToOneTable } from '@/db/tables/chat-one-to-one.table';
-import { conversationGroupTable } from './tables/conversation-group.table';
-import { chatGroupTable } from './tables/chat-group.table';
+import { conversationGroupTable } from '../tables/conversation-group.table';
+import { chatGroupTable } from '../tables/chat-group.table';
 import { PullChangesResponse } from '@/features/sync/schemas/pull-changes/response.schema';
 
 type TransactionType = Parameters<Parameters<typeof db.transaction>[0]>[0];

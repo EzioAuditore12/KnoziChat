@@ -40,6 +40,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
     'expo-secure-store',
+    'expo-background-task',
   ],
   experiments: {
     typedRoutes: true,
