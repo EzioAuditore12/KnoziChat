@@ -1,11 +1,11 @@
+import { createInsertSchema, createSelectSchema, createUpdateSchema } from 'drizzle-arktype';
+import { sql } from 'drizzle-orm';
 import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import { createSelectSchema, createInsertSchema, createUpdateSchema } from 'drizzle-arktype';
-import { relations, sql } from 'drizzle-orm';
 
 import { SnowFlakeId } from '@/lib/snowflake';
 
-import { userTable } from './user.table';
 import { conversationGroupTable } from './conversation-group.table';
+import { userTable } from './user.table';
 
 export const CHAT_GROUP_TABLE_NAME = 'chat_group';
 
@@ -39,13 +39,6 @@ export const chatGroupTable = sqliteTable(
   },
   (t) => [index('conversation_group_idx').on(t.conversationId), index('sender_idx').on(t.senderId)]
 );
-
-export const chatGroupRelationWithConversationGroup = relations(chatGroupTable, ({ one }) => ({
-  conversation: one(conversationGroupTable, {
-    fields: [chatGroupTable.conversationId],
-    references: [conversationGroupTable.id],
-  }),
-}));
 
 export const selectChatGroupSchema = createSelectSchema(chatGroupTable);
 export const insertChatGroupSchema = createInsertSchema(chatGroupTable);

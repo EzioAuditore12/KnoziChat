@@ -39,7 +39,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         },
       },
     ],
-    'expo-secure-store',
+    'react-native-nitro-fetch',
     'expo-background-task',
   ],
   experiments: {

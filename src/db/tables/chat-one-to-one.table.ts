@@ -1,8 +1,7 @@
-import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import { createSelectSchema, createInsertSchema } from 'drizzle-arktype';
-import { SnowFlakeId } from '@/lib/snowflake';
-import { relations } from 'drizzle-orm';
 import { conversationOneToOneTable } from '@/db/tables/conversation-one-to-one.table';
+import { SnowFlakeId } from '@/lib/snowflake';
+import { createInsertSchema, createSelectSchema } from 'drizzle-arktype';
+import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 export const CHAT_ONE_TO_ONE_TABLE_NAME = 'chat_one_to_one';
 
@@ -26,16 +25,6 @@ export const chatOneToOneTable = sqliteTable(
       .notNull(),
   },
   (t) => [index('conversation_one_to_one_idx').on(t.conversationId)]
-);
-
-export const chatOneToOneRelationWithConversationOneToOne = relations(
-  chatOneToOneTable,
-  ({ one }) => ({
-    conversation: one(conversationOneToOneTable, {
-      fields: [chatOneToOneTable.conversationId],
-      references: [conversationOneToOneTable.id],
-    }),
-  })
 );
 
 export const selectChatOneToOneSchema = createSelectSchema(chatOneToOneTable);

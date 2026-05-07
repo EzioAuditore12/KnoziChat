@@ -1,11 +1,11 @@
 import { Redirect, Stack } from 'expo-router';
 
-import { useAuthStore } from '@/store/auth';
-import { useEffect } from 'react';
-import { useSocketState } from '@/store/socket';
-import { useReceiveMessageEvent } from '@/features/chat/events/receive-message.event';
-import { useReceiveGroupMessageEvent } from '@/features/chat/events/receive-group-message.event';
 import { useSyncEngine } from '@/db/sync/hook';
+import { useReceiveGroupMessageEvent } from '@/features/chat/events/receive-group-message.event';
+import { useReceiveMessageEvent } from '@/features/chat/events/receive-message.event';
+import { useAuthStore } from '@/store/auth';
+import { useSocketState } from '@/store/socket';
+import { useEffect } from 'react';
 
 export default function MainScreensLayout() {
   const { user } = useAuthStore((state) => state);
