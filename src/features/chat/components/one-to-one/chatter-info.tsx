@@ -52,7 +52,7 @@ export function ChatterInfo({ className, userId, ...props }: ChatterInfoProps) {
           </Description>
         </View>
 
-        <Description>{data[0].phoneNumber}</Description>
+        <Description>{data[0].email}</Description>
       </View>
     </View>
   );

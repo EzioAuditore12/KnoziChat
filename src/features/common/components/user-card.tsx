@@ -15,7 +15,7 @@ interface UserCardProps extends ComponentProps<typeof Card> {
 }
 
 export function UserCard({ className, data, onPress, ...props }: UserCardProps) {
-  const { firstName, avatar, phoneNumber } = data;
+  const { firstName, avatar, email } = data;
 
   return (
     <ThrottledTouchable onPress={onPress}>
@@ -28,7 +28,7 @@ export function UserCard({ className, data, onPress, ...props }: UserCardProps) 
 
           <View>
             <Description className="text-lg">{firstName}</Description>
-            <Description>{phoneNumber}</Description>
+            <Description>{email}</Description>
           </View>
         </Card.Body>
       </Card>

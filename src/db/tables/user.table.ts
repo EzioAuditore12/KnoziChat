@@ -8,8 +8,8 @@ export const userTable = sqliteTable(USER_TABLE_NAME, {
   id: text('id')
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  phoneNumber: text('phone_number').unique().notNull(),
-  email: text('email', { length: 240 }).unique(),
+  phoneNumber: text('phone_number').unique(),
+  email: text('email', { length: 240 }).unique().notNull(),
   avatar: text('avatar'),
   firstName: text('first_name', { length: 50 }).notNull(),
   middleName: text('middle_name', { length: 50 }),

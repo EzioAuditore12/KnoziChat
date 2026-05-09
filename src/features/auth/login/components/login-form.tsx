@@ -29,7 +29,7 @@ export function LoginForm({
     handleSubmit: handleFormSubmit,
   } = useForm<LoginParam>({
     defaultValues: {
-      phoneNumber: '',
+      email: '',
       password: '',
     },
     resolver: arktypeResolver(loginParamSchema),
@@ -44,17 +44,18 @@ export function LoginForm({
     <View className={cn('gap-y-2 p-2', className)} {...props}>
       <Controller
         control={control}
-        name="phoneNumber"
+        name="email"
         render={({ field: { value, onChange, onBlur } }) => (
-          <TextField isRequired isInvalid={errors.phoneNumber ? true : false}>
-            <Label>Phone Number</Label>
+          <TextField isRequired isInvalid={errors.email ? true : false}>
+            <Label>Email</Label>
             <Input
-              placeholder="Enter phone number"
+              placeholder="Enter email"
               value={value}
               onChangeText={onChange}
               onBlur={onBlur}
+              keyboardType="email-address"
             />
-            <FieldError>{errors.phoneNumber?.message}</FieldError>
+            <FieldError>{errors.email?.message}</FieldError>
           </TextField>
         )}
       />
