@@ -10,10 +10,10 @@ export interface PaginatedQueryBuilder<T> {
 
 export interface UseLiveInfiniteQueryOptions<T> {
   query: PaginatedQueryBuilder<T>;
-  pageSize: number;
+  pageSize?: number;
 }
 
-export function useLiveInfiniteQuery<T>({ query, pageSize }: UseLiveInfiniteQueryOptions<T>) {
+export function useLiveInfiniteQuery<T>({ query, pageSize = 10 }: UseLiveInfiniteQueryOptions<T>) {
   const [page, setPage] = useState<number>(0);
 
   // Calculate total items to fetch based on the current page

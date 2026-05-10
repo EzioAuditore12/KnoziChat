@@ -1,9 +1,11 @@
 import { HeroUINativeProvider, type HeroUINativeConfig } from 'heroui-native/provider';
-import type { PropsWithChildren } from 'react';
-import { useUniwind } from 'uniwind';
+import { useEffect, type PropsWithChildren } from 'react';
+import { useUniwind, Uniwind } from 'uniwind';
 import { ThemeProvider, DarkTheme, DefaultTheme } from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
+
+import { useDeviceConfigStore } from '@/store/device';
 
 const config: HeroUINativeConfig = {
   textProps: {
@@ -23,6 +25,12 @@ const config: HeroUINativeConfig = {
 
 export function HeroUIThemeProvider({ children }: PropsWithChildren) {
   const { theme } = useUniwind();
+
+  const savedTheme = useDeviceConfigStore((state) => state.theme);
+
+  useEffect(() => {
+    Uniwind.setTheme(savedTheme);
+  }, [savedTheme, Uniwind.setTheme]);
 
   return (
     <ThemeProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>

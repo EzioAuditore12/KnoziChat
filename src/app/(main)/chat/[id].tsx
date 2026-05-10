@@ -1,4 +1,4 @@
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { View } from 'react-native';
 import { desc, eq } from 'drizzle-orm';
 import { useEffect } from 'react';
@@ -51,7 +51,18 @@ export default function ChattingScreen() {
     <>
       <Stack.Screen
         options={{
-          header: () => <ChatterInfo userId={userId} />,
+          header: () => (
+            <ChatterInfo
+              onPress={() =>
+                router.push({
+                  pathname: '/chat/profile/[id]',
+                  params: { id: userId },
+                })
+              }
+              onBack={() => router.back()}
+              userId={userId}
+            />
+          ),
         }}
       />
       <View className="flex-1">

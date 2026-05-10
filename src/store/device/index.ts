@@ -9,6 +9,12 @@ export const useDeviceConfigStore = create<DeviceConfigStoreType>()(
     (set, get) => ({
       expoPushToken: null,
       lastSyncedAt: 0,
+      theme: 'system',
+
+      setTheme: (theme) => {
+        set({ theme });
+      },
+
       setExpoPushToken: (token: string) => {
         set({ expoPushToken: token });
       },

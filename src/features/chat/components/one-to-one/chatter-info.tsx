@@ -1,5 +1,4 @@
-import { Ionicons } from '@/components/icon';
-import { ThrottledTouchable } from '@/components/throttled-touchable';
+import { ThrottledTouchable, ThrottledTouchableProps } from '@/components/throttled-touchable';
 import { router } from 'expo-router';
 import { Avatar } from 'heroui-native/avatar';
 import { Description } from 'heroui-native/description';
@@ -9,21 +8,25 @@ import { cn } from 'tailwind-variants';
 import { useQuery } from '@powersync/react-native';
 import { toCompilableQuery } from '@powersync/drizzle-driver';
 import { eq } from 'drizzle-orm';
+
+import { Ionicons } from '@/components/icon';
+
 import { db } from '@/db';
 import { userTable } from '@/db/tables/user.table';
+import { useLiveQuery } from '@/db/hooks/use-live-query';
 
 const query = db.select().from(userTable);
 
 interface ChatterInfoProps extends ViewProps {
   userId: string;
+  onBack?: () => void;
+  onPress?: ThrottledTouchableProps['onPress'];
 }
 
-export function ChatterInfo({ className, userId, ...props }: ChatterInfoProps) {
+export function ChatterInfo({ className, userId, onPress, onBack, ...props }: ChatterInfoProps) {
   const safeAreaInsets = useSafeAreaInsets();
 
-  const { data, isLoading } = useQuery(
-    toCompilableQuery(query.where(eq(userTable.id, userId)).limit(1))
-  );
+  const { data, isLoading } = useLiveQuery(query.where(eq(userTable.id, userId)).limit(1));
 
   if (isLoading) return <Description>Data being loaded</Description>;
 
@@ -36,14 +39,16 @@ export function ChatterInfo({ className, userId, ...props }: ChatterInfoProps) {
       )}
       style={{ paddingTop: safeAreaInsets.top }}
       {...props}>
-      <ThrottledTouchable className="bg-background rounded-full p-2" onPress={() => router.back()}>
+      <ThrottledTouchable className="bg-background rounded-full p-2" onPress={onBack}>
         <Ionicons name="arrow-back" size={22} />
       </ThrottledTouchable>
 
-      <Avatar alt={data[0].firstName ?? ''} className="size-14">
-        <Avatar.Image />
-        <Avatar.Fallback>{data[0].firstName[0]}</Avatar.Fallback>
-      </Avatar>
+      <ThrottledTouchable onPress={onPress}>
+        <Avatar alt={data[0].firstName ?? ''} className="size-14">
+          <Avatar.Image />
+          <Avatar.Fallback>{data[0].firstName[0]}</Avatar.Fallback>
+        </Avatar>
+      </ThrottledTouchable>
 
       <View className="flex-col">
         <View className="flex-row gap-x-2">

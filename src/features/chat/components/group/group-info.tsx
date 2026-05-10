@@ -16,6 +16,7 @@ import { eq, sql } from 'drizzle-orm';
 import { db } from '@/db';
 
 import { conversationGroupTable } from '@/db/tables/conversation-group.table';
+import { userTable } from '@/db/tables/user.table';
 
 import { Ionicons } from '@/components/icon';
 import { ThrottledTouchable } from '@/components/throttled-touchable';
@@ -28,7 +29,7 @@ const query = db
 
     members: sql<string>`
       (
-        SELECT group_concat(user.first_name, ', ')
+        SELECT group_concat(${userTable.firstName}, ', ')
         FROM user
         WHERE EXISTS (
           SELECT 1

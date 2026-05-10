@@ -8,8 +8,8 @@ type User = {
   firstName: string;
   middleName: string | null;
   lastName: string;
-  phoneNumber: string;
-  email: string | null;
+  phoneNumber: string | null;
+  email: string;
   avatar: string | null;
   createdAt: string;
   updatedAt: string;

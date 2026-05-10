@@ -18,14 +18,14 @@ export default function ChatGroupDetails() {
 
   const { id } = useLocalSearchParams() as { id: string };
 
-  const { user } = useAuthStore((state) => state);
+  const currentUserId = useAuthStore((state) => state.user?.id!);
 
   const { data, isLoading } = useLiveGroupConversationDetails(id);
 
   const { data: members, isLoading: isMembersLoading } = useLiveGroupConversationMembers({
     id,
-    currentUserId: user?.id!,
-    pageSize: 100,
+    currentUserId,
+    pageSize: 10,
   });
 
   if (isLoading || isMembersLoading)
