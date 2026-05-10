@@ -16,9 +16,6 @@ export function Header({ className, ...props }: ViewProps) {
   return (
     <View className={cn('flex-row items-center', className)} {...props}>
       <Link href={'/search'}>Search</Link>
-      <Button className="ml-2" onPress={() => syncDatabase.pullChanges()}>
-        Sync
-      </Button>
 
       <ThrottledTouchable onPress={() => router.push('/settings')} className="ml-auto">
         <Avatar className="size-14" alt={user?.firstName ?? ''}>

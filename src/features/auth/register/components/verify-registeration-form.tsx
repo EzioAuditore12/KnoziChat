@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import type { VerifyRegisterationParam } from '../schemas/verify-registeration/verify-registeration-param.schema';
 
 interface VerificationRegisterationFormProps extends TextFieldRootProps {
-  phoneNumber: string;
+  email: string;
   handleSumit: (data: VerifyRegisterationParam) => void;
   duration: number;
   isSubmitting?: boolean;
@@ -20,7 +20,7 @@ export function VerificationRegisterationForm({
   handleSumit,
   duration,
   isSubmitting = false,
-  phoneNumber,
+  email,
   size = 6,
   ...props
 }: VerificationRegisterationFormProps) {
@@ -56,7 +56,7 @@ export function VerificationRegisterationForm({
         Please enter the one-time password (OTP) sent to your phone number. The code is valid for a
         limited time.
       </Description>
-      <InputOTP maxLength={size} onComplete={(code) => handleSumit({ otp: code, phoneNumber })}>
+      <InputOTP maxLength={size} onComplete={(code) => handleSumit({ otp: code, email })}>
         <InputOTP.Group>
           {Array.from({ length: size }).map((_, index) => (
             <InputOTP.Slot key={index} index={index} />

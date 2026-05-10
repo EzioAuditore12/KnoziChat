@@ -10,7 +10,7 @@ import type { RegisterFormResponse } from '@/features/auth/register/schemas/regi
 export default function VerifyRegisterScreen() {
   const safeAreaInsets = useSafeAreaInsets();
 
-  const { phoneNumber, duration } = useLocalSearchParams() as unknown as Omit<
+  const { email, duration } = useLocalSearchParams() as unknown as Omit<
     RegisterFormResponse,
     'message' | 'status'
   >;
@@ -25,7 +25,7 @@ export default function VerifyRegisterScreen() {
       contentContainerClassName="flex-grow-1 items-center justify-center p-2">
       <VerificationRegisterationForm
         duration={duration}
-        phoneNumber={phoneNumber}
+        email={email}
         handleSumit={mutate}
         isSubmitting={isPending}
       />

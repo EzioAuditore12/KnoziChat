@@ -35,7 +35,7 @@ export function RegisterForm({
       firstName: '',
       middleName: '',
       lastName: '',
-      phoneNumber: '',
+      phoneNumber: null,
       email: '',
       password: '',
       confirmPassword: '',
@@ -109,11 +109,12 @@ export function RegisterForm({
         control={control}
         name="phoneNumber"
         render={({ field: { value, onChange, onBlur } }) => (
-          <TextField isRequired isInvalid={errors.phoneNumber ? true : false}>
+          <TextField isInvalid={errors.phoneNumber ? true : false}>
             <Label>Phone Number</Label>
             <Input
-              placeholder="Phone Number"
-              value={value}
+              placeholder="Phone Number(Optional)"
+              value={value ?? ''}
+              variant="secondary"
               onChangeText={onChange}
               onBlur={onBlur}
             />
@@ -126,12 +127,11 @@ export function RegisterForm({
         control={control}
         name="email"
         render={({ field: { value, onChange, onBlur } }) => (
-          <TextField isInvalid={errors.email ? true : false}>
+          <TextField isRequired isInvalid={errors.email ? true : false}>
             <Label>Email</Label>
             <Input
-              placeholder="Email (Optional)"
+              placeholder="Email"
               keyboardType="email-address"
-              variant="secondary"
               value={value}
               onChangeText={onChange}
               onBlur={onBlur}

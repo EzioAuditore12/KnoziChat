@@ -4,6 +4,7 @@ import { Surface, type SurfaceRootProps } from 'heroui-native/surface';
 import { Activity } from 'react';
 import { Avatar } from 'heroui-native/avatar';
 import { View } from 'react-native';
+import { format } from 'date-fns';
 
 import { ChatGroupWithUserDetails } from '@/features/chat/types/group-chats';
 
@@ -11,40 +12,63 @@ interface ChatGroupBubbleProps extends SurfaceRootProps {
   data: ChatGroupWithUserDetails;
 }
 
+const USER_COLORS = [
+  'bg-red-500',
+  'bg-orange-500',
+  'bg-amber-500',
+  'bg-yellow-500',
+  'bg-lime-500',
+  'bg-green-500',
+  'bg-emerald-500',
+  'bg-teal-500',
+  'bg-cyan-500',
+  'bg-sky-500',
+  'bg-blue-500',
+  'bg-indigo-500',
+  'bg-violet-500',
+  'bg-purple-500',
+  'bg-pink-500',
+];
+
+export function getUserBubbleColor(name: string) {
+  let hash = 0;
+
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  return USER_COLORS[Math.abs(hash) % USER_COLORS.length];
+}
+
 export function ChatGroupBubble({ data, className, ...props }: ChatGroupBubbleProps) {
   const { mode, text, createdAt, senderName, senderAvatar } = data;
 
+  const userColor = getUserBubbleColor(senderName);
+
   return (
-    <View className={cn('flex-row gap-x-1', mode === 'SENT' ? 'self-end' : 'self-start')}>
+    <View className={cn('shrink flex-row gap-x-1', mode === 'SENT' ? 'self-end' : 'self-start')}>
       <Activity mode={mode === 'RECEIVED' ? 'visible' : 'hidden'}>
-        <Avatar className="self-f" alt="">
+        <Avatar alt="">
           <Avatar.Image source={senderAvatar ? { uri: senderAvatar } : undefined} />
           <Avatar.Fallback>{senderName[0]}</Avatar.Fallback>
         </Avatar>
       </Activity>
+
       <Surface
         className={cn(
           'my-1 max-w-xs rounded-xl p-3',
-          mode === 'SENT' ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700',
+          mode === 'SENT' ? 'bg-blue-600' : userColor,
           className
         )}
         {...props}>
         <Activity mode={mode === 'RECEIVED' ? 'visible' : 'hidden'}>
-          <Description className="font-bold text-orange-500">{senderName}</Description>
+          <Description className="font-bold text-white">{senderName}</Description>
         </Activity>
 
-        <Description className={mode === 'SENT' ? 'text-white' : 'text-black dark:text-white'}>
-          {text}
-        </Description>
-        <Description
-          className="text-sm"
-          style={{
-            color: mode === 'SENT' ? '#dbeafe' : '#6b7280',
-          }}>
-          {new Date(createdAt).toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit',
-          })}
+        <Description className="text-white">{text}</Description>
+
+        <Description className="text-sm text-white/70">
+          {format(new Date(createdAt), 'hh:mm a')}
         </Description>
       </Surface>
     </View>

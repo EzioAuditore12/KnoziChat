@@ -5,7 +5,7 @@ import { phoneSchema } from '@/lib/schemas';
 export const registerFormResponseSchema = type({
   status: 'string',
   message: 'string',
-  phoneNumber: phoneSchema,
+  email: '0 < string.email <=240',
   duration: 'number',
 });
 

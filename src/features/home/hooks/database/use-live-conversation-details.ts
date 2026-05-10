@@ -20,7 +20,7 @@ const direct = db
     userId: conversationOneToOneTable.userId,
     // Use raw table strings instead of Drizzle variables
     lastMessage: sql<string | null>`(
-      SELECT text FROM chat_one_to_one 
+      SELECT substr(text, 1, 100) FROM chat_one_to_one 
       WHERE chat_one_to_one.conversation_id = conversation_one_to_one.id 
       ORDER BY chat_one_to_one.created_at DESC 
       LIMIT 1
@@ -38,7 +38,7 @@ const group = db
     userId: sql<string>`NULL`.as('userId'),
     // Use raw table strings instead of Drizzle variables
     lastMessage: sql<string | null>`(
-      SELECT user.first_name || ': ' || chat_group.text
+      SELECT user.first_name || ': ' || substr(chat_group.text, 1, 100)
       FROM chat_group 
       LEFT JOIN user ON user.id = chat_group.sender_id
       WHERE chat_group.conversation_id = conversation_group.id 

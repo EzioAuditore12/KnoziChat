@@ -10,7 +10,7 @@ export const useRegisterForm = () => {
       router.push({
         pathname: '/(auth)/register/verify-register',
         params: {
-          phoneNumber: data.phoneNumber,
+          email: data.email,
           duration: data.duration,
         },
       });

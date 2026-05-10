@@ -13,6 +13,7 @@ import { ChatGroupList } from '@/features/chat/components/group/list';
 import { useSocketState } from '@/store/socket';
 import { sendGroupMessageEvent } from '@/features/chat/events/send-group-message.event';
 import { Socket } from '@/lib/socket-io';
+import { Description } from 'heroui-native/description';
 
 export default function ChattingGroupScreen() {
   const { id } = useLocalSearchParams() as unknown as { id: string };
@@ -33,10 +34,32 @@ export default function ChattingGroupScreen() {
     };
   }, [socket, id, socket?.connected]);
 
-  const { data: chats, fetchNextPage: fetchNextChats } = useLiveGroupConversationChats({
+  const {
+    data: chats,
+    isLoading,
+    fetchNextPage: fetchNextChats,
+  } = useLiveGroupConversationChats({
     id,
     currentUserId: user?.id as string,
   });
+
+  if (isLoading)
+    return (
+      <>
+        <Stack.Screen
+          options={{
+            header: () => (
+              <View className="p-2">
+                <Description>Loading group info</Description>
+              </View>
+            ),
+          }}
+        />
+        <View className="flex-1 items-center justify-center">
+          <Description>Loading All the chats</Description>
+        </View>
+      </>
+    );
 
   const reversedChats = chats.flat().reverse();
 

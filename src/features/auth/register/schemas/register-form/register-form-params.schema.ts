@@ -6,8 +6,8 @@ export const registerFormParamSchema = type({
   firstName: '0 < string <= 50',
   middleName: type.string.atMostLength(50).optional(),
   lastName: '0 < string <= 50',
-  email: 'string.email', // TODO: Need to find alternative for this to also add email validation
-  phoneNumber: phoneSchema.or('null'),
+  email: '0 < string.email <= 240',
+  phoneNumber: phoneSchema.or('null').or('undefined'),
   password: strongPasswordSchema,
   confirmPassword: 'string',
   expoPushToken: 'string?',

@@ -6,6 +6,7 @@ import { ConversationList } from '@/features/home/components/conversation-list';
 import { Header } from '@/features/home/components/header';
 
 import { useLiveConversationDetails } from '@/features/home/hooks/database/use-live-conversation-details';
+import { syncDatabase } from '@/db/sync';
 
 export default function HomeScreen() {
   const safeAreaInsets = useSafeAreaInsets();
@@ -27,6 +28,7 @@ export default function HomeScreen() {
           onEndReached={fetchNextPage}
           isLoading={isLoading}
           isFetchingNextPage={isFetching}
+          onRefresh={() => syncDatabase.pullChanges()}
         />
       </View>
     </>

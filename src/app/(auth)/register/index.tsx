@@ -24,7 +24,9 @@ export default function RegisterFormScreen() {
         paddingBottom: safeAreaInsets.bottom,
       }}
       contentContainerClassName="flex-grow-1 gap-y-2 items-center justify-center p-2">
-      <Description className="self-start text-2xl font-bold">Register your Details !</Description>
+      <Description className="self-start text-2xl font-bold md:self-center">
+        Register your Details !
+      </Description>
 
       <RegisterForm
         expoPushToken={expoPushToken}

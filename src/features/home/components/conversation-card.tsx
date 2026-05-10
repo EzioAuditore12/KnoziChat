@@ -45,7 +45,9 @@ export function ConversationCard({ className, data, onPress, ...props }: Convers
             <Description className="text-lg font-bold">{name}</Description>
 
             {/* FIX 2: Safely access array and object properties */}
-            <Description className="mt-2">{lastMessage}</Description>
+            <Description className="mt-2" numberOfLines={1}>
+              {lastMessage}
+            </Description>
           </View>
         </Card.Body>
         <Description className="mr-2 ml-auto">{formatChatDate(updatedAt)}</Description>

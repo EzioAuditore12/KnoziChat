@@ -42,11 +42,11 @@ export function SendGroupMessage({
     defaultValues: {
       text: '',
     },
-    resolver: arktypeResolver(type({ text: '0 < string <= 1000' })),
+    resolver: arktypeResolver(type({ text: '0 < string < 1000' })),
   });
 
   const onSubmit = (data: { text: string }) => {
-    handleSubmit({ conversationId: id, senderId, socket, text: data.text });
+    handleSubmit({ conversationId: id, senderId, socket, text: data.text.trimEnd() });
     reset();
   };
 
