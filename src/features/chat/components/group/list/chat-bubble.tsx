@@ -32,21 +32,21 @@ const USER_COLORS = [
 
 export function getUserBubbleColor(name: string) {
   let hash = 0;
-
   for (let i = 0; i < name.length; i++) {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
   }
-
   return USER_COLORS[Math.abs(hash) % USER_COLORS.length];
 }
 
 export function ChatGroupBubble({ data, className, ...props }: ChatGroupBubbleProps) {
   const { mode, text, createdAt, senderName, senderAvatar } = data;
-
   const userColor = getUserBubbleColor(senderName);
 
   return (
-    <View className={cn('shrink flex-row gap-x-1', mode === 'SENT' ? 'self-end' : 'self-start')}>
+    // 'w-full' ensures the row takes available space so self-end/start works,
+    // without forcing the child to overflow
+    <View
+      className={cn('w-full flex-row gap-x-2', mode === 'SENT' ? 'justify-end' : 'justify-start')}>
       <Activity mode={mode === 'RECEIVED' ? 'visible' : 'hidden'}>
         <Avatar alt="">
           <Avatar.Image source={senderAvatar ? { uri: senderAvatar } : undefined} />
@@ -56,7 +56,8 @@ export function ChatGroupBubble({ data, className, ...props }: ChatGroupBubblePr
 
       <Surface
         className={cn(
-          'my-1 max-w-xs rounded-xl p-3',
+          // Replaced max-w-xs with max-w-[80%] to prevent screen overflow
+          'my-1 max-w-[80%] shrink rounded-xl p-3',
           mode === 'SENT' ? 'bg-blue-600' : userColor,
           className
         )}
@@ -67,7 +68,7 @@ export function ChatGroupBubble({ data, className, ...props }: ChatGroupBubblePr
 
         <Description className="text-white">{text}</Description>
 
-        <Description className="text-sm text-white/70">
+        <Description className="mt-1 text-sm text-white/70">
           {format(new Date(createdAt), 'hh:mm a')}
         </Description>
       </Surface>
