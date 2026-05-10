@@ -1,31 +1,78 @@
-import { cn } from 'tailwind-variants';
-import { FlashList, type FlashListProps, type FlashListRef } from '@shopify/flash-list';
-import { useRef, Activity, useState } from 'react';
+import { useMemo, useRef, useState, Activity } from 'react';
+
+import { FlashList, type FlashListRef } from '@shopify/flash-list';
+
+import { type NativeScrollEvent, type NativeSyntheticEvent, Text, View } from 'react-native';
+
 import { Button } from 'heroui-native/button';
-import { type NativeScrollEvent, type NativeSyntheticEvent, View } from 'react-native';
+
+import { cn } from 'tailwind-variants';
 
 import type { ChatOneToOne } from '@/db/tables/chat-one-to-one.table';
 
 import { ChatOneToOneBubble } from './chat-one-to-one-bubble';
 
 import { Ionicons } from '@/components/icon';
+import { Chip } from 'heroui-native/chip';
 
-interface ChatOneToOneListProps extends Omit<
-  FlashListProps<ChatOneToOne>,
-  'data' | 'children' | 'keyExtractor' | 'renderItem'
-> {
+interface ChatSection {
+  date: string;
+
   data: ChatOneToOne[];
 }
 
-export function ChatOneToOneList({ data, className, ...props }: ChatOneToOneListProps) {
-  const ref = useRef<FlashListRef<ChatOneToOne> | null>(null);
+interface FlattenedHeader {
+  type: 'HEADER';
 
-  const [viewHeight, setViewHeight] = useState<number>(0);
-  const [contentHeight, setContentHeight] = useState<number>(0);
-  const [isAtListEnd, setIsAtListEnd] = useState<boolean>(false);
+  id: string;
+
+  title: string;
+}
+
+interface FlattenedMessage extends ChatOneToOne {
+  type: 'MESSAGE';
+}
+
+type FlattenedItem = FlattenedHeader | FlattenedMessage;
+
+interface ChatOneToOneListProps {
+  data: ChatSection[];
+
+  className?: string;
+
+  onStartReached?: () => void;
+}
+
+export function ChatOneToOneList({ data, className, onStartReached }: ChatOneToOneListProps) {
+  const ref = useRef<FlashListRef<FlattenedItem> | null>(null);
+
+  const [viewHeight, setViewHeight] = useState(0);
+
+  const [contentHeight, setContentHeight] = useState(0);
+
+  const [isAtListEnd, setIsAtListEnd] = useState(true);
+
+  const flattenedData = useMemo(() => {
+    return data.flatMap((section) => [
+      {
+        type: 'HEADER' as const,
+        id: `header-${section.date}`,
+        title: section.date,
+      },
+
+      ...section.data.map(
+        (message): FlattenedMessage => ({
+          type: 'MESSAGE',
+          ...message,
+        })
+      ),
+    ]);
+  }, [data]);
 
   const scrollToEnd = () => {
-    ref.current?.scrollToEnd({ animated: true });
+    ref.current?.scrollToEnd({
+      animated: true,
+    });
   };
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -45,24 +92,38 @@ export function ChatOneToOneList({ data, className, ...props }: ChatOneToOneList
       onLayout={(e) => setViewHeight(e.nativeEvent.layout.height)}>
       <FlashList
         ref={ref}
-        onScroll={handleScroll}
-        onContentSizeChange={(_, h) => setContentHeight(h)}
-        data={data}
+        data={flattenedData}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <ChatOneToOneBubble data={item} />}
-        // Calculate initial index based on data length
-        initialScrollIndex={data.length > 0 ? data.length - 1 : 0}
+        onScroll={handleScroll}
+        onStartReached={onStartReached}
         onStartReachedThreshold={0.5}
+        onContentSizeChange={(_, h) => setContentHeight(h)}
         maintainVisibleContentPosition={{
           startRenderingFromBottom: true,
           animateAutoScrollToBottom: true,
           autoscrollToBottomThreshold: 0.1,
         }}
-        {...props}
+        renderItem={({ item }) => {
+          if (item.type === 'HEADER') {
+            return (
+              <Chip className="mx-auto my-4 bg-neutral-300/70 px-3 dark:bg-neutral-700/70">
+                <Chip.Label className="text-xs font-medium text-neutral-800 dark:text-neutral-200">
+                  {item.title}
+                </Chip.Label>
+              </Chip>
+            );
+          }
+
+          return <ChatOneToOneBubble data={item} />;
+        }}
       />
+
       <Activity mode={viewHeight < contentHeight && !isAtListEnd ? 'visible' : 'hidden'}>
-        <Button className="absolute right-0 bottom-2" variant="tertiary" onPress={scrollToEnd}>
-          <Ionicons name="arrow-down" />
+        <Button
+          variant="tertiary"
+          onPress={scrollToEnd}
+          className="absolute right-2 bottom-2 rounded-full">
+          <Ionicons name="arrow-down" className="text-xl" />
         </Button>
       </Activity>
     </View>

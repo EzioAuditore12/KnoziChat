@@ -1,22 +1,29 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { View } from 'react-native';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
+
+import { Description } from 'heroui-native/description';
 
 import { GroupInfo } from '@/features/chat/components/group/group-info';
+
 import { SendGroupMessage } from '@/features/chat/components/group/send-group-message';
 
-import { useAuthStore } from '@/store/auth';
+import { ChatGroupList } from '@/features/chat/components/group/list';
 
 import { useLiveGroupConversationChats } from '@/features/chat/hooks/database/use-live-group-conversation-chats';
 
-import { ChatGroupList } from '@/features/chat/components/group/list';
-import { useSocketState } from '@/store/socket';
 import { sendGroupMessageEvent } from '@/features/chat/events/send-group-message.event';
+
+import { useAuthStore } from '@/store/auth';
+
+import { useSocketState } from '@/store/socket';
+
 import { Socket } from '@/lib/socket-io';
-import { Description } from 'heroui-native/description';
 
 export default function ChattingGroupScreen() {
-  const { id } = useLocalSearchParams() as unknown as { id: string };
+  const { id } = useLocalSearchParams() as {
+    id: string;
+  };
 
   const { user } = useAuthStore((state) => state);
 
@@ -35,13 +42,20 @@ export default function ChattingGroupScreen() {
   }, [socket, id, socket?.connected]);
 
   const {
-    data: chats,
+    groupedMessages,
     isLoading,
     fetchNextPage: fetchNextChats,
   } = useLiveGroupConversationChats({
     id,
     currentUserId: user?.id as string,
   });
+
+  const reversedGroupedMessages = useMemo(() => {
+    return [...groupedMessages].reverse().map((section) => ({
+      ...section,
+      data: [...section.data].reverse(),
+    }));
+  }, [groupedMessages]);
 
   if (isLoading)
     return (
@@ -55,19 +69,24 @@ export default function ChattingGroupScreen() {
             ),
           }}
         />
+
         <View className="flex-1 items-center justify-center">
-          <Description>Loading All the chats</Description>
+          <Description>Loading all the chats</Description>
         </View>
       </>
     );
 
-  const reversedChats = chats.flat().reverse();
-
   return (
     <>
-      <Stack.Screen options={{ header: () => <GroupInfo id={id} /> }} />
+      <Stack.Screen
+        options={{
+          header: () => <GroupInfo id={id} />,
+        }}
+      />
+
       <View className="flex-1 p-2">
-        <ChatGroupList data={reversedChats} onStartReached={fetchNextChats} />
+        <ChatGroupList data={reversedGroupedMessages} onStartReached={fetchNextChats} />
+
         <SendGroupMessage
           className="items-center"
           id={id}

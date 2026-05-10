@@ -1,31 +1,78 @@
-import { cn } from 'tailwind-variants';
-import { FlashList, type FlashListProps, type FlashListRef } from '@shopify/flash-list';
-import { useRef, Activity, useState } from 'react';
+import { useMemo, useRef, useState, Activity } from 'react';
+
+import { FlashList, type FlashListRef } from '@shopify/flash-list';
+
+import { type NativeScrollEvent, type NativeSyntheticEvent, Text, View } from 'react-native';
+
 import { Button } from 'heroui-native/button';
-import { type NativeScrollEvent, type NativeSyntheticEvent, View } from 'react-native';
+
+import { cn } from 'tailwind-variants';
+
+import { Ionicons } from '@/components/icon';
 
 import type { ChatGroupWithUserDetails } from '@/features/chat/types/group-chats';
 
 import { ChatGroupBubble } from './chat-bubble';
+import { Chip } from 'heroui-native/chip';
 
-import { Ionicons } from '@/components/icon';
+interface ChatGroupSection {
+  date: string;
 
-interface ChatGroupListProps extends Omit<
-  FlashListProps<ChatGroupWithUserDetails>,
-  'data' | 'children' | 'keyExtractor' | 'renderItem'
-> {
   data: ChatGroupWithUserDetails[];
 }
 
-export function ChatGroupList({ data, className, ...props }: ChatGroupListProps) {
-  const ref = useRef<FlashListRef<ChatGroupWithUserDetails> | null>(null);
+interface FlattenedHeader {
+  type: 'HEADER';
 
-  const [viewHeight, setViewHeight] = useState<number>(0);
-  const [contentHeight, setContentHeight] = useState<number>(0);
-  const [isAtListEnd, setIsAtListEnd] = useState<boolean>(false);
+  id: string;
+
+  title: string;
+}
+
+interface FlattenedMessage extends ChatGroupWithUserDetails {
+  type: 'MESSAGE';
+}
+
+type FlattenedItem = FlattenedHeader | FlattenedMessage;
+
+interface ChatGroupListProps {
+  data: ChatGroupSection[];
+
+  className?: string;
+
+  onStartReached?: () => void;
+}
+
+export function ChatGroupList({ data, className, onStartReached }: ChatGroupListProps) {
+  const ref = useRef<FlashListRef<FlattenedItem> | null>(null);
+
+  const [viewHeight, setViewHeight] = useState(0);
+
+  const [contentHeight, setContentHeight] = useState(0);
+
+  const [isAtListEnd, setIsAtListEnd] = useState(true);
+
+  const flattenedData = useMemo(() => {
+    return data.flatMap((section) => [
+      {
+        type: 'HEADER' as const,
+        id: `header-${section.date}`,
+        title: section.date,
+      },
+
+      ...section.data.map(
+        (message): FlattenedMessage => ({
+          type: 'MESSAGE',
+          ...message,
+        })
+      ),
+    ]);
+  }, [data]);
 
   const scrollToEnd = () => {
-    ref.current?.scrollToEnd({ animated: true });
+    ref.current?.scrollToEnd({
+      animated: true,
+    });
   };
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -41,28 +88,42 @@ export function ChatGroupList({ data, className, ...props }: ChatGroupListProps)
 
   return (
     <View
-      className={cn('relative flex-1 p-1', className)}
+      className={cn('relative flex-1', className)}
       onLayout={(e) => setViewHeight(e.nativeEvent.layout.height)}>
       <FlashList
         ref={ref}
-        onScroll={handleScroll}
-        onContentSizeChange={(_, h) => setContentHeight(h)}
-        data={data}
+        data={flattenedData}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <ChatGroupBubble data={item} />}
-        // Calculate initial index based on data length
-        initialScrollIndex={data.length > 0 ? data.length - 1 : 0}
+        onScroll={handleScroll}
+        onStartReached={onStartReached}
         onStartReachedThreshold={0.5}
+        onContentSizeChange={(_, h) => setContentHeight(h)}
         maintainVisibleContentPosition={{
           startRenderingFromBottom: true,
           animateAutoScrollToBottom: true,
           autoscrollToBottomThreshold: 0.1,
         }}
-        {...props}
+        renderItem={({ item }) => {
+          if (item.type === 'HEADER') {
+            return (
+              <Chip className="mx-auto my-4 bg-neutral-300/70 px-3 dark:bg-neutral-700/70">
+                <Chip.Label className="text-xs font-medium text-neutral-800 dark:text-neutral-200">
+                  {item.title}
+                </Chip.Label>
+              </Chip>
+            );
+          }
+
+          return <ChatGroupBubble data={item} />;
+        }}
       />
+
       <Activity mode={viewHeight < contentHeight && !isAtListEnd ? 'visible' : 'hidden'}>
-        <Button className="absolute right-0 bottom-2" variant="tertiary" onPress={scrollToEnd}>
-          <Ionicons name="arrow-down" />
+        <Button
+          variant="tertiary"
+          onPress={scrollToEnd}
+          className="absolute right-2 bottom-2 rounded-full">
+          <Ionicons name="arrow-down" className="text-xl" />
         </Button>
       </Activity>
     </View>

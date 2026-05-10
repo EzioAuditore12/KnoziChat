@@ -86,7 +86,7 @@ export function Header({ className, ...props }: ViewProps) {
 
             <Menu.Item
               id="settings"
-              onPress={() => router.push('/settings')}
+              onPress={() => router.push('/(main)/settings')}
               className="rounded-2xl">
               <View className="flex-row items-center gap-3 px-2 py-1">
                 <Ionicons name="settings" className="text-xl text-black dark:text-white" />

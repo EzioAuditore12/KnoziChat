@@ -1,23 +1,25 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
+
 import { View } from 'react-native';
-import { desc, eq } from 'drizzle-orm';
-import { useEffect } from 'react';
+
+import { useEffect, useMemo } from 'react';
+
 import { Socket } from 'socket.io-client';
 
 import { ChatOneToOneList } from '@/features/chat/components/one-to-one/list';
-import { SendOneToOneMessage } from '@/features/chat/components/one-to-one/send-one-to-one-message';
-import { ChatterInfo } from '@/features/chat/components/one-to-one/chatter-info';
 
-import { db } from '@/db';
-import { useLiveInfiniteQuery } from '@/db/hooks/use-live-infinite-query';
-import { chatOneToOneTable } from '@/db/tables/chat-one-to-one.table';
+import { SendOneToOneMessage } from '@/features/chat/components/one-to-one/send-one-to-one-message';
+
+import { ChatterInfo } from '@/features/chat/components/one-to-one/chatter-info';
 
 import { useSocketState } from '@/store/socket';
 
 import { sendMessageEvent } from '@/features/chat/events/send-message.event';
 
+import { useLiveOneToOneChats } from '@/features/chat/hooks/database/use-live-one-to-one-chats';
+
 export default function ChattingScreen() {
-  const { id, userId } = useLocalSearchParams() as unknown as {
+  const { id, userId } = useLocalSearchParams() as {
     id: string;
     userId: string;
   };
@@ -36,16 +38,17 @@ export default function ChattingScreen() {
     };
   }, [socket, id, socket?.connected]);
 
-  const { data: chats, fetchNextPage: fetchNextChats } = useLiveInfiniteQuery({
-    query: db
-      .select()
-      .from(chatOneToOneTable)
-      .orderBy(desc(chatOneToOneTable.createdAt))
-      .where(eq(chatOneToOneTable.conversationId, id)),
-    pageSize: 20,
+  const { groupedMessages, fetchNextPage: fetchNextChats } = useLiveOneToOneChats({
+    id,
   });
 
-  const reversedChats = chats.flat().reverse();
+  const reversedGroupedMessages = useMemo(() => {
+    return [...groupedMessages].reverse().map((section) => ({
+      ...section,
+
+      data: [...section.data].reverse(),
+    }));
+  }, [groupedMessages]);
 
   return (
     <>
@@ -56,7 +59,10 @@ export default function ChattingScreen() {
               onPress={() =>
                 router.push({
                   pathname: '/chat/profile/[id]',
-                  params: { id: userId },
+
+                  params: {
+                    id: userId,
+                  },
                 })
               }
               onBack={() => router.back()}
@@ -65,8 +71,10 @@ export default function ChattingScreen() {
           ),
         }}
       />
+
       <View className="flex-1">
-        <ChatOneToOneList data={reversedChats} onStartReached={fetchNextChats} />
+        <ChatOneToOneList data={reversedGroupedMessages} onStartReached={fetchNextChats} />
+
         <SendOneToOneMessage
           className="items-center"
           conversationId={id}
