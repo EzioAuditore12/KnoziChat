@@ -11,49 +11,56 @@ import { conversationGroupTable } from '@/db/tables/conversation-group.table';
 
 import type { ConversationType } from '../../../chat/types/conversation.type';
 
-const direct = db
-  .select({
-    id: conversationOneToOneTable.id,
-    name: userTable.firstName,
-    updatedAt: conversationOneToOneTable.updatedAt,
-    type: sql<ConversationType>`'direct'`.as('type'),
-    userId: conversationOneToOneTable.userId,
-    // Use raw table strings instead of Drizzle variables
-    lastMessage: sql<string | null>`(
-      SELECT substr(text, 1, 100) FROM chat_one_to_one 
-      WHERE chat_one_to_one.conversation_id = conversation_one_to_one.id 
-      ORDER BY chat_one_to_one.created_at DESC 
-      LIMIT 1
-    )`.as('lastMessage'),
-  })
-  .from(conversationOneToOneTable)
-  .innerJoin(userTable, eq(conversationOneToOneTable.userId, userTable.id));
+export function useLiveConversationDetails(currentUserId: string, pageSize: number = 20) {
+  const direct = db
+    .select({
+      id: conversationOneToOneTable.id,
+      name: userTable.firstName,
+      updatedAt: conversationOneToOneTable.updatedAt,
+      type: sql<ConversationType>`'direct'`.as('type'),
+      userId: conversationOneToOneTable.userId,
+      // Use raw table strings instead of Drizzle variables
+      lastMessage: sql<string | null>`(
+        SELECT CASE 
+          WHEN chat_one_to_one.mode = 'SENT' THEN 'You: ' || substr(chat_one_to_one.text, 1, 100)
+          ELSE substr(chat_one_to_one.text, 1, 100)
+        END
+        FROM chat_one_to_one 
+        WHERE chat_one_to_one.conversation_id = conversation_one_to_one.id 
+        ORDER BY chat_one_to_one.created_at DESC 
+        LIMIT 1
+      )`.as('lastMessage'),
+    })
+    .from(conversationOneToOneTable)
+    .innerJoin(userTable, eq(conversationOneToOneTable.userId, userTable.id));
 
-const group = db
-  .select({
-    id: conversationGroupTable.id,
-    name: conversationGroupTable.name,
-    updatedAt: conversationGroupTable.updatedAt,
-    type: sql<ConversationType>`'group'`.as('type'),
-    userId: sql<string>`NULL`.as('userId'),
-    // Use raw table strings instead of Drizzle variables
-    lastMessage: sql<string | null>`(
-      SELECT user.first_name || ': ' || substr(chat_group.text, 1, 100)
-      FROM chat_group 
-      LEFT JOIN user ON user.id = chat_group.sender_id
-      WHERE chat_group.conversation_id = conversation_group.id 
-      ORDER BY chat_group.created_at DESC 
-      LIMIT 1
-    )`.as('lastMessage'),
-  })
-  .from(conversationGroupTable);
+  const group = db
+    .select({
+      id: conversationGroupTable.id,
+      name: conversationGroupTable.name,
+      updatedAt: conversationGroupTable.updatedAt,
+      type: sql<ConversationType>`'group'`.as('type'),
+      userId: sql<string>`NULL`.as('userId'),
+      // Use raw table strings instead of Drizzle variables
+      lastMessage: sql<string | null>`(
+        SELECT CASE 
+          WHEN chat_group.sender_id = ${currentUserId} THEN 'You: ' || substr(chat_group.text, 1, 100)
+          ELSE IFNULL(user.first_name, 'Unknown') || ': ' || substr(chat_group.text, 1, 100)
+        END
+        FROM chat_group 
+        LEFT JOIN user ON user.id = chat_group.sender_id
+        WHERE chat_group.conversation_id = conversation_group.id 
+        ORDER BY chat_group.created_at DESC 
+        LIMIT 1
+      )`.as('lastMessage'),
+    })
+    .from(conversationGroupTable);
 
-const query = db
-  .select()
-  .from(unionAll(direct, group).as('conversations'))
-  .orderBy(desc(sql`updated_at`));
+  const query = db
+    .select()
+    .from(unionAll(direct, group).as('conversations'))
+    .orderBy(desc(sql`updated_at`));
 
-export function useLiveConversationDetails(pageSize: number = 20) {
   return useLiveInfiniteQuery({
     query,
     pageSize,

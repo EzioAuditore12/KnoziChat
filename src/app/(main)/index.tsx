@@ -7,11 +7,14 @@ import { Header } from '@/features/home/components/header';
 
 import { useLiveConversationDetails } from '@/features/home/hooks/database/use-live-conversation-details';
 import { syncDatabase } from '@/db/sync';
+import { useAuthStore } from '@/store/auth';
 
 export default function HomeScreen() {
   const safeAreaInsets = useSafeAreaInsets();
 
-  const { data, isFetching, isLoading, fetchNextPage } = useLiveConversationDetails();
+  const currentUserId = useAuthStore((state) => state.user?.id!);
+
+  const { data, isFetching, isLoading, fetchNextPage } = useLiveConversationDetails(currentUserId);
 
   return (
     <>

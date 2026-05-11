@@ -40,6 +40,7 @@ export default function MainScreensLayout() {
       <Stack.Screen name="chat-group/[id]" />
       <Stack.Screen name="chat-group/details/[id]" options={{ headerShown: false }} />
       <Stack.Screen name="new-chat-group/index" />
+      <Stack.Screen name="search-chat/index" options={{ headerShown: false }} />
     </Stack>
   );
 }

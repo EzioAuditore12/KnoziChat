@@ -30,7 +30,7 @@ export function Header({ className, ...props }: ViewProps) {
       {...props}>
       {/* Search */}
       <ThrottledTouchable
-        onPress={() => router.push('/search')}
+        onPress={() => router.push('/search-chat')}
         className="flex-1 flex-row items-center gap-3 rounded-2xl border border-neutral-200 bg-neutral-100 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-900">
         <View className="items-center justify-center rounded-full bg-white p-2 dark:bg-neutral-800">
           <Ionicons name="search" className="text-xl text-black dark:text-white" />
