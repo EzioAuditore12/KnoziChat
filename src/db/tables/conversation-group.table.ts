@@ -1,6 +1,7 @@
 import { createInsertSchema, createSelectSchema, createUpdateSchema } from 'drizzle-arktype';
 import { sql } from 'drizzle-orm';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { type } from 'arktype';
 
 import { SnowFlakeId } from '@/lib/snowflake';
 
@@ -28,7 +29,10 @@ export const conversationGroupTable = sqliteTable(CONVERSATION_GROUP_TABLE_NAME,
     .notNull(),
 });
 
-export const selectConversationGroupSchema = createSelectSchema(conversationGroupTable);
+export const selectConversationGroupSchema = createSelectSchema(conversationGroupTable, {
+  participantIds: type('string.uuid[]'),
+  adminIds: type('string.uuid[]'),
+});
 export const insertConversationGroupSchema = createInsertSchema(conversationGroupTable);
 export const updateConversationGroupSchema = createUpdateSchema(conversationGroupTable);
 

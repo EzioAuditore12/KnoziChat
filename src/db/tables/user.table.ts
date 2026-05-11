@@ -1,6 +1,7 @@
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-arktype';
 import crypto from 'react-native-nitro-crypto';
+import { type } from 'arktype';
 
 export const USER_TABLE_NAME = 'user';
 
@@ -22,9 +23,15 @@ export const userTable = sqliteTable(USER_TABLE_NAME, {
     .notNull(),
 });
 
-export const selectUserSchema = createSelectSchema(userTable);
+export const selectUserSchema = createSelectSchema(userTable, {
+  id: type('string.uuid'),
+  email: type('string.email'),
+});
 
-export const insertUserSchema = createInsertSchema(userTable);
+export const insertUserSchema = createInsertSchema(userTable, {
+  id: type('string.uuid').optional(),
+  email: type('string.email'),
+});
 
 export type User = typeof selectUserSchema.infer;
 export type InsertUser = typeof insertUserSchema.infer;

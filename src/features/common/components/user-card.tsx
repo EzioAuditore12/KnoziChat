@@ -22,7 +22,7 @@ export function UserCard({ className, data, onPress, ...props }: UserCardProps) 
       <Card className={cn(className)} {...props}>
         <Card.Body className="relative w-full flex-row gap-x-2">
           <Avatar className="size-20" alt={firstName}>
-            <Avatar.Image src={avatar ?? ''} />
+            <Avatar.Image source={avatar ? { uri: avatar } : undefined} />
             <Avatar.Fallback>{firstName[0]}</Avatar.Fallback>
           </Avatar>
 

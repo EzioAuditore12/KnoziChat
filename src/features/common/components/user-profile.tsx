@@ -20,7 +20,7 @@ export function UserProfile({ className, data, ...props }: UserProfileProps) {
       className={cn('flex flex-col items-center space-y-4 rounded-2xl p-6 shadow-lg', className)}
       {...props}>
       <Avatar className="size-48" alt={firstName}>
-        <Avatar.Image src={avatar ?? ''} />
+        <Avatar.Image source={avatar ? { uri: avatar } : undefined} />
         <Avatar.Fallback>{firstName[0]}</Avatar.Fallback>
       </Avatar>
       <Description className="text-center text-lg">

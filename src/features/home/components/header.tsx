@@ -86,7 +86,7 @@ export function Header({ className, ...props }: ViewProps) {
 
             <Menu.Item
               id="settings"
-              onPress={() => router.push('/(main)/settings')}
+              onPress={() => router.push('/settings')}
               className="rounded-2xl">
               <View className="flex-row items-center gap-3 px-2 py-1">
                 <Ionicons name="settings" className="text-xl text-black dark:text-white" />
@@ -108,11 +108,12 @@ export function Header({ className, ...props }: ViewProps) {
               selectionMode="single"
               selectedKeys={theme}
               onSelectionChange={(keys) => {
-                setTheme(keys);
-
                 const value = Array.from(keys)[0] as 'light' | 'dark' | 'system';
 
-                setAppTheme(value);
+                if (value) {
+                  setTheme(keys);
+                  setAppTheme(value);
+                }
               }}>
               <Menu.Item id="light" className="rounded-2xl">
                 <View className="flex-row items-center gap-3 px-2 py-1">
