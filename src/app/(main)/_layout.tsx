@@ -1,13 +1,14 @@
 import { Redirect, Stack } from 'expo-router';
+import { useEffect } from 'react';
+
+import { useAuthStore } from '@/store/auth';
 
 import { useSyncEngine } from '@/db/sync/hook';
 import { useReceiveGroupMessageEvent } from '@/features/chat/events/receive-group-message.event';
 import { useReceiveMessageEvent } from '@/features/chat/events/receive-message.event';
-import { useAuthStore } from '@/store/auth';
 import { useSocketState } from '@/store/socket';
-import { useEffect } from 'react';
 
-export default function MainScreensLayout() {
+export default function MainLayoutScreens() {
   const { user } = useAuthStore((state) => state);
 
   useSyncEngine();
@@ -28,19 +29,21 @@ export default function MainScreensLayout() {
   return (
     <Stack initialRouteName="index">
       <Stack.Screen name="index" />
-      <Stack.Screen name="search" options={{ headerShown: false }} />
-      <Stack.Screen
-        name="settings"
-        options={{ headerShown: false, animation: 'slide_from_left' }}
-      />
+      <Stack.Screen name="setting" options={{ headerShown: false }} />
+
       <Stack.Screen name="user/[id]" options={{ headerShown: false }} />
-      <Stack.Screen name="chat/[id]" />
-      <Stack.Screen name="chat/profile/[id]" options={{ headerShown: false }} />
-      <Stack.Screen name="new-chat/[id]" />
-      <Stack.Screen name="chat-group/[id]" />
-      <Stack.Screen name="chat-group/details/[id]" options={{ headerShown: false }} />
-      <Stack.Screen name="new-chat-group/index" />
-      <Stack.Screen name="search-chat/index" options={{ headerShown: false }} />
+
+      <Stack.Screen name="search/chat" options={{ headerShown: false }} />
+      <Stack.Screen name="search/user" options={{ headerShown: false }} />
+
+      <Stack.Screen name="chat/direct/[id]" />
+      <Stack.Screen name="chat/direct/profile/[id]" options={{ headerShown: false }} />
+
+      <Stack.Screen name="chat/group/[id]" />
+      <Stack.Screen name="chat/group/details/[id]" options={{ headerShown: false }} />
+
+      <Stack.Screen name="chat/new/direct/[id]" />
+      <Stack.Screen name="chat/new/group/index" />
     </Stack>
   );
 }

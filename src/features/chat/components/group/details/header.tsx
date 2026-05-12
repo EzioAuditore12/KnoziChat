@@ -1,13 +1,14 @@
-import { Avatar } from 'heroui-native/avatar';
-import { Description } from 'heroui-native/description';
-import { Surface } from 'heroui-native/surface';
-import { View, type ViewProps } from 'react-native';
+import { cn } from '@gluestack-ui/utils';
+import { format, formatDistanceToNow } from 'date-fns';
+import type { ComponentProps } from 'react';
 
-import { cn } from 'tailwind-variants';
+import { Avatar, AvatarFallbackText, AvatarImage } from '@/components/ui/avatar';
+import { Box } from '@/components/ui/box';
+import { HStack } from '@/components/ui/hstack';
+import { Text } from '@/components/ui/text';
+import { VStack } from '@/components/ui/vstack';
 
-import { formatDistanceToNow, format } from 'date-fns';
-
-interface ChatGroupDetailsHeaderProps extends ViewProps {
+interface ChatGroupDetailsHeaderProps extends ComponentProps<typeof Box> {
   data: {
     name: string;
     membersLength: number;
@@ -21,9 +22,9 @@ export function ChatGroupDetailsHeader({ className, data, ...props }: ChatGroupD
   const { name, membersLength, avatar, createdAt, updatedAt } = data;
 
   return (
-    <View className={cn(className)} {...props}>
-      <Avatar alt={name ?? 'Group'} className="h-28 w-28 rounded-full">
-        <Avatar.Image
+    <Box className={cn(className)} {...props}>
+      <Avatar className="h-28 w-28 rounded-full">
+        <AvatarImage
           source={
             avatar
               ? {
@@ -33,46 +34,54 @@ export function ChatGroupDetailsHeader({ className, data, ...props }: ChatGroupD
           }
         />
 
-        <Avatar.Fallback>{name?.[0] ?? 'G'}</Avatar.Fallback>
+        <AvatarFallbackText>{name?.[0] ?? 'G'}</AvatarFallbackText>
       </Avatar>
 
-      <Description className="mt-4 text-2xl font-bold">{name}</Description>
+      <Text size="2xl" className="mt-4 font-bold">
+        {name}
+      </Text>
 
-      <Description className="mt-1 text-sm text-zinc-500">{membersLength} members</Description>
+      <Text size="sm" className="mt-1 text-zinc-500">
+        {membersLength} members
+      </Text>
 
-      <Surface className="mt-6 w-full rounded-2xl p-4">
-        <Description className="text-base font-semibold">Group Information</Description>
+      <Box className="mt-6 w-full rounded-2xl p-4">
+        <Text className="text-base font-semibold">Group Information</Text>
 
-        <View className="mt-3 gap-y-2">
-          <View className="flex-row items-center justify-between">
-            <Description className="text-sm text-zinc-500">Created</Description>
+        <VStack className="mt-3 gap-y-2">
+          <HStack className="items-center justify-between">
+            <Text size="sm" className="text-zinc-500">
+              Created
+            </Text>
 
-            <Description className="text-sm font-medium">
+            <Text size="sm" className="font-medium">
               {format(createdAt, 'dd MMM yyyy')}
-            </Description>
-          </View>
+            </Text>
+          </HStack>
 
-          <View className="flex-row items-center justify-between">
-            <Description className="text-sm text-zinc-500">Last Updated</Description>
+          <HStack className="items-center justify-between">
+            <Text size="sm" className="text-zinc-500">
+              Last Updated
+            </Text>
 
-            <Description className="text-sm font-medium">
+            <Text size="sm" className="font-medium">
               {formatDistanceToNow(updatedAt, {
                 addSuffix: true,
               })}
-            </Description>
-          </View>
-        </View>
-      </Surface>
+            </Text>
+          </HStack>
+        </VStack>
+      </Box>
 
-      <Surface className="mt-4 w-full rounded-2xl p-4">
-        <Description className="text-base font-semibold">Group Members</Description>
+      <VStack className="mt-4 w-full rounded-2xl p-4">
+        <Text className="text-base font-semibold">Group Members</Text>
 
-        <Description className="mt-1 text-sm text-zinc-500">
+        <Text size="sm" className="mt-1 text-zinc-500">
           People participating in this group conversation
-        </Description>
-      </Surface>
+        </Text>
+      </VStack>
 
-      <View className="h-4" />
-    </View>
+      <Box className="h-4" />
+    </Box>
   );
 }

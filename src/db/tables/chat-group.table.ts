@@ -40,10 +40,10 @@ export const chatGroupTable = sqliteTable(
   (t) => [index('conversation_group_idx').on(t.conversationId), index('sender_idx').on(t.senderId)]
 );
 
-export const selectChatGroupSchema = createSelectSchema(chatGroupTable);
+export const chatGroupSchema = createSelectSchema(chatGroupTable);
 export const insertChatGroupSchema = createInsertSchema(chatGroupTable);
 export const updateChatGroupSchema = createUpdateSchema(chatGroupTable);
 
-export type ChatGroup = typeof selectChatGroupSchema.infer;
+export type ChatGroup = typeof chatGroupSchema.infer;
 export type InsertChatGroup = typeof insertChatGroupSchema.infer;
 export type UpdateChatGroup = typeof updateChatGroupSchema.infer;

@@ -1,20 +1,22 @@
 import { type } from 'arktype';
-import { createChangesSchema } from '../create-change.schema';
+
+import { chatDirectSchema } from '@/db/tables/chat-direct.table';
+import { chatGroupSchema } from '@/db/tables/chat-group.table';
+import { conversationDirectSchema } from '@/db/tables/conversation-direct.table';
+import { conversationGroupSchema } from '@/db/tables/conversation-group.table';
 import { selectUserSchema } from '@/db/tables/user.table';
-import { selectConversationOneToOneSchema } from '@/db/tables/conversation-one-to-one.table';
-import { selectChatOneToOneSchema } from '@/db/tables/chat-one-to-one.table';
-import { selectConversationGroupSchema } from '@/db/tables/conversation-group.table';
-import { selectChatGroupSchema } from '@/db/tables/chat-group.table';
+
+import { createChangesSchema } from '../create-change.schema';
 
 const userChangeSchema = createChangesSchema(selectUserSchema);
 
-const conversationOneToOneChangeSchema = createChangesSchema(selectConversationOneToOneSchema);
+const conversationOneToOneChangeSchema = createChangesSchema(conversationDirectSchema);
 
-const conversationGroupChangeSchema = createChangesSchema(selectConversationGroupSchema);
+const conversationGroupChangeSchema = createChangesSchema(conversationGroupSchema);
 
-const chatOneToOneChangeSchema = createChangesSchema(selectChatOneToOneSchema);
+const chatOneToOneChangeSchema = createChangesSchema(chatDirectSchema);
 
-const chatGroupChangeSchema = createChangesSchema(selectChatGroupSchema);
+const chatGroupChangeSchema = createChangesSchema(chatGroupSchema);
 
 export const pullChangesResponseSchema = type({
   timestamp: 'number',

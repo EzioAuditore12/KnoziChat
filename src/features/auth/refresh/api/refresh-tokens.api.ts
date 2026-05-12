@@ -2,8 +2,8 @@ import { env } from '@/env';
 
 import { typedFetch } from '@/lib/fetch';
 
-import type { RefreshTokensParam } from '../schemas/refresh-tokens-param.schema';
-import { refreshTokensResponseSchema } from '../schemas/refresh-tokens-response.schema';
+import type { RefreshTokensParam } from '../schemas/param.schema';
+import { refreshTokensResponseSchema } from '../schemas/response.schema';
 
 export const refreshTokensApi = async (data: RefreshTokensParam) => {
   return typedFetch({

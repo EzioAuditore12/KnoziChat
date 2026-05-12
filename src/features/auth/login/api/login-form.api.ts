@@ -1,8 +1,8 @@
 import { env } from '@/env';
 import { typedFetch } from '@/lib/fetch';
 
-import type { LoginParam } from '../schemas/login-param.schema';
-import { loginResponseSchema } from '../schemas/login-response.schema';
+import type { LoginParam } from '../schemas/param.schema';
+import { loginResponseSchema } from '../schemas/response.schema';
 
 export const loginFormApi = async (data: LoginParam) => {
   return await typedFetch({

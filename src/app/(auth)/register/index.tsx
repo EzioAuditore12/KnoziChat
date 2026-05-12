@@ -1,12 +1,14 @@
+import { router } from 'expo-router';
 import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Description } from 'heroui-native/description';
-import { Button } from 'heroui-native/button';
-import { router } from 'expo-router';
+
+import { Button, ButtonText } from '@/components/ui/button';
+import { Heading } from '@/components/ui/heading';
+import { Text } from '@/components/ui/text';
 
 import { RegisterForm } from '@/features/auth/register/components/register-form';
-import { useRegisterForm } from '@/features/auth/register/hooks/use-register-form';
+import { useRegisterForm } from '@/features/auth/register/hooks/mutations/use-register-form';
 
 import { useDeviceConfigStore } from '@/store/device';
 
@@ -24,9 +26,9 @@ export default function RegisterFormScreen() {
         paddingBottom: safeAreaInsets.bottom,
       }}
       contentContainerClassName="flex-grow-1 gap-y-2 items-center justify-center p-2">
-      <Description className="self-start text-2xl font-bold md:self-center">
+      <Heading size="2xl" className="self-start font-bold md:self-center">
         Register your Details !
-      </Description>
+      </Heading>
 
       <RegisterForm
         expoPushToken={expoPushToken}
@@ -36,9 +38,9 @@ export default function RegisterFormScreen() {
       />
 
       <View className="flex-row items-center gap-x-1">
-        <Description>Already have an account</Description>
+        <Text>Already have an account</Text>
         <Button variant="ghost" className="p-0" onPress={() => router.dismissTo('/login')}>
-          <Description className="text-[16px] text-blue-500 underline">Login</Description>
+          <ButtonText className="text-[16px] text-blue-500 underline">Login</ButtonText>
         </Button>
       </View>
     </KeyboardAwareScrollView>

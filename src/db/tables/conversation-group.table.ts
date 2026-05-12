@@ -29,13 +29,13 @@ export const conversationGroupTable = sqliteTable(CONVERSATION_GROUP_TABLE_NAME,
     .notNull(),
 });
 
-export const selectConversationGroupSchema = createSelectSchema(conversationGroupTable, {
+export const conversationGroupSchema = createSelectSchema(conversationGroupTable, {
   participantIds: type('string.uuid[]'),
   adminIds: type('string.uuid[]'),
 });
 export const insertConversationGroupSchema = createInsertSchema(conversationGroupTable);
 export const updateConversationGroupSchema = createUpdateSchema(conversationGroupTable);
 
-export type ConversationGroup = typeof selectConversationGroupSchema.infer;
+export type ConversationGroup = typeof conversationGroupSchema.infer;
 export type InsertConversationGroup = typeof insertConversationGroupSchema.infer;
 export type UpdateConversationGroup = typeof updateConversationGroupSchema.infer;

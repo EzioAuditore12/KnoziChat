@@ -1,6 +1,6 @@
 import { db } from '@/db';
-import { type InsertUser, type User, userTable } from '../tables/user.table';
 import { eq } from 'drizzle-orm';
+import { type InsertUser, type User, userTable } from '../tables/user.table';
 
 export class UserRepository {
   private readonly database = db;
@@ -12,6 +12,18 @@ export class UserRepository {
 
   public async get(id: string): Promise<User | undefined> {
     return await this.database.select().from(this.table).where(eq(this.table.id, id)).get();
+  }
+
+  public async isExisting(id: string): Promise<boolean> {
+    const result = await this.database
+      .select({ id: this.table.id })
+      .from(this.table)
+      .where(eq(this.table.id, id))
+      .get();
+
+    if (!result) return false;
+
+    return true;
   }
 }
 

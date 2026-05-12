@@ -3,13 +3,41 @@ import { useEffect } from 'react';
 import type { Socket } from '@/lib/socket-io';
 import type { ReceiveMessage } from '@/lib/socket-io/schemas/receive-message.schema';
 
-import { chatOneToOneRepository } from '@/db/repositories/chat-one-to-one.repository';
-import { conversationOneToOneRepository } from '@/db/repositories/conversation-one-to-one.repository';
+import { chatDirectRepository } from '@/db/repositories/chat-direct.repository';
+import { conversationDirectRepository } from '@/db/repositories/conversation-direct.repository';
+import { userRepository } from '@/db/repositories/user.repository';
+import { getUserApi } from '@/features/common/api/get-user.api';
 
 const handleReceiveMessage = async (message: ReceiveMessage) => {
-  const { id, conversationId, createdAt, text, updatedAt } = message;
+  const { id, conversationId, createdAt, text, updatedAt, senderId } = message;
 
-  const saveDirectChat = await chatOneToOneRepository.create({
+  console.log(message);
+
+  const isExistingConversation =
+    await conversationDirectRepository.isExistingConversationWithUser(senderId);
+
+  if (!isExistingConversation) {
+    console.log('started new chat');
+
+    const isExistingUser = await userRepository.isExisting(senderId);
+
+    if (!isExistingUser) {
+      const { createdAt, updatedAt, ...rest } = await getUserApi(senderId);
+
+      await userRepository.create({
+        ...rest,
+        createdAt: new Date(createdAt).getTime(),
+        updatedAt: new Date(updatedAt).getTime(),
+      });
+    }
+
+    await conversationDirectRepository.create({
+      userId: senderId,
+      id: conversationId,
+    });
+  }
+
+  const saveDirectChat = await chatDirectRepository.create({
     id: id,
     conversationId,
     mode: 'RECEIVED',
@@ -19,7 +47,7 @@ const handleReceiveMessage = async (message: ReceiveMessage) => {
     updatedAt: new Date(updatedAt).getTime(),
   });
 
-  await conversationOneToOneRepository.updateTime(
+  await conversationDirectRepository.updateTime(
     saveDirectChat.conversationId,
     new Date(createdAt).getTime()
   );

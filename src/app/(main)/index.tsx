@@ -1,12 +1,13 @@
 import { Stack } from 'expo-router';
-import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ConversationList } from '@/features/home/components/conversation-list';
-import { Header } from '@/features/home/components/header';
+import { Box } from '@/components/ui/box';
 
-import { useLiveConversationDetails } from '@/features/home/hooks/database/use-live-conversation-details';
+import { HomeHeader } from '@/features/home/components/header';
+import { ConversationList } from '@/features/home/components/list/conversation';
+
 import { syncDatabase } from '@/db/sync';
+import { useLiveConversationDetails } from '@/features/home/hooks/database/use-live-conversation-details';
 import { useAuthStore } from '@/store/auth';
 
 export default function HomeScreen() {
@@ -20,12 +21,12 @@ export default function HomeScreen() {
     <>
       <Stack.Screen
         options={{
-          header: () => <Header style={{ paddingTop: safeAreaInsets.top }} />,
+          header: () => (
+            <HomeHeader style={{ paddingTop: safeAreaInsets.top }} className="w-full" />
+          ),
         }}
       />
-      <View
-        className="relative flex-1 gap-y-2 p-1"
-        style={{ paddingBottom: safeAreaInsets.bottom }}>
+      <Box className="relative flex-1 gap-y-2 p-1" style={{ paddingBottom: safeAreaInsets.bottom }}>
         <ConversationList
           data={data}
           onEndReached={fetchNextPage}
@@ -33,7 +34,7 @@ export default function HomeScreen() {
           isFetchingNextPage={isFetching}
           onRefresh={() => syncDatabase.pullChanges()}
         />
-      </View>
+      </Box>
     </>
   );
 }

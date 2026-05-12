@@ -1,5 +1,5 @@
 nodeLinker: hoisted
 
 onlyBuiltDependencies:
-  - unrs-resolver
   - '@shopify/react-native-skia'
+  - unrs-resolver

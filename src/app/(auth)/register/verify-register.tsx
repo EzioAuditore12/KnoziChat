@@ -3,9 +3,9 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { VerificationRegisterationForm } from '@/features/auth/register/components/verify-registeration-form';
-import { useVerifyRegisterForm } from '@/features/auth/register/hooks/use-verify-register-form';
+import { useVerifyRegisterForm } from '@/features/auth/register/hooks/mutations/use-verify-register-form';
 
-import type { RegisterFormResponse } from '@/features/auth/register/schemas/register-form/register-form-response.schema';
+import type { RegisterFormResponse } from '@/features/auth/register/schemas/register-form/response.schema';
 
 export default function VerifyRegisterScreen() {
   const safeAreaInsets = useSafeAreaInsets();

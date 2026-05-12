@@ -8,7 +8,7 @@ import { db } from '@/db';
 
 import { useLiveInfiniteQuery } from '@/db/hooks/use-live-infinite-query';
 
-import { chatOneToOneTable } from '@/db/tables/chat-one-to-one.table';
+import { chatDirectTable } from '@/db/tables/chat-direct.table';
 
 function formatChatDate(timestamp: number) {
   const date = new Date(timestamp);
@@ -36,13 +36,13 @@ interface UseLiveOneToOneChatsOptions {
   pageSize?: number;
 }
 
-export function useLiveOneToOneChats({ id, pageSize = 20 }: UseLiveOneToOneChatsOptions) {
+export function useLiveDirectChats({ id, pageSize = 20 }: UseLiveOneToOneChatsOptions) {
   const query = useLiveInfiniteQuery({
     query: db
       .select()
-      .from(chatOneToOneTable)
-      .where(eq(chatOneToOneTable.conversationId, id))
-      .orderBy(desc(chatOneToOneTable.createdAt)),
+      .from(chatDirectTable)
+      .where(eq(chatDirectTable.conversationId, id))
+      .orderBy(desc(chatDirectTable.createdAt)),
 
     pageSize,
   });
@@ -64,7 +64,7 @@ export function useLiveOneToOneChats({ id, pageSize = 20 }: UseLiveOneToOneChats
       date,
       data: messages,
     }));
-  }, [query.data]);
+  }, [query]);
 
   return {
     ...query,

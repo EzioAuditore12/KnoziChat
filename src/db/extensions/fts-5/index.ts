@@ -1,17 +1,17 @@
 import { PowerSyncSQLiteDatabase } from '@powersync/drizzle-driver';
 import { sql } from 'drizzle-orm';
 
-import { chatOneToOneTable, CHAT_ONE_TO_ONE_TABLE_NAME } from '@/db/tables/chat-one-to-one.table';
-import { chatGroupTable, CHAT_GROUP_TABLE_NAME } from '@/db/tables/chat-group.table';
+import { CHAT_DIRECT_TABLE_NAME } from '@/db/tables/chat-direct.table';
+import { CHAT_GROUP_TABLE_NAME } from '@/db/tables/chat-group.table';
 
-const FTS_ONE_TO_ONE_TABLE = 'chat_one_to_one_fts';
-const FTS_GROUP_TABLE = 'chat_group_fts';
+const FTS_DIRECT_TABLE_NAME = 'chat_direct_fts';
+const FTS_GROUP_TABLE_NAME = 'chat_group_fts';
 
 export async function setupFts<T extends Record<string, unknown>>(db: PowerSyncSQLiteDatabase<T>) {
   // --- One-to-one FTS Setup ---
   await db.run(
     sql.raw(`
-      CREATE VIRTUAL TABLE IF NOT EXISTS ${FTS_ONE_TO_ONE_TABLE}
+      CREATE VIRTUAL TABLE IF NOT EXISTS ${FTS_DIRECT_TABLE_NAME}
       USING fts5(
         id UNINDEXED,
         text
@@ -21,10 +21,10 @@ export async function setupFts<T extends Record<string, unknown>>(db: PowerSyncS
 
   await db.run(
     sql.raw(`
-      CREATE TRIGGER IF NOT EXISTS chat_one_to_one_ai
-      INSTEAD OF INSERT ON ${CHAT_ONE_TO_ONE_TABLE_NAME}
+      CREATE TRIGGER IF NOT EXISTS chat_direct_ai
+      INSTEAD OF INSERT ON ${CHAT_DIRECT_TABLE_NAME}
       BEGIN
-        INSERT INTO ${FTS_ONE_TO_ONE_TABLE}(id, text)
+        INSERT INTO ${FTS_DIRECT_TABLE_NAME}(id, text)
         VALUES (new.id, new.text);
       END;
     `)
@@ -32,31 +32,31 @@ export async function setupFts<T extends Record<string, unknown>>(db: PowerSyncS
 
   await db.run(
     sql.raw(`
-      CREATE TRIGGER IF NOT EXISTS chat_one_to_one_ad
-      INSTEAD OF DELETE ON ${CHAT_ONE_TO_ONE_TABLE_NAME}
+      CREATE TRIGGER IF NOT EXISTS chat_direct_ad
+      INSTEAD OF DELETE ON ${CHAT_DIRECT_TABLE_NAME}
       BEGIN
-        DELETE FROM ${FTS_ONE_TO_ONE_TABLE} WHERE id = old.id;
+        DELETE FROM ${FTS_DIRECT_TABLE_NAME} WHERE id = old.id;
       END;
     `)
   );
 
   await db.run(
     sql.raw(`
-      CREATE TRIGGER IF NOT EXISTS chat_one_to_one_au
-      INSTEAD OF UPDATE ON ${CHAT_ONE_TO_ONE_TABLE_NAME}
+      CREATE TRIGGER IF NOT EXISTS chat_direct_au
+      INSTEAD OF UPDATE ON ${CHAT_DIRECT_TABLE_NAME}
       BEGIN
-        UPDATE ${FTS_ONE_TO_ONE_TABLE} SET text = new.text WHERE id = old.id;
+        UPDATE ${FTS_DIRECT_TABLE_NAME} SET text = new.text WHERE id = old.id;
       END;
     `)
   );
 
   await db.run(
     sql.raw(`
-      INSERT INTO ${FTS_ONE_TO_ONE_TABLE}(id, text)
+      INSERT INTO ${FTS_DIRECT_TABLE_NAME}(id, text)
       SELECT id, text
-      FROM ${CHAT_ONE_TO_ONE_TABLE_NAME}
+      FROM ${CHAT_DIRECT_TABLE_NAME}
       WHERE id NOT IN (
-        SELECT id FROM ${FTS_ONE_TO_ONE_TABLE}
+        SELECT id FROM ${FTS_DIRECT_TABLE_NAME}
       );
     `)
   );
@@ -64,7 +64,7 @@ export async function setupFts<T extends Record<string, unknown>>(db: PowerSyncS
   // --- Group FTS Setup ---
   await db.run(
     sql.raw(`
-      CREATE VIRTUAL TABLE IF NOT EXISTS ${FTS_GROUP_TABLE}
+      CREATE VIRTUAL TABLE IF NOT EXISTS ${FTS_GROUP_TABLE_NAME}
       USING fts5(
         id UNINDEXED,
         text
@@ -77,7 +77,7 @@ export async function setupFts<T extends Record<string, unknown>>(db: PowerSyncS
       CREATE TRIGGER IF NOT EXISTS chat_group_ai
       INSTEAD OF INSERT ON ${CHAT_GROUP_TABLE_NAME}
       BEGIN
-        INSERT INTO ${FTS_GROUP_TABLE}(id, text)
+        INSERT INTO ${FTS_GROUP_TABLE_NAME}(id, text)
         VALUES (new.id, new.text);
       END;
     `)
@@ -88,7 +88,7 @@ export async function setupFts<T extends Record<string, unknown>>(db: PowerSyncS
       CREATE TRIGGER IF NOT EXISTS chat_group_ad
       INSTEAD OF DELETE ON ${CHAT_GROUP_TABLE_NAME}
       BEGIN
-        DELETE FROM ${FTS_GROUP_TABLE} WHERE id = old.id;
+        DELETE FROM ${FTS_GROUP_TABLE_NAME} WHERE id = old.id;
       END;
     `)
   );
@@ -98,18 +98,18 @@ export async function setupFts<T extends Record<string, unknown>>(db: PowerSyncS
       CREATE TRIGGER IF NOT EXISTS chat_group_au
       INSTEAD OF UPDATE ON ${CHAT_GROUP_TABLE_NAME}
       BEGIN
-        UPDATE ${FTS_GROUP_TABLE} SET text = new.text WHERE id = old.id;
+        UPDATE ${FTS_GROUP_TABLE_NAME} SET text = new.text WHERE id = old.id;
       END;
     `)
   );
 
   await db.run(
     sql.raw(`
-      INSERT INTO ${FTS_GROUP_TABLE}(id, text)
+      INSERT INTO ${FTS_GROUP_TABLE_NAME}(id, text)
       SELECT id, text
       FROM ${CHAT_GROUP_TABLE_NAME}
       WHERE id NOT IN (
-        SELECT id FROM ${FTS_GROUP_TABLE}
+        SELECT id FROM ${FTS_GROUP_TABLE_NAME}
       );
     `)
   );
@@ -135,13 +135,13 @@ export async function searchChatMessages<T extends Record<string, unknown>>(
           WHEN m.mode = 'SENT' THEN 'You: ' || m.text
           ELSE m.text
         END as lastMessage
-      FROM chat_one_to_one m
-      INNER JOIN conversation_one_to_one c ON m.conversation_id = c.id
+      FROM chat_direct m
+      INNER JOIN conversation_direct c ON m.conversation_id = c.id
       INNER JOIN user u ON c.user_id = u.id
       WHERE m.id IN (
         SELECT id
-        FROM ${sql.raw(FTS_ONE_TO_ONE_TABLE)}
-        WHERE ${sql.raw(FTS_ONE_TO_ONE_TABLE)} MATCH ${search}
+        FROM ${sql.raw(FTS_DIRECT_TABLE_NAME)}
+        WHERE ${sql.raw(FTS_DIRECT_TABLE_NAME)} MATCH ${search}
       )
     ),
     group_matches AS (
@@ -161,8 +161,8 @@ export async function searchChatMessages<T extends Record<string, unknown>>(
       LEFT JOIN user u ON m.sender_id = u.id
       WHERE m.id IN (
         SELECT id
-        FROM ${sql.raw(FTS_GROUP_TABLE)}
-        WHERE ${sql.raw(FTS_GROUP_TABLE)} MATCH ${search}
+        FROM ${sql.raw(FTS_GROUP_TABLE_NAME)}
+        WHERE ${sql.raw(FTS_GROUP_TABLE_NAME)} MATCH ${search}
       )
     )
     SELECT * FROM direct_matches

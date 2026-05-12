@@ -2,8 +2,8 @@ import { typedFetch } from '@/lib/fetch';
 
 import { env } from '@/env';
 
-import { userSearchResponseSchema } from '../schemas/search-user/seach-user-response-schema';
-import type { SearchUserParam } from '../schemas/search-user/search-user-param.schema';
+import { userSearchResponseSchema } from '../schemas/search-user/response-schema';
+import type { SearchUserParam } from '../schemas/search-user/param.schema';
 
 export const getUsersApi = async (data: SearchUserParam) => {
   return typedFetch({

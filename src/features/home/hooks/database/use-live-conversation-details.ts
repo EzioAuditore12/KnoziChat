@@ -5,34 +5,34 @@ import { db } from '@/db';
 
 import { useLiveInfiniteQuery } from '@/db/hooks/use-live-infinite-query';
 
-import { conversationOneToOneTable } from '@/db/tables/conversation-one-to-one.table';
-import { userTable } from '@/db/tables/user.table';
+import { conversationDirectTable } from '@/db/tables/conversation-direct.table';
 import { conversationGroupTable } from '@/db/tables/conversation-group.table';
+import { userTable } from '@/db/tables/user.table';
 
-import type { ConversationType } from '../../../chat/types/conversation.type';
+import type { ConversationType } from '../../types/conversation.type';
 
 export function useLiveConversationDetails(currentUserId: string, pageSize: number = 20) {
   const direct = db
     .select({
-      id: conversationOneToOneTable.id,
+      id: conversationDirectTable.id,
       name: userTable.firstName,
-      updatedAt: conversationOneToOneTable.updatedAt,
+      updatedAt: conversationDirectTable.updatedAt,
       type: sql<ConversationType>`'direct'`.as('type'),
-      userId: conversationOneToOneTable.userId,
+      userId: conversationDirectTable.userId,
       // Use raw table strings instead of Drizzle variables
       lastMessage: sql<string | null>`(
         SELECT CASE 
-          WHEN chat_one_to_one.mode = 'SENT' THEN 'You: ' || substr(chat_one_to_one.text, 1, 100)
-          ELSE substr(chat_one_to_one.text, 1, 100)
+          WHEN chat_direct.mode = 'SENT' THEN 'You: ' || substr(chat_direct.text, 1, 100)
+          ELSE substr(chat_direct.text, 1, 100)
         END
-        FROM chat_one_to_one 
-        WHERE chat_one_to_one.conversation_id = conversation_one_to_one.id 
-        ORDER BY chat_one_to_one.created_at DESC 
+        FROM chat_direct 
+        WHERE chat_direct.conversation_id = conversation_direct.id 
+        ORDER BY chat_direct.created_at DESC 
         LIMIT 1
       )`.as('lastMessage'),
     })
-    .from(conversationOneToOneTable)
-    .innerJoin(userTable, eq(conversationOneToOneTable.userId, userTable.id));
+    .from(conversationDirectTable)
+    .innerJoin(userTable, eq(conversationDirectTable.userId, userTable.id));
 
   const group = db
     .select({

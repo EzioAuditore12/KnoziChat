@@ -39,7 +39,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         },
       },
     ],
-    '@react-native-vector-icons/ionicons',
     'react-native-nitro-fetch',
     'expo-background-task',
   ],

@@ -1,14 +1,16 @@
-import { cn } from 'tailwind-variants';
-import { Description } from 'heroui-native/description';
-import { Surface, type SurfaceRootProps } from 'heroui-native/surface';
-import { Activity } from 'react';
-import { Avatar } from 'heroui-native/avatar';
-import { View } from 'react-native';
+import { cn } from '@gluestack-ui/utils';
+
+import { Activity, type ComponentProps } from 'react';
+
 import { format } from 'date-fns';
+
+import { Avatar, AvatarFallbackText, AvatarImage } from '@/components/ui/avatar';
+import { Box } from '@/components/ui/box';
+import { Text } from '@/components/ui/text';
 
 import { ChatGroupWithUserDetails } from '@/features/chat/types/group-chats';
 
-interface ChatGroupBubbleProps extends SurfaceRootProps {
+interface ChatGroupBubbleProps extends ComponentProps<typeof Box> {
   data: ChatGroupWithUserDetails;
 }
 
@@ -45,16 +47,16 @@ export function ChatGroupBubble({ data, className, ...props }: ChatGroupBubblePr
   return (
     // 'w-full' ensures the row takes available space so self-end/start works,
     // without forcing the child to overflow
-    <View
+    <Box
       className={cn('w-full flex-row gap-x-2', mode === 'SENT' ? 'justify-end' : 'justify-start')}>
       <Activity mode={mode === 'RECEIVED' ? 'visible' : 'hidden'}>
-        <Avatar alt="">
-          <Avatar.Image source={senderAvatar ? { uri: senderAvatar } : undefined} />
-          <Avatar.Fallback>{senderName[0]}</Avatar.Fallback>
+        <Avatar>
+          <AvatarImage source={senderAvatar ? { uri: senderAvatar } : undefined} />
+          <AvatarFallbackText>{senderName[0]}</AvatarFallbackText>
         </Avatar>
       </Activity>
 
-      <Surface
+      <Box
         className={cn(
           // Replaced max-w-xs with max-w-[80%] to prevent screen overflow
           'my-1 max-w-[80%] shrink rounded-xl p-3',
@@ -63,15 +65,13 @@ export function ChatGroupBubble({ data, className, ...props }: ChatGroupBubblePr
         )}
         {...props}>
         <Activity mode={mode === 'RECEIVED' ? 'visible' : 'hidden'}>
-          <Description className="font-bold text-white">{senderName}</Description>
+          <Text className="font-bold text-white">{senderName}</Text>
         </Activity>
 
-        <Description className="text-white">{text}</Description>
+        <Text className="text-white">{text}</Text>
 
-        <Description className="mt-1 text-sm text-white/70">
-          {format(new Date(createdAt), 'hh:mm a')}
-        </Description>
-      </Surface>
-    </View>
+        <Text className="mt-1 text-sm text-white/70">{format(new Date(createdAt), 'hh:mm a')}</Text>
+      </Box>
+    </Box>
   );
 }

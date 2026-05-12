@@ -1,14 +1,16 @@
-import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Description } from 'heroui-native/description';
 
-import { Link } from '@/components/link';
+import { Link } from '@/components/native-link';
 
-import { LoginForm } from '@/features/auth/login/components/login-form';
+import { Heading } from '@/components/ui/heading';
+import { Text } from '@/components/ui/text';
+import { VStack } from '@/components/ui/vstack';
 
-import { LoginBanner } from '@/features/auth/login/components/login-banner';
-import { useLoginForm } from '@/features/auth/login/hooks/use-login-form';
+import { LoginBanner } from '@/features/auth/login/components/banner';
+import { LoginForm } from '@/features/auth/login/components/form';
+
+import { useLoginForm } from '@/features/auth/login/hooks/mutations/use-login-form';
 import { useDeviceConfigStore } from '@/store/device';
 
 export default function LoginScreen() {
@@ -25,7 +27,7 @@ export default function LoginScreen() {
         paddingBottom: safeAreaInsets.bottom,
       }}
       contentContainerClassName="flex-grow-1 items-center justify-center p-2">
-      <Description className="text-2xl font-bold">Welcome Back !</Description>
+      <Heading size="2xl">Welcome Back !</Heading>
 
       <LoginBanner />
 
@@ -36,12 +38,12 @@ export default function LoginScreen() {
         isSubmitting={isPending}
       />
 
-      <View className="flex-row items-center gap-x-1">
-        <Description>Don&apos;t have an account</Description>
+      <VStack className="items-center gap-x-1">
+        <Text>Don&apos;t have an account</Text>
         <Link href={'/register'} className="text-blue-500 underline">
           Register Here
         </Link>
-      </View>
+      </VStack>
     </KeyboardAwareScrollView>
   );
 }

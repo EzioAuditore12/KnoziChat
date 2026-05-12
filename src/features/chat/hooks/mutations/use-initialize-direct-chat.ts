@@ -1,14 +1,14 @@
 import { useMutation } from '@tanstack/react-query';
-import { router } from 'expo-router';
 import { eq } from 'drizzle-orm';
+import { router } from 'expo-router';
 
 import { getUserApi } from '@/features/common/api/get-user.api';
 import { initializeDirectChatApi } from '../../api/initialize-direct-chat.api';
 
 import { db } from '@/db';
+import { chatDirectTable } from '@/db/tables/chat-direct.table';
+import { conversationDirectTable } from '@/db/tables/conversation-direct.table';
 import { userTable } from '@/db/tables/user.table';
-import { conversationOneToOneTable } from '@/db/tables/conversation-one-to-one.table';
-import { chatOneToOneTable } from '@/db/tables/chat-one-to-one.table';
 
 export const useInitializeDirectChat = () => {
   return useMutation({
@@ -31,14 +31,14 @@ export const useInitializeDirectChat = () => {
           });
         }
 
-        await transaction.insert(conversationOneToOneTable).values({
+        await transaction.insert(conversationDirectTable).values({
           id: data.conversationId,
           userId: data.receiverId,
           createdAt: new Date(data.createdAt).getTime(),
           updatedAt: new Date(data.updatedAt).getTime(),
         });
 
-        await transaction.insert(chatOneToOneTable).values({
+        await transaction.insert(chatDirectTable).values({
           id: data.id,
           conversationId: data.conversationId,
           mode: 'SENT',
@@ -50,7 +50,7 @@ export const useInitializeDirectChat = () => {
       });
 
       router.replace({
-        pathname: '/(main)/chat/[id]',
+        pathname: '/(main)/chat/direct/[id]',
         params: { id: data.conversationId, userId: data.receiverId },
       });
     },

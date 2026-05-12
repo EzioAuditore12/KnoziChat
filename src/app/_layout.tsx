@@ -1,46 +1,41 @@
 import '../../global.css';
 
-import * as Notifications from 'expo-notifications';
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
-import { useEffect } from 'react';
+import { StatusBar } from 'expo-status-bar';
+import { useColorScheme } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import 'react-native-reanimated';
+import { SafeAreaListener } from 'react-native-safe-area-context';
+import { Uniwind } from 'uniwind';
 
-import { registerForPushNotificationsAsync } from '@/lib/notification';
-
-import { HeroUIThemeProvider } from '@/lib/theme';
+import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
+import { PowerSyncDatabaseProvider } from '@/db';
 import { TanstackReactQueryClientProvider } from '@/lib/tanstack/query';
 
-import { useDeviceConfigStore } from '@/store/device';
-import { PowerSyncDatabaseProvider } from '@/db';
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-    shouldShowBanner: true,
-    shouldShowList: true,
-  }),
-});
-
 export default function RootLayout() {
-  useEffect(() => {
-    registerForPushNotificationsAsync().then((token) => {
-      if (token && token.length !== 0) {
-        useDeviceConfigStore.getState().setExpoPushToken(token);
-      }
-    });
-  }, []);
+  const colorScheme = useColorScheme();
 
   return (
-    <HeroUIThemeProvider>
-      <KeyboardProvider>
-        <PowerSyncDatabaseProvider>
-          <TanstackReactQueryClientProvider>
-            <Stack initialRouteName="(main)" screenOptions={{ headerShown: false }} />
-          </TanstackReactQueryClientProvider>
-        </PowerSyncDatabaseProvider>
-      </KeyboardProvider>
-    </HeroUIThemeProvider>
+    <SafeAreaListener
+      onChange={({ insets }) => {
+        Uniwind.updateInsets(insets);
+      }}>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <GluestackUIProvider mode="system">
+          <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+            <KeyboardProvider>
+              <PowerSyncDatabaseProvider>
+                <TanstackReactQueryClientProvider>
+                  <Stack initialRouteName="(main)" screenOptions={{ headerShown: false }} />
+                </TanstackReactQueryClientProvider>
+              </PowerSyncDatabaseProvider>
+            </KeyboardProvider>
+            <StatusBar style="auto" />
+          </ThemeProvider>
+        </GluestackUIProvider>
+      </GestureHandlerRootView>
+    </SafeAreaListener>
   );
 }

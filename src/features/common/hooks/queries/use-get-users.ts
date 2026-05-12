@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { getUsersApi } from '../../api/get-users.api';
-import type { SearchUserParam } from '../../schemas/search-user/search-user-param.schema';
+import type { SearchUserParam } from '../../schemas/search-user/param.schema';
 
 export function useGetUsers({ search, limit }: Omit<SearchUserParam, 'page'>) {
   return useInfiniteQuery({

@@ -1,26 +1,26 @@
 import { eq, inArray } from 'drizzle-orm';
-import type { SQLiteTable, AnySQLiteColumn } from 'drizzle-orm/sqlite-core';
+import type { AnySQLiteColumn, SQLiteTable } from 'drizzle-orm/sqlite-core';
 
 import { db } from '@/db';
 
 import { pullChangesApi } from '@/features/sync/api/pull-changes.api';
 import { useDeviceConfigStore } from '@/store/device';
 
+import { chatDirectTable } from '@/db/tables/chat-direct.table';
+import { conversationDirectTable } from '@/db/tables/conversation-direct.table';
 import { userTable } from '@/db/tables/user.table';
-import { conversationOneToOneTable } from '@/db/tables/conversation-one-to-one.table';
-import { chatOneToOneTable } from '@/db/tables/chat-one-to-one.table';
-import { conversationGroupTable } from '../tables/conversation-group.table';
-import { chatGroupTable } from '../tables/chat-group.table';
 import { PullChangesResponse } from '@/features/sync/schemas/pull-changes/response.schema';
+import { chatGroupTable } from '../tables/chat-group.table';
+import { conversationGroupTable } from '../tables/conversation-group.table';
 
 type TransactionType = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
 export class SyncDatabase {
   private readonly database = db;
   private readonly userTable = userTable;
-  private readonly conversationOneToOneTable = conversationOneToOneTable;
+  private readonly conversationOneToOneTable = conversationDirectTable;
   private readonly conversationGroupTable = conversationGroupTable;
-  private readonly chatOneToOneTable = chatOneToOneTable;
+  private readonly chatOneToOneTable = chatDirectTable;
   private readonly chatGroupTable = chatGroupTable;
 
   public async pullChanges() {

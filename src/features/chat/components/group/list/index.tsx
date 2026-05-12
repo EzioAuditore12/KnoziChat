@@ -1,19 +1,15 @@
-import { useMemo, useRef, useState, Activity } from 'react';
-
+import { cn } from '@gluestack-ui/utils';
 import { FlashList, type FlashListRef } from '@shopify/flash-list';
+import { Activity, useMemo, useRef, useState } from 'react';
+import { type NativeScrollEvent, type NativeSyntheticEvent, View } from 'react-native';
 
-import { type NativeScrollEvent, type NativeSyntheticEvent, Text, View } from 'react-native';
-
-import { Button } from 'heroui-native/button';
-
-import { cn } from 'tailwind-variants';
-
-import { Ionicons } from '@/components/icon';
+import { Badge, BadgeText } from '@/components/ui/badge';
+import { Button, ButtonIcon } from '@/components/ui/button';
+import { ArrowDownIcon } from '@/components/ui/icon';
 
 import type { ChatGroupWithUserDetails } from '@/features/chat/types/group-chats';
 
 import { ChatGroupBubble } from './chat-bubble';
-import { Chip } from 'heroui-native/chip';
 
 interface ChatGroupSection {
   date: string;
@@ -106,11 +102,11 @@ export function ChatGroupList({ data, className, onStartReached }: ChatGroupList
         renderItem={({ item }) => {
           if (item.type === 'HEADER') {
             return (
-              <Chip className="mx-auto my-4 bg-neutral-300/70 px-3 dark:bg-neutral-700/70">
-                <Chip.Label className="text-xs font-medium text-neutral-800 dark:text-neutral-200">
+              <Badge className="mx-auto my-4 bg-neutral-300/70 px-3 dark:bg-neutral-700/70">
+                <BadgeText className="text-xs font-medium text-neutral-800 dark:text-neutral-200">
                   {item.title}
-                </Chip.Label>
-              </Chip>
+                </BadgeText>
+              </Badge>
             );
           }
 
@@ -120,10 +116,10 @@ export function ChatGroupList({ data, className, onStartReached }: ChatGroupList
 
       <Activity mode={viewHeight < contentHeight && !isAtListEnd ? 'visible' : 'hidden'}>
         <Button
-          variant="tertiary"
+          variant="secondary"
           onPress={scrollToEnd}
           className="absolute right-2 bottom-2 rounded-full">
-          <Ionicons name="arrow-down" className="text-xl" />
+          <ButtonIcon as={ArrowDownIcon} />
         </Button>
       </Activity>
     </View>

@@ -1,14 +1,17 @@
-import { Avatar } from 'heroui-native/avatar';
-import { Chip } from 'heroui-native/chip';
-import { Description } from 'heroui-native/description';
-import { Surface, type SurfaceRootProps } from 'heroui-native/surface';
-import { Activity } from 'react';
-import { View } from 'react-native';
-import { cn } from 'tailwind-variants';
+import { cn } from '@gluestack-ui/utils';
+import { Activity, type ComponentProps } from 'react';
+
+import { Avatar, AvatarFallbackText, AvatarImage } from '@/components/ui/avatar';
+import { Badge, BadgeText } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
+import { Text } from '@/components/ui/text';
 
 import { ThrottledTouchable, type ThrottledTouchableProps } from '@/components/throttled-touchable';
+import { Box } from '@/components/ui/box';
+import { HStack } from '@/components/ui/hstack';
 
-interface GroupMemberCardProps extends SurfaceRootProps {
+interface GroupMemberCardProps extends ComponentProps<typeof Card> {
+  className?: string;
   data: {
     name: string;
     isAdmin: boolean;
@@ -17,35 +20,34 @@ interface GroupMemberCardProps extends SurfaceRootProps {
   onPress?: ThrottledTouchableProps['onPress'];
 }
 
-export function GroupMemberCard({ className, data, onPress, ...props }: GroupMemberCardProps) {
+export function GroupMemberCard({ className, data, onPress }: GroupMemberCardProps) {
   const { name, isAdmin, isMe } = data;
+
   return (
     <ThrottledTouchable onPress={isMe ? undefined : onPress}>
-      <Surface
-        className={cn('flex-row items-center justify-between rounded-2xl p-3', className)}
-        {...props}>
-        <View className="flex-row items-center gap-x-3">
-          <Avatar alt={name}>
-            <Avatar.Image />
+      <Card className={cn('flex-row items-center justify-between rounded-2xl p-3', className)}>
+        <HStack className="items-center gap-x-3">
+          <Avatar>
+            <AvatarFallbackText>{name}</AvatarFallbackText>
 
-            <Avatar.Fallback>{name[0]}</Avatar.Fallback>
+            <AvatarImage source={{ uri: undefined }} alt={name} />
           </Avatar>
 
-          <View>
-            <View className="flex-row items-center gap-x-2">
-              <Description className="text-base font-semibold">{name}</Description>
+          <Box>
+            <HStack className="items-center gap-x-2">
+              <Text className="text-base font-semibold">{name}</Text>
 
               <Activity mode={isAdmin ? 'visible' : 'hidden'}>
-                <Chip variant="soft">
-                  <Chip.Label>Admin</Chip.Label>
-                </Chip>
+                <Badge variant="outline" className="rounded-full">
+                  <BadgeText>Admin</BadgeText>
+                </Badge>
               </Activity>
-            </View>
+            </HStack>
 
-            <Description className="text-sm text-zinc-500">{isMe ? 'You' : 'Member'}</Description>
-          </View>
-        </View>
-      </Surface>
+            <Text size="sm">{isMe ? 'You' : 'Member'}</Text>
+          </Box>
+        </HStack>
+      </Card>
     </ThrottledTouchable>
   );
 }

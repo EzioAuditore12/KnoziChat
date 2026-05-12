@@ -95,7 +95,7 @@ export function useLiveGroupConversationChats({
       date,
       data: messages,
     }));
-  }, [query.data]);
+  }, [query]);
 
   return {
     ...query,

@@ -1,9 +1,9 @@
 import { DrizzleAppSchema } from '@powersync/drizzle-driver';
 
 import { chatGroupTable } from './tables/chat-group.table';
-import { chatOneToOneTable } from './tables/chat-one-to-one.table';
+import { chatDirectTable } from './tables/chat-direct.table';
 import { conversationGroupTable } from './tables/conversation-group.table';
-import { conversationOneToOneTable } from './tables/conversation-one-to-one.table';
+import { conversationDirectTable } from './tables/conversation-direct.table';
 import { userTable } from './tables/user.table';
 
 import {
@@ -11,20 +11,20 @@ import {
   conversationGroupRelationWithChatGroup,
 } from './relations/one-to-many/conversation-group-to-chat-group.relation';
 import {
-  chatOneToOneRelationWithConversationOneToOne,
-  conversationOneToOneRelationWithChatOneToOne,
-} from './relations/one-to-many/conversation-one-to-one-to-chat-one-to-one.relation';
-import { conversationOneToOneRelationWithUser } from './relations/one-to-one/conversation-one-to-one-to-user.relation';
+  chatDirectRelationWithConversationDirect,
+  conversationDirectRelationWithChatDirect,
+} from './relations/one-to-many/conversation-direct-to-chat-direct.relation';
+import { conversationDirectRelationWithUser } from './relations/one-to-one/conversation-direct-to-user.relation';
 
 export const drizzleSchema = {
   userTable,
-  conversationOneToOneTable,
-  chatOneToOneTable,
+  conversationDirectTable,
+  chatDirectTable,
   conversationGroupTable,
   chatGroupTable,
-  conversationOneToOneRelationWithUser,
-  conversationOneToOneRelationWithChatOneToOne,
-  chatOneToOneRelationWithConversationOneToOne,
+  conversationDirectRelationWithUser,
+  conversationDirectRelationWithChatDirect,
+  chatDirectRelationWithConversationDirect,
   conversationGroupRelationWithChatGroup,
   chatGroupRelationWithConversationGroup,
 };

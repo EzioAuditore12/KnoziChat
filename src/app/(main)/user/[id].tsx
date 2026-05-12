@@ -1,16 +1,17 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Button } from 'heroui-native/button';
-import { Description } from 'heroui-native/description';
 
-import { UserProfile } from '@/features/common/components/user-profile';
+import { Button, ButtonText } from '@/components/ui/button';
+import { Text } from '@/components/ui/text';
+
+import { UserProfile } from '@/features/common/components/user/profile';
 
 import { useGetUser } from '@/features/common/hooks/queries/use-get-user';
 
-import { conversationOneToOneRepository } from '@/db/repositories/conversation-one-to-one.repository';
+import { conversationDirectRepository } from '@/db/repositories/conversation-direct.repository';
+import { UserProfileLoading } from '@/features/common/components/user/profile-loading';
 import { useRefreshOnFocus } from '@/hooks/use-refresh-on-focus';
-import { UserProfileLoading } from '@/features/common/components/user-profile-loading';
 
 const navgateToChat = async ({
   userId,
@@ -23,13 +24,13 @@ const navgateToChat = async ({
   firstName: string;
   lastName: string;
 }) => {
-  const existingCoversationWithUser = await conversationOneToOneRepository.getByUserId(userId);
+  const existingCoversationWithUser = await conversationDirectRepository.getByUserId(userId);
 
   router.dismissTo('/(main)');
 
   if (existingCoversationWithUser) {
     router.navigate({
-      pathname: '/(main)/chat/[id]',
+      pathname: '/(main)/chat/direct/[id]',
       params: {
         id: existingCoversationWithUser.id,
         userId: existingCoversationWithUser.userId,
@@ -39,7 +40,7 @@ const navgateToChat = async ({
   }
 
   router.navigate({
-    pathname: '/(main)/new-chat/[id]',
+    pathname: '/(main)/chat/new/direct/[id]',
     params: {
       id: userId,
       name: firstName,
@@ -59,14 +60,14 @@ export default function UserDetails() {
   if (isLoading)
     return (
       <ScrollView contentContainerClassName="flex-grow-1 items-center justify-center gap-y-2 p-2">
-        <UserProfileLoading className="w-full max-w-4xl" variant="pulse" isLoading={isLoading} />
+        <UserProfileLoading className="w-full max-w-4xl" />
       </ScrollView>
     );
 
   if (error || !data)
     return (
       <ScrollView contentContainerClassName="flex-grow-1 items-center justify-center gap-y-2 p-2">
-        <Description>Something went</Description>
+        <Text>Something went</Text>
       </ScrollView>
     );
 
@@ -85,7 +86,7 @@ export default function UserDetails() {
             lastName: data.lastName,
           })
         }>
-        Start Chatting
+        <ButtonText>Start Chatting</ButtonText>
       </Button>
     </ScrollView>
   );

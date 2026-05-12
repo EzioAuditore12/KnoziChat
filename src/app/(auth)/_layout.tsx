@@ -2,7 +2,7 @@ import { Redirect, Stack } from 'expo-router';
 
 import { useAuthStore } from '@/store/auth';
 
-export default function AppScreensLayout() {
+export default function AuthScreensLayout() {
   const { user } = useAuthStore((state) => state);
 
   if (user) return <Redirect href="/(main)" />;

@@ -2,6 +2,7 @@
   "name": "knozichat",
   "main": "expo-router/entry",
   "version": "1.0.0",
+  "private": true,
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
@@ -11,25 +12,30 @@
     "format": "prettier --write \"src/**/*.{ts,tsx}\""
   },
   "dependencies": {
-    "@gorhom/bottom-sheet": "^5.2.14",
+    "@expo/html-elements": "^0.12.5",
+    "@gluestack-ui/core": "5.0.0-alpha.0",
+    "@gluestack-ui/utils": "5.0.1-alpha.0",
     "@hookform/resolvers": "^5.2.2",
+    "@legendapp/motion": "^2.5.3",
     "@op-engineering/op-sqlite": "^15.2.12",
     "@powersync/drizzle-driver": "^0.7.3",
-    "@powersync/op-sqlite": "^0.9.6",
-    "@powersync/react-native": "^1.34.0",
+    "@powersync/op-sqlite": "^0.9.7",
+    "@powersync/react-native": "^1.35.0",
+    "@react-aria/ssr": "^3.10.0",
+    "@react-aria/utils": "^3.34.0",
     "@react-native-community/netinfo": "11.5.2",
-    "@react-native-vector-icons/ionicons": "^13.1.1",
     "@react-navigation/bottom-tabs": "^7.15.5",
     "@react-navigation/elements": "^2.9.10",
     "@react-navigation/native": "^7.1.33",
+    "@react-stately/utils": "^3.12.0",
     "@shopify/flash-list": "2.0.2",
     "@shopify/react-native-skia": "2.4.18",
-    "@tanstack/react-query": "^5.100.9",
+    "@tanstack/react-query": "^5.100.10",
     "arktype": "^2.2.0",
     "date-fns": "^4.1.0",
     "drizzle-arktype": "^0.1.3",
     "drizzle-orm": "^0.45.2",
-    "expo": "~55.0.23",
+    "expo": "55.0.23",
     "expo-background-task": "~55.0.17",
     "expo-constants": "~55.0.16",
     "expo-device": "~55.0.16",
@@ -44,7 +50,6 @@
     "expo-system-ui": "~55.0.17",
     "expo-task-manager": "~55.0.15",
     "expo-web-browser": "~55.0.15",
-    "heroui-native": "^1.0.2",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-hook-form": "^7.75.0",
@@ -61,16 +66,17 @@
     "react-native-svg": "15.15.3",
     "react-native-web": "~0.21.0",
     "react-native-worklets": "0.7.4",
+    "react-stately": "^3.46.0",
     "socket.io-client": "^4.8.3",
     "standard-parse": "^0.5.0",
-    "tailwind-merge": "^3.6.0",
-    "tailwind-variants": "^3.2.2",
+    "tailwind-variants": "^0.1.20",
     "uniwind": "^1.6.4",
     "use-debounce": "^10.1.1",
     "zustand": "^5.0.13"
   },
   "devDependencies": {
     "@types/react": "~19.2.2",
+    "babel-plugin-module-resolver": "^5.0.3",
     "eslint": "^9.25.0",
     "eslint-config-expo": "^55.0.0",
     "prettier": "^3.8.3",
@@ -78,8 +84,7 @@
     "tailwindcss": "^4.3.0",
     "typescript": "~5.9.2"
   },
-  "op-sqlite":{
-      "fts5": true
-  },
-  "private": true
+  "op-sqlite": {
+    "fts5": true
+  }
 }
