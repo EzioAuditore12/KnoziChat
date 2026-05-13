@@ -28,6 +28,8 @@ export class ChatGroupRepository {
         text: chatGroupTable.text,
         deliveredTo: chatGroupTable.deliveredTo,
         seenBy: chatGroupTable.seenBy,
+        deletedAt: chatGroupTable.deletedAt,
+        deletedBy: chatGroupTable.deletedBy,
         createdAt: chatGroupTable.createdAt,
         updatedAt: chatGroupTable.updatedAt,
         user: {

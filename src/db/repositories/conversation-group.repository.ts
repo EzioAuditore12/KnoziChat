@@ -28,6 +28,18 @@ export class ConversationGroupRepository {
       .set(updateConversationGroup)
       .where(eq(this.table.id, id));
   }
+
+  public async isExisting(id: string): Promise<boolean> {
+    const result = await this.database
+      .select({ id: this.table.id })
+      .from(this.table)
+      .where(eq(this.table.id, id))
+      .get();
+
+    if (!result) return false;
+
+    return true;
+  }
 }
 
 export const conversationGroupRepository = new ConversationGroupRepository();

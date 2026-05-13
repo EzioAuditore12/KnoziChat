@@ -1,5 +1,5 @@
 import { db } from '@/db';
-import { eq } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 import { type InsertUser, type User, userTable } from '../tables/user.table';
 
 export class UserRepository {
@@ -24,6 +24,26 @@ export class UserRepository {
     if (!result) return false;
 
     return true;
+  }
+
+  public async getManyById(ids: string[]): Promise<User[]> {
+    return await this.database.select().from(this.table).where(inArray(this.table.id, ids)).all();
+  }
+
+  public async createMany(users: InsertUser[]): Promise<User[]> {
+    return await this.database.insert(this.table).values(users).returning().all();
+  }
+
+  public async areExistingManyById(ids: string[]): Promise<string[]> {
+    const result = await this.database
+      .select({ id: this.table.id })
+      .from(this.table)
+      .where(inArray(this.table.id, ids))
+      .all();
+
+    const foundIds = result.map((c) => c.id);
+
+    return foundIds;
   }
 }
 

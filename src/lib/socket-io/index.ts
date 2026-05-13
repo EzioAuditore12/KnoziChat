@@ -9,6 +9,7 @@ import type { SendMessage } from './schemas/send-message.schema';
 import type { ReceiveMessage } from './schemas/receive-message.schema';
 import { SendGroupMessage } from './schemas/send-group-message.schema';
 import { ReceiveGroupMessage } from './schemas/receive-group-message.schema';
+import { ReceiveGroupCreated } from './schemas/receive-group-created.schema';
 
 type SocketError = Error & { data?: { status: number } };
 
@@ -36,6 +37,7 @@ export interface ServerToClientEvents {
   'online:users': (userIds: string[]) => void;
   'message:receive': (message: ReceiveMessage) => void;
   'message-group:receive': (message: ReceiveGroupMessage) => void;
+  'conversation-group:created': (message: ReceiveGroupCreated) => void;
 }
 
 export interface ClientToServerEvents {
