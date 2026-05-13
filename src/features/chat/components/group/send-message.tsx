@@ -53,6 +53,7 @@ export function SendGroupMessage({
 
   const onSubmit = (data: { text: string }) => {
     handleSubmit({ conversationId: id, senderId, socket, text: data.text.trimEnd() });
+
     reset();
   };
 

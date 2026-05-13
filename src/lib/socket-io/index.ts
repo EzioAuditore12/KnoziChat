@@ -38,6 +38,8 @@ export interface ServerToClientEvents {
   'message:receive': (message: ReceiveMessage) => void;
   'message-group:receive': (message: ReceiveGroupMessage) => void;
   'conversation-group:created': (message: ReceiveGroupCreated) => void;
+  typing: (payload: { senderId: string; isTyping: boolean }) => void;
+  'typing:group': (payload: { senderId: string; isTyping: boolean }) => void;
 }
 
 export interface ClientToServerEvents {
@@ -47,6 +49,8 @@ export interface ClientToServerEvents {
   'conversation-group:leave': (conversationId: string) => void;
   'message:send': (dto: SendMessage) => void;
   'message-group:send': (dto: SendGroupMessage) => void;
+  'conversation:typing': (payload: { conversationId: string; isTyping: boolean }) => void;
+  'conversation-group:typing': (payload: { conversationId: string; isTyping: boolean }) => void;
 }
 
 export type Socket = SocketType<ServerToClientEvents, ClientToServerEvents>;

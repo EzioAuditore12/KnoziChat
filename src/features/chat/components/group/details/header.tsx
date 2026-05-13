@@ -16,6 +16,7 @@ interface ChatGroupDetailsHeaderProps extends ComponentProps<typeof Box> {
     createdAt: Date;
     updatedAt: Date;
   };
+  typingNames?: string[]; 
 }
 
 export function ChatGroupDetailsHeader({ className, data, ...props }: ChatGroupDetailsHeaderProps) {

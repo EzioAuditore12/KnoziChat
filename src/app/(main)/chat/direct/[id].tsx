@@ -55,6 +55,23 @@ export default function ChattingScreen() {
 
   const [selectedMessageIds, setSelectedMessageIds] = useState<string[]>([]);
   const isSelectionMode = selectedMessageIds.length > 0;
+  const [isTyping, setIsTyping] = useState(false);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleTyping = (payload: { senderId: string; isTyping: boolean }) => {
+      if (payload.senderId === userId) {
+        setIsTyping(payload.isTyping);
+      }
+    };
+
+    socket.on('typing', handleTyping);
+
+    return () => {
+      socket.off('typing', handleTyping);
+    };
+  }, [socket, userId]);
 
   return (
     <>
@@ -82,6 +99,7 @@ export default function ChattingScreen() {
                 onBack={() => router.back()}
                 isLoading={isLoadingChatterInfo}
                 data={chatterData}
+                isTyping={isTyping}
               />
             ),
         }}

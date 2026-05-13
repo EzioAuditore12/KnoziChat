@@ -15,6 +15,7 @@ import type { User } from '@/db/tables/user.table';
 interface ChatterInfoProps extends ComponentProps<typeof Box> {
   data: User;
   isLoading: boolean;
+  isTyping: boolean;
   onBack?: () => void;
   onPress?: ThrottledTouchableProps['onPress'];
 }
@@ -23,6 +24,7 @@ export function ChatterInfo({
   className,
   data,
   isLoading,
+  isTyping,
   onPress,
   onBack,
   ...props
@@ -63,7 +65,6 @@ export function ChatterInfo({
           <AvatarFallbackText className="font-semibold">{data.firstName?.[0]}</AvatarFallbackText>
         </Avatar>
       </ThrottledTouchable>
-
       <VStack className="flex-1 justify-center">
         <HStack className="items-center gap-x-1">
           <Text numberOfLines={1} className="text-base font-semibold">
@@ -71,9 +72,15 @@ export function ChatterInfo({
           </Text>
         </HStack>
 
-        <Text numberOfLines={1} size="sm" className="mt-0.5 text-zinc-500">
-          {data.email}
-        </Text>
+        {isTyping ? (
+          <Text numberOfLines={1} size="sm" className="anima mt-0.5 text-zinc-500 italic">
+            {data.firstName} is typing...
+          </Text>
+        ) : (
+          <Text numberOfLines={1} size="sm" className="mt-0.5 text-zinc-500">
+            {data.email}
+          </Text>
+        )}
       </VStack>
     </Box>
   );

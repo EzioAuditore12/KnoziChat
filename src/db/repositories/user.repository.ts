@@ -45,6 +45,18 @@ export class UserRepository {
 
     return foundIds;
   }
+
+  public async getManyNamesById(ids: string[]): Promise<string[]> {
+    const result = await this.database
+      .select({ name: this.table.firstName })
+      .from(this.table)
+      .where(inArray(this.table.id, ids))
+      .all();
+
+    const foundNames = result.map((c) => c.name);
+
+    return foundNames;
+  }
 }
 
 export const userRepository = new UserRepository();
