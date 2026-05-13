@@ -6,9 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text } from '@/components/ui/text';
 
 import { GroupInfo } from '@/features/chat/components/group/details/info';
-
 import { SendGroupMessage } from '@/features/chat/components/group/send-message';
-
 import { ChatGroupList } from '@/features/chat/components/group/list';
 
 import { useLiveGroupConversationChats } from '@/features/chat/hooks/database/use-live-group-conversation-chats';

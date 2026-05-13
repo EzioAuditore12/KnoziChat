@@ -1,8 +1,10 @@
 import { cn } from '@gluestack-ui/utils';
-import { Pressable, type PressableProps } from 'react-native';
+import type { ComponentProps } from 'react';
 import { useThrottledCallback } from 'use-debounce';
 
-export interface ThrottledTouchableProps extends PressableProps {
+import { Pressable } from '@/components/ui/pressable';
+
+export interface ThrottledTouchableProps extends ComponentProps<typeof Pressable> {
   throttleDelay?: number;
 }
 export function ThrottledTouchable({

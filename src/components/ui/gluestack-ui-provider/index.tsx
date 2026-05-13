@@ -4,28 +4,26 @@ import { OverlayProvider } from '@gluestack-ui/core/overlay/creator';
 import { ToastProvider } from '@gluestack-ui/core/toast/creator';
 import { Uniwind } from 'uniwind';
 
-export type ModeType = 'light' | 'dark' | 'system';
+import { useDeviceConfigStore } from '@/store/device'; // Adjust import path if needed
 
 export function GluestackUIProvider({
-  mode = 'dark',
-  ...props
+  children,
+  style,
 }: {
-  mode?: ModeType;
   children?: React.ReactNode;
   style?: ViewProps['style'];
 }) {
+  // Read the theme from Zustand store
+  const theme = useDeviceConfigStore((state) => state.theme);
+
   useEffect(() => {
-    if (mode === 'system') {
-      Uniwind.setTheme('system');
-    } else {
-      Uniwind.setTheme(mode);
-    }
-  }, [mode]);
+    Uniwind.setTheme(theme);
+  }, [theme]);
 
   return (
-    <View style={[{ flex: 1, height: '100%', width: '100%' }, props.style]}>
+    <View style={[{ flex: 1, height: '100%', width: '100%' }, style]}>
       <OverlayProvider>
-        <ToastProvider>{props.children}</ToastProvider>
+        <ToastProvider>{children}</ToastProvider>
       </OverlayProvider>
     </View>
   );

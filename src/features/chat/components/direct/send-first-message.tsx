@@ -12,7 +12,7 @@ import { useGradualAnimation } from '@/hooks/use-gradual-animation';
 
 import { Box } from '@/components/ui/box';
 import { HStack } from '@/components/ui/hstack';
-import { InitializeDirectChatParam } from '../../schemas/initialize-direct-chat/initialize-direct-chat-param.schema';
+import { InitializeDirectChatParam } from '../../schemas/initialize-direct-chat/param.schema';
 
 interface SendFirstMessageProps extends ComponentProps<typeof Box> {
   receiverId: string;

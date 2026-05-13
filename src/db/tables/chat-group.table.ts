@@ -30,12 +30,14 @@ export const chatGroupTable = sqliteTable(
       .$type<string[]>()
       .notNull()
       .default(sql`'[]'`),
+    deletedBy: text('deleted_by'),
     createdAt: integer('created_at')
       .$defaultFn(() => Date.now())
       .notNull(),
     updatedAt: integer('updated_at')
       .$onUpdate(() => Date.now())
       .notNull(),
+    deletedAt: integer('deleted_at'),
   },
   (t) => [index('conversation_group_idx').on(t.conversationId), index('sender_idx').on(t.senderId)]
 );

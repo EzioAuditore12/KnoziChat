@@ -25,6 +25,7 @@ export const chatDirectTable = sqliteTable(
     updatedAt: integer('updated_at')
       .$onUpdate(() => Date.now())
       .notNull(),
+    deletedAt: integer('deleted_at'),
   },
   (t) => [index('conversation_one_to_one_idx').on(t.conversationId)]
 );

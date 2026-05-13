@@ -5,18 +5,33 @@ import { format } from 'date-fns';
 
 import { Box } from '@/components/ui/box';
 import { Text } from '@/components/ui/text';
+import { Pressable } from '@/components/ui/pressable';
 
 import type { ChatDirect } from '@/db/tables/chat-direct.table';
 
 interface ChatOneToOneBubbleProps extends ComponentProps<typeof Box> {
   data: ChatDirect;
+  onPress?: ComponentProps<typeof Pressable>['onPress'];
+  onLongPress?: ComponentProps<typeof Pressable>['onLongPress'];
 }
 
-export function ChatOneToOneBubble({ data, className, ...props }: ChatOneToOneBubbleProps) {
+export function ChatOneToOneBubble({
+  data,
+  className,
+  onPress,
+  onLongPress,
+  ...props
+}: ChatOneToOneBubbleProps) {
   const { mode, text, createdAt } = data;
 
   return (
-    <Box className={cn('w-full flex-row', mode === 'SENT' ? 'justify-end' : 'justify-start')}>
+    <Pressable
+      className={cn(
+        'w-full flex-row active:opacity-70',
+        mode === 'SENT' ? 'justify-end' : 'justify-start'
+      )}
+      onPress={onPress}
+      onLongPress={onLongPress}>
       <Box
         className={cn(
           'my-1 max-w-[80%] shrink rounded-xl p-3',
@@ -35,6 +50,6 @@ export function ChatOneToOneBubble({ data, className, ...props }: ChatOneToOneBu
           {format(new Date(createdAt), 'hh:mm a')}
         </Text>
       </Box>
-    </Box>
+    </Pressable>
   );
 }

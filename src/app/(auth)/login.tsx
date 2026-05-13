@@ -40,8 +40,10 @@ export default function LoginScreen() {
 
       <VStack className="items-center gap-x-1">
         <Text>Don&apos;t have an account</Text>
-        <Link href={'/register'} className="text-blue-500 underline">
-          Register Here
+        <Link href={'/register'} asChild>
+          <Text className="text-blue-500" underline>
+            Register
+          </Text>
         </Link>
       </VStack>
     </KeyboardAwareScrollView>

@@ -7,11 +7,14 @@ import { format } from 'date-fns';
 import { Avatar, AvatarFallbackText, AvatarImage } from '@/components/ui/avatar';
 import { Box } from '@/components/ui/box';
 import { Text } from '@/components/ui/text';
+import { Pressable } from '@/components/ui/pressable';
 
 import { ChatGroupWithUserDetails } from '@/features/chat/types/group-chats';
 
 interface ChatGroupBubbleProps extends ComponentProps<typeof Box> {
   data: ChatGroupWithUserDetails;
+  onPress?: ComponentProps<typeof Pressable>['onPress'];
+  onLongPress?: ComponentProps<typeof Pressable>['onLongPress'];
 }
 
 const USER_COLORS = [
@@ -40,15 +43,24 @@ export function getUserBubbleColor(name: string) {
   return USER_COLORS[Math.abs(hash) % USER_COLORS.length];
 }
 
-export function ChatGroupBubble({ data, className, ...props }: ChatGroupBubbleProps) {
+export function ChatGroupBubble({
+  data,
+  className,
+  onPress,
+  onLongPress,
+  ...props
+}: ChatGroupBubbleProps) {
   const { mode, text, createdAt, senderName, senderAvatar } = data;
   const userColor = getUserBubbleColor(senderName);
 
   return (
-    // 'w-full' ensures the row takes available space so self-end/start works,
-    // without forcing the child to overflow
-    <Box
-      className={cn('w-full flex-row gap-x-2', mode === 'SENT' ? 'justify-end' : 'justify-start')}>
+    <Pressable
+      onPress={onPress}
+      onLongPress={onLongPress}
+      className={cn(
+        'w-full flex-row gap-x-2 active:opacity-70',
+        mode === 'SENT' ? 'justify-end' : 'justify-start'
+      )}>
       <Activity mode={mode === 'RECEIVED' ? 'visible' : 'hidden'}>
         <Avatar>
           <AvatarImage source={senderAvatar ? { uri: senderAvatar } : undefined} />
@@ -72,6 +84,6 @@ export function ChatGroupBubble({ data, className, ...props }: ChatGroupBubblePr
 
         <Text className="mt-1 text-sm text-white/70">{format(new Date(createdAt), 'hh:mm a')}</Text>
       </Box>
-    </Box>
+    </Pressable>
   );
 }

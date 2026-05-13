@@ -33,15 +33,15 @@ export function HomeHeader({ className, ...props }: ComponentProps<typeof Box>) 
   return (
     <Box
       className={cn(
-        // Clean, neutral backgrounds for a high-contrast black/white feel
-        'flex-row items-center gap-3 border-b border-zinc-200 bg-white px-4 py-4 dark:border-zinc-900 dark:bg-zinc-950',
+        // Added `rounded-b-3xl` for beautiful bottom corners
+        'flex-row items-center gap-3 rounded-b-3xl border-b border-zinc-200 bg-white px-4 py-4 dark:border-zinc-900 dark:bg-zinc-950',
         className
       )}
       {...props}>
-      {/* Taller, Squarish Search Input - Neutral Frosted Glass */}
+      {/* Taller, Squarish Search Input - Increased padding to py-4 */}
       <ThrottledTouchable
         onPress={() => router.push('/(main)/search/chat')}
-        className="flex-1 flex-row items-center gap-2 rounded-2xl border border-zinc-200/80 bg-zinc-50/80 px-4 py-3 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/50">
+        className="flex-1 flex-row items-center gap-2 rounded-2xl border border-zinc-200/80 bg-zinc-50/80 px-4 py-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/50">
         <Center>
           <Icon as={SearchIcon} className="h-5 w-5 text-zinc-400 dark:text-zinc-500" />
         </Center>
@@ -58,21 +58,18 @@ export function HomeHeader({ className, ...props }: ComponentProps<typeof Box>) 
           return (
             <ThrottledTouchable
               {...triggerProps}
-              className="rounded-2xl border border-zinc-200/80 bg-zinc-50/80 p-3 shadow-sm active:opacity-70 dark:border-zinc-800 dark:bg-zinc-900/50">
+              className="rounded-2xl border border-zinc-200/80 bg-zinc-50/80 p-4 shadow-sm active:opacity-70 dark:border-zinc-800 dark:bg-zinc-900/50">
               <Icon as={MenuIcon} className="h-6 w-6 text-zinc-700 dark:text-zinc-300" />
             </ThrottledTouchable>
           );
         }}>
-        {/* Actions */}
+        {/* Actions - Removed typography utility classes */}
         <MenuItem
           key="search"
           textValue="Search People"
           onPress={() => router.push('/(main)/search/user')}
           className="rounded-2xl px-4 py-3.5">
-          <Icon
-            as={AddIcon}
-            className="text-typography-600 dark:text-typography-400 mr-3 h-5 w-5"
-          />
+          <Icon as={AddIcon} className="mr-3 h-5 w-5" />
           <MenuItemLabel className="text-sm font-medium">Search People</MenuItemLabel>
         </MenuItem>
 
@@ -81,10 +78,7 @@ export function HomeHeader({ className, ...props }: ComponentProps<typeof Box>) 
           textValue="Create Group"
           onPress={() => router.push('/(main)/chat/new/group')}
           className="rounded-2xl px-4 py-3.5">
-          <Icon
-            as={AddIcon}
-            className="text-typography-600 dark:text-typography-400 mr-3 h-5 w-5"
-          />
+          <Icon as={AddIcon} className="mr-3 h-5 w-5" />
           <MenuItemLabel className="text-sm font-medium">Create Group</MenuItemLabel>
         </MenuItem>
 
@@ -93,10 +87,7 @@ export function HomeHeader({ className, ...props }: ComponentProps<typeof Box>) 
           textValue="Settings"
           onPress={() => router.push('/setting')}
           className="rounded-2xl px-4 py-3.5">
-          <Icon
-            as={SettingsIcon}
-            className="text-typography-600 dark:text-typography-400 mr-3 h-5 w-5"
-          />
+          <Icon as={SettingsIcon} className="mr-3 h-5 w-5" />
           <MenuItemLabel className="text-sm font-medium">Settings</MenuItemLabel>
         </MenuItem>
 
@@ -141,7 +132,7 @@ export function HomeHeader({ className, ...props }: ComponentProps<typeof Box>) 
             setAppTheme('system');
           }}
           className="rounded-2xl px-4 py-3.5">
-          <Icon as={MenuIcon} className="text-typography-500 mr-3 h-5 w-5" />
+          <Icon as={MenuIcon} className="mr-3 h-5 w-5" />
           <MenuItemLabel className="text-sm font-medium">System</MenuItemLabel>
           <Activity mode={theme === 'system' ? 'visible' : 'hidden'}>
             <Icon as={CheckIcon} className="ml-auto h-5 w-5 text-blue-600 dark:text-blue-400" />

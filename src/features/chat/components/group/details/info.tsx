@@ -22,18 +22,30 @@ interface GroupInfoProps extends ComponentProps<typeof Box> {
 
 export function GroupInfo({ className, data, isLoading, ...props }: GroupInfoProps) {
   if (isLoading) {
-    return <Text>Data being loaded</Text>;
+    return (
+      <Box className="border-background-tertiary flex-row items-center gap-x-3 border-b px-4 py-3">
+        <Box className="bg-background-tertiary size-10 animate-pulse rounded-full" />
+        <Box className="bg-background-tertiary size-14 animate-pulse rounded-full" />
+
+        <VStack className="flex-1 gap-y-2">
+          <Box className="bg-background-tertiary h-4 w-40 animate-pulse rounded-md" />
+          <Box className="bg-background-tertiary h-3 w-24 animate-pulse rounded-md" />
+        </VStack>
+      </Box>
+    );
   }
 
   return (
     <Box
       key={data.id}
       className={cn(
-        'justify border-background-tertiary flex-row items-center gap-x-3 border-b-2 p-2 px-4',
+        'border-background-tertiary flex-row items-center gap-x-3 border-b px-4 py-3',
         className
       )}
       {...props}>
-      <ThrottledTouchable className="bg-background rounded-full p-2" onPress={() => router.back()}>
+      <ThrottledTouchable
+        className="bg-background-secondary active:bg-background-tertiary items-center justify-center rounded-full p-2.5"
+        onPress={() => router.back()}>
         <Icon as={ArrowLeftIcon} size="md" />
       </ThrottledTouchable>
 
@@ -44,7 +56,7 @@ export function GroupInfo({ className, data, isLoading, ...props }: GroupInfoPro
             params: { id: data.id },
           })
         }>
-        <Avatar className="size-14">
+        <Avatar className="border-background-tertiary size-14 border">
           <AvatarImage
             source={
               data.avatar
@@ -55,16 +67,16 @@ export function GroupInfo({ className, data, isLoading, ...props }: GroupInfoPro
             }
           />
 
-          <AvatarFallbackText>{data.name?.[0] ?? 'G'}</AvatarFallbackText>
+          <AvatarFallbackText className="font-semibold">{data.name?.[0] ?? 'G'}</AvatarFallbackText>
         </Avatar>
       </ThrottledTouchable>
 
-      <VStack className="flex-1">
-        <Text numberOfLines={1} className="font-bold">
+      <VStack className="flex-1 justify-center">
+        <Text numberOfLines={1} className="font-semibold">
           {data.name}
         </Text>
 
-        <Text size="sm" numberOfLines={1} className="text-zinc-500">
+        <Text size="sm" numberOfLines={1} className="mt-0.5 leading-4">
           {data.members}
         </Text>
       </VStack>

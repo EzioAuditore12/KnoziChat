@@ -11,6 +11,7 @@ export const chatSchema = type({
   seen: 'boolean',
   createdAt: 'string.date.iso',
   updatedAt: 'string.date.iso',
+  deletedAT: 'string.date.iso | null',
 });
 
 export type Chat = typeof chatSchema.infer;

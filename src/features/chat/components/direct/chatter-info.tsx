@@ -2,13 +2,15 @@ import { cn } from '@gluestack-ui/utils';
 import type { ComponentProps } from 'react';
 
 import { ThrottledTouchable, type ThrottledTouchableProps } from '@/components/throttled-touchable';
+
 import { Avatar, AvatarFallbackText, AvatarImage } from '@/components/ui/avatar';
 import { Box } from '@/components/ui/box';
 import { HStack } from '@/components/ui/hstack';
 import { ArrowLeftIcon, Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { VStack } from '@/components/ui/vstack';
-import { User } from '@/db/tables/user.table';
+
+import type { User } from '@/db/tables/user.table';
 
 interface ChatterInfoProps extends ComponentProps<typeof Box> {
   data: User;
@@ -25,40 +27,53 @@ export function ChatterInfo({
   onBack,
   ...props
 }: ChatterInfoProps) {
-  if (isLoading)
+  if (isLoading) {
     return (
-      <Box>
-        <Text>Loading user data</Text>
+      <Box className="border-background-tertiary flex-row items-center gap-x-3 border-b px-4 py-3">
+        <Box className="bg-background-tertiary size-10 animate-pulse rounded-full" />
+
+        <Box className="bg-background-tertiary size-14 animate-pulse rounded-full" />
+
+        <VStack className="flex-1 gap-y-2">
+          <Box className="bg-background-tertiary h-4 w-36 animate-pulse rounded-md" />
+          <Box className="bg-background-tertiary h-3 w-52 animate-pulse rounded-md" />
+        </VStack>
       </Box>
     );
+  }
 
   return (
     <Box
       key={data.id}
       className={cn(
-        'justify border-background-tertiary flex-row items-center gap-x-1 border-b-2 p-2 px-4',
+        'border-background-tertiary flex-row items-center gap-x-3 border-b px-4 py-3',
         className
       )}
       {...props}>
-      <ThrottledTouchable className="bg-background rounded-full p-2" onPress={onBack}>
-        <Icon as={ArrowLeftIcon} size="xl" />
+      <ThrottledTouchable
+        className="bg-background-secondary active:bg-background-tertiary items-center justify-center rounded-full p-2.5"
+        onPress={onBack}>
+        <Icon as={ArrowLeftIcon} size="lg" />
       </ThrottledTouchable>
 
       <ThrottledTouchable onPress={onPress}>
-        <Avatar className="size-14">
+        <Avatar className="border-background-tertiary size-14 border">
           <AvatarImage />
-          <AvatarFallbackText>{data.firstName[0]}</AvatarFallbackText>
+
+          <AvatarFallbackText className="font-semibold">{data.firstName?.[0]}</AvatarFallbackText>
         </Avatar>
       </ThrottledTouchable>
 
-      <VStack>
-        <HStack className="gap-x-2">
-          <Text className="font-bold">
+      <VStack className="flex-1 justify-center">
+        <HStack className="items-center gap-x-1">
+          <Text numberOfLines={1} className="text-base font-semibold">
             {data.firstName} {data.lastName}
           </Text>
         </HStack>
 
-        <Text>{data.email}</Text>
+        <Text numberOfLines={1} size="sm" className="mt-0.5 text-zinc-500">
+          {data.email}
+        </Text>
       </VStack>
     </Box>
   );
