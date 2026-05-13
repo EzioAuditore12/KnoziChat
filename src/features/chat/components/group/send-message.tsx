@@ -1,13 +1,14 @@
 import { cn } from '@gluestack-ui/utils';
 import { arktypeResolver } from '@hookform/resolvers/arktype';
 import { type } from 'arktype';
-import type { ComponentProps } from 'react';
+import { type ComponentProps, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 
 import { Box } from '@/components/ui/box';
 import { Button, ButtonText } from '@/components/ui/button';
 import { Input, InputField } from '@/components/ui/input';
+import { Toast, ToastTitle, ToastDescription, useToast } from '@/components/ui/toast';
 
 import { HStack } from '@/components/ui/hstack';
 import { useGradualAnimation } from '@/hooks/use-gradual-animation';
@@ -19,6 +20,7 @@ interface SendGroupMessageProps extends ComponentProps<typeof Box> {
   senderId: string;
   socket: Socket;
   handleSubmit: (data: SendGroupMessageEvent) => void;
+  onFocus?: () => boolean | void;
 }
 
 export function SendGroupMessage({
@@ -27,6 +29,7 @@ export function SendGroupMessage({
   senderId,
   socket,
   handleSubmit,
+  onFocus,
   ...props
 }: SendGroupMessageProps) {
   const { height } = useGradualAnimation();
@@ -53,6 +56,31 @@ export function SendGroupMessage({
     reset();
   };
 
+  const toast = useToast();
+  const [toastId, setToastId] = useState<string>('0');
+
+  const handleFocus = () => {
+    const didDeselect = onFocus?.();
+    if (didDeselect && !toast.isActive(toastId)) {
+      const newId = Math.random().toString();
+      setToastId(newId);
+      toast.show({
+        id: newId,
+        placement: 'top',
+        duration: 3000,
+        render: ({ id: toastRenderingId }) => {
+          const uniqueToastId = 'toast-' + toastRenderingId;
+          return (
+            <Toast nativeID={uniqueToastId} action="muted" variant="solid">
+              <ToastTitle>Tip</ToastTitle>
+              <ToastDescription>You can swipe right on a message to reply to it!</ToastDescription>
+            </Toast>
+          );
+        },
+      });
+    }
+  };
+
   return (
     <Box className={cn('border-t-2 border-gray-400', className)} {...props}>
       <HStack className="items-center p-2">
@@ -63,6 +91,7 @@ export function SendGroupMessage({
             <Input className="mr-2 w-[80%]">
               <InputField
                 placeholder="Type a message..."
+                onFocus={handleFocus}
                 onBlur={onBlur}
                 value={value}
                 onChangeText={onChange}

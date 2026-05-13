@@ -39,9 +39,19 @@ interface ChatDirectListProps {
   className?: string;
 
   onStartReached?: () => void;
+
+  selectedMessageIds: string[];
+
+  onSelectionChange: (ids: string[]) => void;
 }
 
-export function ChatDirectList({ data, className, onStartReached }: ChatDirectListProps) {
+export function ChatDirectList({
+  data,
+  className,
+  onStartReached,
+  selectedMessageIds,
+  onSelectionChange,
+}: ChatDirectListProps) {
   const ref = useRef<FlashListRef<FlattenedItem> | null>(null);
 
   const [viewHeight, setViewHeight] = useState(0);
@@ -49,6 +59,30 @@ export function ChatDirectList({ data, className, onStartReached }: ChatDirectLi
   const [contentHeight, setContentHeight] = useState(0);
 
   const [isAtListEnd, setIsAtListEnd] = useState(true);
+
+  const isSelectionMode = selectedMessageIds.length > 0;
+
+  const handlePress = (id: string) => {
+    if (isSelectionMode) {
+      onSelectionChange(
+        selectedMessageIds.includes(id)
+          ? selectedMessageIds.filter((msgId) => msgId !== id)
+          : [...selectedMessageIds, id]
+      );
+    }
+  };
+
+  const handleLongPress = (id: string) => {
+    if (!isSelectionMode) {
+      onSelectionChange([id]);
+    } else {
+      onSelectionChange(
+        selectedMessageIds.includes(id)
+          ? selectedMessageIds.filter((msgId) => msgId !== id)
+          : [...selectedMessageIds, id]
+      );
+    }
+  };
 
   const flattenedData = useMemo(() => {
     return data.flatMap((section) => [
@@ -112,7 +146,14 @@ export function ChatDirectList({ data, className, onStartReached }: ChatDirectLi
             );
           }
 
-          return <ChatOneToOneBubble data={item} />;
+          return (
+            <ChatOneToOneBubble
+              data={item}
+              selected={selectedMessageIds.includes(item.id)}
+              onPress={() => handlePress(item.id)}
+              onLongPress={() => handleLongPress(item.id)}
+            />
+          );
         }}
       />
 

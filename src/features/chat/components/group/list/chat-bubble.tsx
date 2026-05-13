@@ -10,9 +10,11 @@ import { Text } from '@/components/ui/text';
 import { Pressable } from '@/components/ui/pressable';
 
 import { ChatGroupWithUserDetails } from '@/features/chat/types/group-chats';
+import { Haptics } from 'react-native-nitro-haptics';
 
 interface ChatGroupBubbleProps extends ComponentProps<typeof Box> {
   data: ChatGroupWithUserDetails;
+  selected?: boolean;
   onPress?: ComponentProps<typeof Pressable>['onPress'];
   onLongPress?: ComponentProps<typeof Pressable>['onLongPress'];
 }
@@ -46,6 +48,7 @@ export function getUserBubbleColor(name: string) {
 export function ChatGroupBubble({
   data,
   className,
+  selected,
   onPress,
   onLongPress,
   ...props
@@ -56,10 +59,14 @@ export function ChatGroupBubble({
   return (
     <Pressable
       onPress={onPress}
-      onLongPress={onLongPress}
+      onLongPress={(e) => {
+        Haptics.impact('rigid');
+        onLongPress?.(e);
+      }}
       className={cn(
-        'w-full flex-row gap-x-2 active:opacity-70',
-        mode === 'SENT' ? 'justify-end' : 'justify-start'
+        'w-full flex-row gap-x-2 px-2 py-1 active:opacity-70',
+        mode === 'SENT' ? 'justify-end' : 'justify-start',
+        selected && 'bg-blue-500/20 dark:bg-blue-400/20'
       )}>
       <Activity mode={mode === 'RECEIVED' ? 'visible' : 'hidden'}>
         <Avatar>

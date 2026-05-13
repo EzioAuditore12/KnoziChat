@@ -8,6 +8,7 @@ export const receiveMessageSchema = type({
   status: "'SENT' |'DELIVERED' | 'SEEN'",
   createdAt: 'Date',
   updatedAt: 'Date',
+  deletedAt: 'Date | null',
 });
 
 export type ReceiveMessage = typeof receiveMessageSchema.infer;

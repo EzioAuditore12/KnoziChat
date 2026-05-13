@@ -1,5 +1,6 @@
 import { cn } from '@gluestack-ui/utils';
 import type { ComponentProps } from 'react';
+import { Haptics } from 'react-native-nitro-haptics';
 
 import { format } from 'date-fns';
 
@@ -11,6 +12,7 @@ import type { ChatDirect } from '@/db/tables/chat-direct.table';
 
 interface ChatOneToOneBubbleProps extends ComponentProps<typeof Box> {
   data: ChatDirect;
+  selected?: boolean;
   onPress?: ComponentProps<typeof Pressable>['onPress'];
   onLongPress?: ComponentProps<typeof Pressable>['onLongPress'];
 }
@@ -18,6 +20,7 @@ interface ChatOneToOneBubbleProps extends ComponentProps<typeof Box> {
 export function ChatOneToOneBubble({
   data,
   className,
+  selected,
   onPress,
   onLongPress,
   ...props
@@ -27,11 +30,15 @@ export function ChatOneToOneBubble({
   return (
     <Pressable
       className={cn(
-        'w-full flex-row active:opacity-70',
-        mode === 'SENT' ? 'justify-end' : 'justify-start'
+        'w-full flex-row px-2 py-1 active:opacity-70',
+        mode === 'SENT' ? 'justify-end' : 'justify-start',
+        selected && 'bg-blue-500/20 dark:bg-blue-400/20'
       )}
       onPress={onPress}
-      onLongPress={onLongPress}>
+      onLongPress={(e) => {
+        Haptics.impact('rigid');
+        onLongPress?.(e);
+      }}>
       <Box
         className={cn(
           'my-1 max-w-[80%] shrink rounded-xl p-3',

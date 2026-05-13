@@ -1,13 +1,14 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { useEffect, useMemo } from 'react';
-import { View } from 'react-native';
+import { useEffect, useMemo, useState } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Text } from '@/components/ui/text';
+import { Box } from '@/components/ui/box';
 
 import { GroupInfo } from '@/features/chat/components/group/details/info';
 import { SendGroupMessage } from '@/features/chat/components/group/send-message';
 import { ChatGroupList } from '@/features/chat/components/group/list';
+import { SelectedMessageHeader } from '@/features/chat/components/selected-messages-header';
+import { GroupScreenLoading } from '@/features/chat/components/group/loading/screen';
 
 import { useLiveGroupConversationChats } from '@/features/chat/hooks/database/use-live-group-conversation-chats';
 
@@ -60,42 +61,42 @@ export default function ChattingGroupScreen() {
     }));
   }, [groupedMessages]);
 
-  if (isLoading)
-    return (
-      <>
-        <Stack.Screen
-          options={{
-            header: () => (
-              <View className="p-2">
-                <Text>Loading group info</Text>
-              </View>
-            ),
-          }}
-        />
+  const [selectedMessageIds, setSelectedMessageIds] = useState<string[]>([]);
+  const isSelectionMode = selectedMessageIds.length > 0;
 
-        <View className="flex-1 items-center justify-center">
-          <Text>Loading all the chats</Text>
-        </View>
-      </>
-    );
+  if (isLoading) return <GroupScreenLoading />;
 
   return (
     <>
       <Stack.Screen
         options={{
-          header: () => (
-            <GroupInfo
-              data={groupInfo}
-              isLoading={isGroupInfoLoading}
-              style={{ paddingTop: safeAreaInsets.top }}
-              id={id}
-            />
-          ),
+          header: () =>
+            isSelectionMode ? (
+              <SelectedMessageHeader
+                className="min-h-23"
+                style={{ paddingTop: safeAreaInsets.top }}
+                onPressArrowBack={() => setSelectedMessageIds([])}
+                selectedMessagesLength={selectedMessageIds.length}
+              />
+            ) : (
+              <GroupInfo
+                className="min-h-23"
+                id={id}
+                style={{ paddingTop: safeAreaInsets.top }}
+                data={groupInfo}
+                isLoading={isGroupInfoLoading}
+              />
+            ),
         }}
       />
 
-      <View className="flex-1 p-2">
-        <ChatGroupList data={reversedGroupedMessages} onStartReached={fetchNextChats} />
+      <Box className="flex-1 p-2">
+        <ChatGroupList
+          data={reversedGroupedMessages}
+          onStartReached={fetchNextChats}
+          selectedMessageIds={selectedMessageIds}
+          onSelectionChange={setSelectedMessageIds}
+        />
 
         <SendGroupMessage
           className="items-center"
@@ -103,8 +104,15 @@ export default function ChattingGroupScreen() {
           senderId={user?.id as string}
           socket={socket as Socket}
           handleSubmit={sendGroupMessageEvent}
+          onFocus={() => {
+            if (isSelectionMode) {
+              setSelectedMessageIds([]);
+              return true;
+            }
+            return false;
+          }}
         />
-      </View>
+      </Box>
     </>
   );
 }

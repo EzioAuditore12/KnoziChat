@@ -1,5 +1,5 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Box } from '@/components/ui/box';
@@ -16,6 +16,7 @@ import { sendMessageEvent } from '@/features/chat/events/send-message.event';
 
 import { useLiveChatterInfo } from '@/features/chat/hooks/database/use-live-chatter-info';
 import { useLiveDirectChats } from '@/features/chat/hooks/database/use-live-one-to-one-chats';
+import { SelectedMessageHeader } from '@/features/chat/components/selected-messages-header';
 
 export default function ChattingScreen() {
   const safeAreaInsets = useSafeAreaInsets();
@@ -52,31 +53,47 @@ export default function ChattingScreen() {
     }));
   }, [groupedMessages]);
 
+  const [selectedMessageIds, setSelectedMessageIds] = useState<string[]>([]);
+  const isSelectionMode = selectedMessageIds.length > 0;
+
   return (
     <>
       <Stack.Screen
         options={{
-          header: () => (
-            <ChatterInfo
-              style={{ paddingTop: safeAreaInsets.top }}
-              onPress={() =>
-                router.push({
-                  pathname: '/(main)/chat/direct/profile/[id]',
-                  params: {
-                    id: userId,
-                  },
-                })
-              }
-              onBack={() => router.back()}
-              isLoading={isLoadingChatterInfo}
-              data={chatterData}
-            />
-          ),
+          header: () =>
+            isSelectionMode ? (
+              <SelectedMessageHeader
+                className="min-h-23"
+                style={{ paddingTop: safeAreaInsets.top }}
+                onPressArrowBack={() => setSelectedMessageIds([])}
+                selectedMessagesLength={selectedMessageIds.length}
+              />
+            ) : (
+              <ChatterInfo
+                style={{ paddingTop: safeAreaInsets.top }}
+                onPress={() =>
+                  router.push({
+                    pathname: '/(main)/chat/direct/profile/[id]',
+                    params: {
+                      id: userId,
+                    },
+                  })
+                }
+                onBack={() => router.back()}
+                isLoading={isLoadingChatterInfo}
+                data={chatterData}
+              />
+            ),
         }}
       />
 
       <Box className="flex-1">
-        <ChatDirectList data={reversedGroupedMessages} onStartReached={fetchNextChats} />
+        <ChatDirectList
+          data={reversedGroupedMessages}
+          onStartReached={fetchNextChats}
+          selectedMessageIds={selectedMessageIds}
+          onSelectionChange={setSelectedMessageIds}
+        />
 
         <SendDirectMessage
           className="items-center"
@@ -84,6 +101,13 @@ export default function ChattingScreen() {
           receiverId={userId}
           socket={socket as Socket}
           handleSubmit={sendMessageEvent}
+          onFocus={() => {
+            if (isSelectionMode) {
+              setSelectedMessageIds([]);
+              return true;
+            }
+            return false;
+          }}
         />
       </Box>
     </>
