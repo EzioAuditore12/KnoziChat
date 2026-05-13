@@ -1,5 +1,6 @@
 import { db } from '@/db';
 import { desc, eq } from 'drizzle-orm';
+import { chatDirectTable } from '../tables/chat-direct.table';
 import {
   conversationDirectTable,
   type ConversationDirect,
@@ -40,6 +41,15 @@ export class ConversationDirectRepository {
       .from(this.table)
       .leftJoin(userTable, eq(this.table.userId, this.userTable.id))
       .orderBy(desc(this.table.updatedAt));
+  }
+
+  public async getUsersWithExistingChats(): Promise<string[]> {
+    const result = await this.database
+      .select({ userId: this.table.userId })
+      .from(this.table)
+      .innerJoin(chatDirectTable, eq(this.table.id, chatDirectTable.conversationId))
+      .groupBy(this.table.userId);
+    return result.map((r) => r.userId);
   }
 
   public async isExistingConversationWithUser(userId: string): Promise<boolean> {

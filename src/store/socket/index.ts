@@ -4,6 +4,7 @@ import { AppState, type NativeEventSubscription } from 'react-native';
 import type { SocketState } from './type';
 
 import { connectWebSocket } from '@/lib/socket-io';
+import { conversationDirectRepository } from '@/db/repositories/conversation-direct.repository';
 
 // Keep track of the subscription outside the store scope
 let appStateSubscription: NativeEventSubscription | null = null;
@@ -21,14 +22,35 @@ export const useSocketState = create<SocketState>()((set, get) => ({
 
       set({ socket: newSocket });
 
-      newSocket.on('connect', () => {
+      newSocket.on('connect', async () => {
         console.log('Socket connected', newSocket.id);
+        const userIds = await conversationDirectRepository.getUsersWithExistingChats();
+        if (userIds.length > 0) {
+          newSocket.emit('presence:get', userIds);
+        }
       });
 
+      // Ignore global online:users to prevent overwriting contacts' presence state
       newSocket.on('online:users', (userIds) => {
-        console.log(userIds);
+        console.log('Global online users update ignored');
+      });
 
-        set({ onlineUsers: userIds });
+      newSocket.on('presence:list', (statuses) => {
+        const { onlineUsers } = get();
+        const nextUsers = new Set(onlineUsers);
+        statuses.forEach((s) => {
+          if (s.online) nextUsers.add(s.userId);
+          else nextUsers.delete(s.userId);
+        });
+        set({ onlineUsers: Array.from(nextUsers) });
+      });
+
+      newSocket.on('presence:update', (status) => {
+        const { onlineUsers } = get();
+        const nextUsers = new Set(onlineUsers);
+        if (status.online) nextUsers.add(status.userId);
+        else nextUsers.delete(status.userId);
+        set({ onlineUsers: Array.from(nextUsers) });
       });
 
       // Initialize AppState listener once

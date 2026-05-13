@@ -35,6 +35,8 @@ export function connectWebSocket() {
 export interface ServerToClientEvents {
   connect: () => void;
   'online:users': (userIds: string[]) => void;
+  'presence:list': (users: { userId: string; online: boolean }[]) => void;
+  'presence:update': (user: { userId: string; online: boolean }) => void;
   'message:receive': (message: ReceiveMessage) => void;
   'message-group:receive': (message: ReceiveGroupMessage) => void;
   'conversation-group:created': (message: ReceiveGroupCreated) => void;
@@ -44,6 +46,7 @@ export interface ServerToClientEvents {
 
 export interface ClientToServerEvents {
   'conversation:join': (conversationId: string) => void;
+  'presence:get': (userIds: string[]) => void;
   'conversation:leave': (conversationId: string) => void;
   'conversation-group:join': (conversationId: string) => void;
   'conversation-group:leave': (conversationId: string) => void;

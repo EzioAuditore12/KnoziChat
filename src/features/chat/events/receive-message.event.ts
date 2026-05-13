@@ -7,6 +7,7 @@ import { chatDirectRepository } from '@/db/repositories/chat-direct.repository';
 import { conversationDirectRepository } from '@/db/repositories/conversation-direct.repository';
 import { userRepository } from '@/db/repositories/user.repository';
 import { getUserApi } from '@/features/common/api/get-user.api';
+import { useSocketState } from '@/store/socket';
 
 const handleReceiveMessage = async (message: ReceiveMessage) => {
   const { id, conversationId, createdAt, text, updatedAt, senderId } = message;
@@ -35,6 +36,13 @@ const handleReceiveMessage = async (message: ReceiveMessage) => {
       userId: senderId,
       id: conversationId,
     });
+
+    // NEW: Request presence for this new sender
+    const socket = useSocketState.getState().socket;
+
+    if (socket?.connected) {
+      socket.emit('presence:get', [senderId]);
+    }
   }
 
   const saveDirectChat = await chatDirectRepository.create({

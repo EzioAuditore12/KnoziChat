@@ -10,12 +10,17 @@ import { syncDatabase } from '@/db/sync';
 import { useLiveConversationDetails } from '@/features/home/hooks/database/use-live-conversation-details';
 import { useAuthStore } from '@/store/auth';
 
+import { OnlineUsersList } from '@/features/home/components/list/online-users';
+import { useGetOnlineUsers } from '@/features/home/hooks/database/use-live-get-online-users';
+
 export default function HomeScreen() {
   const safeAreaInsets = useSafeAreaInsets();
 
   const currentUserId = useAuthStore((state) => state.user?.id!);
 
   const { data, isFetching, isLoading, fetchNextPage } = useLiveConversationDetails(currentUserId);
+
+  const { data: users } = useGetOnlineUsers();
 
   return (
     <>
@@ -26,6 +31,9 @@ export default function HomeScreen() {
           ),
         }}
       />
+
+      <OnlineUsersList users={users} />
+
       <Box className="relative flex-1 gap-y-2 p-1" style={{ paddingBottom: safeAreaInsets.bottom }}>
         <ConversationList
           data={data}
