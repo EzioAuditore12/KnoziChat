@@ -2,7 +2,7 @@ import { cn } from '@gluestack-ui/utils';
 
 import { Activity, type ComponentProps } from 'react';
 
-import { format } from 'date-fns';
+import { format } from '@bernagl/react-native-date';
 
 import { Avatar, AvatarFallbackText, AvatarImage } from '@/components/ui/avatar';
 import { Box } from '@/components/ui/box';
@@ -89,7 +89,10 @@ export function ChatGroupBubble({
 
         <Text className="text-white">{text}</Text>
 
-        <Text className="mt-1 text-sm text-white/70">{format(new Date(createdAt), 'hh:mm a')}</Text>
+        <Text className="mt-1 text-sm text-white/70">
+          {' '}
+          {format(new Date(createdAt), 'hh:mm aa')}
+        </Text>
       </Box>
     </Pressable>
   );

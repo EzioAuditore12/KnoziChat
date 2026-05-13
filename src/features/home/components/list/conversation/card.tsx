@@ -1,7 +1,6 @@
 import { cn } from '@gluestack-ui/utils';
-import { format, isToday, isYesterday } from 'date-fns';
+import { format, isToday, isYesterday } from '@bernagl/react-native-date';
 import type { ComponentProps } from 'react';
-import { View } from 'react-native';
 
 import { Avatar, AvatarFallbackText, AvatarImage } from '@/components/ui/avatar';
 import { Box } from '@/components/ui/box';
@@ -12,6 +11,7 @@ import { Text } from '@/components/ui/text';
 import { ThrottledTouchable, type ThrottledTouchableProps } from '@/components/throttled-touchable';
 
 import type { Conversation } from '@/features/home/types/conversation.type';
+import { VStack } from '@/components/ui/vstack';
 
 interface ConversationCardProps extends ComponentProps<typeof Card> {
   onPress: ThrottledTouchableProps['onPress'];
@@ -22,14 +22,18 @@ function formatChatDate(timestamp: number) {
   const date = new Date(timestamp);
 
   if (isToday(date)) {
-    return format(date, 'p');
-  } else if (isYesterday(date)) {
-    return 'Yesterday';
-  } else if (Date.now() - timestamp < 7 * 24 * 60 * 60 * 1000) {
-    return format(date, 'EEEE');
-  } else {
-    return format(date, 'P');
+    return format(date, 'h:mm aa');
   }
+
+  if (isYesterday(date)) {
+    return 'Yesterday';
+  }
+
+  if (Date.now() - timestamp < 7 * 24 * 60 * 60 * 1000) {
+    return format(date, 'EEEE');
+  }
+
+  return format(date, 'P');
 }
 
 export function ConversationCard({ className, data, onPress, ...props }: ConversationCardProps) {
@@ -44,7 +48,7 @@ export function ConversationCard({ className, data, onPress, ...props }: Convers
             <AvatarFallbackText>{name ?? ''}</AvatarFallbackText>
           </Avatar>
 
-          <View className="flex-1">
+          <VStack className="flex-1">
             <Box className="flex-row items-center justify-between">
               <Heading size="md" className="flex-1" numberOfLines={1}>
                 {name}
@@ -56,7 +60,7 @@ export function ConversationCard({ className, data, onPress, ...props }: Convers
             <Text numberOfLines={1} className="mt-1 text-sm">
               {lastMessage}
             </Text>
-          </View>
+          </VStack>
         </Box>
       </Card>
     </ThrottledTouchable>

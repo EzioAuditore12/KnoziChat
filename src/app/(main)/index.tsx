@@ -12,6 +12,7 @@ import { useAuthStore } from '@/store/auth';
 
 import { OnlineUsersList } from '@/features/home/components/list/online-users';
 import { useGetOnlineUsers } from '@/features/home/hooks/database/use-live-get-online-users';
+import { Heading } from '@/components/ui/heading';
 
 export default function HomeScreen() {
   const safeAreaInsets = useSafeAreaInsets();
@@ -33,6 +34,8 @@ export default function HomeScreen() {
       />
 
       <OnlineUsersList users={users} />
+
+      <Heading className="px-4 py-1">Chats</Heading>
 
       <Box className="relative flex-1 gap-y-2 p-1" style={{ paddingBottom: safeAreaInsets.bottom }}>
         <ConversationList

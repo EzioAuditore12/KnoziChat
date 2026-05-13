@@ -1,5 +1,5 @@
 import { cn } from '@gluestack-ui/utils';
-import { format, formatDistanceToNow } from 'date-fns';
+import { format, formatDistance } from '@bernagl/react-native-date';
 import type { ComponentProps } from 'react';
 
 import { Avatar, AvatarFallbackText, AvatarImage } from '@/components/ui/avatar';
@@ -16,7 +16,7 @@ interface ChatGroupDetailsHeaderProps extends ComponentProps<typeof Box> {
     createdAt: Date;
     updatedAt: Date;
   };
-  typingNames?: string[]; 
+  typingNames?: string[];
 }
 
 export function ChatGroupDetailsHeader({ className, data, ...props }: ChatGroupDetailsHeaderProps) {
@@ -66,9 +66,7 @@ export function ChatGroupDetailsHeader({ className, data, ...props }: ChatGroupD
             </Text>
 
             <Text size="sm" className="font-medium">
-              {formatDistanceToNow(updatedAt, {
-                addSuffix: true,
-              })}
+              {formatDistance(updatedAt, Date.now(), true)}
             </Text>
           </HStack>
         </VStack>

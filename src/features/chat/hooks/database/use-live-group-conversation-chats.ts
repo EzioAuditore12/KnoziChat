@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { desc, eq, sql } from 'drizzle-orm';
 
-import { differenceInDays, format, isToday, isYesterday } from 'date-fns';
+import { diffInDays, format, isToday, isYesterday } from '@bernagl/react-native-date';
 
 import { db } from '@/db';
 
@@ -31,7 +31,7 @@ function formatChatDate(timestamp: number) {
     return 'Yesterday';
   }
 
-  const daysDifference = differenceInDays(new Date(), date);
+  const daysDifference = Math.abs(diffInDays(date, new Date()));
 
   if (daysDifference < 7) {
     return format(date, 'EEEE');

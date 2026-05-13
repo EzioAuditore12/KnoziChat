@@ -1,5 +1,5 @@
 import { cn } from '@gluestack-ui/utils';
-import { format } from 'date-fns';
+import { format } from '@bernagl/react-native-date';
 import type { ComponentProps } from 'react';
 
 import { Avatar, AvatarFallbackText, AvatarImage } from '@/components/ui/avatar';

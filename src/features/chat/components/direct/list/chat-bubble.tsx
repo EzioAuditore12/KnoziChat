@@ -2,7 +2,7 @@ import { cn } from '@gluestack-ui/utils';
 import type { ComponentProps } from 'react';
 import { Haptics } from 'react-native-nitro-haptics';
 
-import { format } from 'date-fns';
+import { format } from '@bernagl/react-native-date';
 
 import { Box } from '@/components/ui/box';
 import { Text } from '@/components/ui/text';
@@ -54,7 +54,7 @@ export function ChatOneToOneBubble({
           style={{
             color: mode === 'SENT' ? '#dbeafe' : '#6b7280',
           }}>
-          {format(new Date(createdAt), 'hh:mm a')}
+          {format(new Date(createdAt), 'hh:mm aa')}
         </Text>
       </Box>
     </Pressable>

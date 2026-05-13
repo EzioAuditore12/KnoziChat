@@ -17,12 +17,7 @@ import { Input, InputField } from '@/components/ui/input';
 import { Socket } from '@/lib/socket-io';
 import { SendMessageEvent } from '../../events/send-message.event';
 
-import {
-  Toast,
-  ToastDescription,
-  ToastTitle,
-  useToast,
-} from '@/components/ui/toast';
+import { Toast, ToastDescription, ToastTitle, useToast } from '@/components/ui/toast';
 
 interface SendDirectMessageProps extends ComponentProps<typeof Box> {
   conversationId: string;
@@ -105,9 +100,7 @@ export function SendDirectMessage({
             <Toast nativeID={uniqueToastId} action="muted" variant="solid">
               <ToastTitle>Tip</ToastTitle>
 
-              <ToastDescription>
-                You can swipe right on a message to reply to it!
-              </ToastDescription>
+              <ToastDescription>You can swipe right on a message to reply to it!</ToastDescription>
             </Toast>
           );
         },
@@ -136,10 +129,7 @@ export function SendDirectMessage({
   };
 
   return (
-    <Box
-      className={cn('border-t-2 border-gray-400', className)}
-      {...props}
-    >
+    <Box className={cn('border-t-2 border-gray-400', className)} {...props}>
       <HStack className="items-center p-2">
         <Controller
           control={control}
