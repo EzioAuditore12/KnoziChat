@@ -9,10 +9,13 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 import 'react-native-reanimated';
 import { SafeAreaListener } from 'react-native-safe-area-context';
 import { Uniwind } from 'uniwind';
+import { setLocale } from '@bernagl/react-native-date';
 
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import { PowerSyncDatabaseProvider } from '@/db';
 import { TanstackReactQueryClientProvider } from '@/lib/tanstack/query';
+
+setLocale('en');
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -23,7 +26,7 @@ export default function RootLayout() {
         Uniwind.updateInsets(insets);
       }}>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <GluestackUIProvider mode="system">
+        <GluestackUIProvider>
           <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
             <KeyboardProvider>
               <PowerSyncDatabaseProvider>

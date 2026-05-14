@@ -1,6 +1,5 @@
 import { Redirect, Stack } from 'expo-router';
 import { useEffect } from 'react';
-import { setLocale } from '@bernagl/react-native-date';
 
 import { useAuthStore } from '@/store/auth';
 
@@ -11,8 +10,6 @@ import { useSocketState } from '@/store/socket';
 import { useReceiveGroupMessageEvent } from '@/features/chat/events/receive-group-message.event';
 import { useReceiveMessageEvent } from '@/features/chat/events/receive-message.event';
 import { useReceiveGroupCreatedEvent } from '@/features/chat/events/receive-group-created.event';
-
-setLocale('en');
 
 export default function MainLayoutScreens() {
   const { user } = useAuthStore((state) => state);
