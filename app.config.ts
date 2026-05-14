@@ -20,7 +20,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       monochromeImage: './assets/images/android-icon-monochrome.png',
     },
     predictiveBackGestureEnabled: false,
-    package: 'com.dakshpurohit.KnoziChat',
+    package: process.env.EXPO_PUBLIC_PACKAGE,
     googleServicesFile: './google-services.json',
   },
   web: {

@@ -1,4 +1,5 @@
 import '../../global.css';
+import 'react-native-url-polyfill';
 
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
