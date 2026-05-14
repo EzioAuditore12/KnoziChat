@@ -1,12 +1,11 @@
 import { Activity, useState } from 'react';
-
 import { pickFiles } from 'react-native-nitro-file-system';
+import { Image } from 'expo-image';
 
 import { Box } from '@/components/ui/box';
 import { Button, ButtonText } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { VStack } from '@/components/ui/vstack';
-import { Image } from '@/components/ui/image';
 
 import { authorizeUploadApi } from '@/features/uploads/api/authorize-upload.api';
 
@@ -87,7 +86,11 @@ export default function TestScreen() {
                 uri: uploadedImageUri ?? undefined,
               }}
               alt="Uploaded Image"
-              size="2xl"
+              style={{
+                width: 200,
+                height: 200,
+                borderRadius: 20,
+              }}
               className="rounded-2xl"
             />
           </VStack>
