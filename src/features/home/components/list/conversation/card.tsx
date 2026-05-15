@@ -37,14 +37,14 @@ function formatChatDate(timestamp: number) {
 }
 
 export function ConversationCard({ className, data, onPress, ...props }: ConversationCardProps) {
-  const { name, updatedAt, lastMessage } = data;
+  const { name, updatedAt, lastMessage, avatar } = data;
 
   return (
     <ThrottledTouchable onPress={onPress}>
       <Card className={cn('rounded-3xl px-4 py-4', className)} {...props}>
         <Box className="flex-row items-center gap-3">
           <Avatar className="size-16 rounded-full">
-            <AvatarImage source={{ uri: undefined }} />
+            <AvatarImage source={{ uri: avatar ?? undefined }} />
             <AvatarFallbackText>{name ?? ''}</AvatarFallbackText>
           </Avatar>
 

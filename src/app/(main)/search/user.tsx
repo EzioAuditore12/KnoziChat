@@ -22,7 +22,7 @@ export default function SearchScreen() {
   const [search, setSearch] = useState('');
   const [searchValue] = useDebounce(search, 300);
 
-  const { data, fetchNextPage, isFetchingNextPage, refetch } = useGetUsers({
+  const { data, fetchNextPage, isFetchingNextPage, refetch, error } = useGetUsers({
     search: searchValue,
     limit: 10,
   });
@@ -32,6 +32,10 @@ export default function SearchScreen() {
   const users = (data?.pages.flatMap((page) => page.data) ?? []).filter(
     (u) => u.id !== operatingUser?.id
   );
+
+  console.log(users);
+
+  if (error) alert(error);
 
   return (
     <View

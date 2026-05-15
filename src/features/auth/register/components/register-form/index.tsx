@@ -4,9 +4,10 @@ import { Activity, type ComponentProps } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
 import { Box } from '@/components/ui/box';
-
 import { Button, ButtonSpinner, ButtonText } from '@/components/ui/button';
-
+import { AlertCircleIcon } from '@/components/ui/icon';
+import { Input, InputField } from '@/components/ui/input';
+import { VStack } from '@/components/ui/vstack';
 import {
   FormControl,
   FormControlError,
@@ -16,16 +17,12 @@ import {
   FormControlLabelText,
 } from '@/components/ui/form-control';
 
-import { AlertCircleIcon } from '@/components/ui/icon';
-
-import { Input, InputField } from '@/components/ui/input';
-
-import { VStack } from '@/components/ui/vstack';
-
 import {
   registerFormParamSchema,
   type RegisterFormParam,
-} from '../schemas/register-form/params.schema';
+} from '../../schemas/register-form/params.schema';
+
+import { AvatarInput } from './avatar-input';
 
 interface RegisterFormProps extends ComponentProps<typeof Box> {
   expoPushToken: string | null;
@@ -47,9 +44,10 @@ export function RegisterForm({
   } = useForm<RegisterFormParam>({
     defaultValues: {
       firstName: '',
-      middleName: '',
+      middleName: undefined,
       lastName: '',
-      phoneNumber: null,
+      avatar: undefined,
+      phoneNumber: undefined,
       email: '',
       password: '',
       confirmPassword: '',
@@ -60,16 +58,36 @@ export function RegisterForm({
   const onSubmit = (data: RegisterFormParam) => {
     const { confirmPassword, ...rest } = data;
 
-    if (expoPushToken !== null) {
-      data.expoPushToken = expoPushToken;
-    }
+    console.log(rest);
 
-    handleSubmit(rest);
+    handleSubmit({
+      ...rest,
+      expoPushToken: expoPushToken ?? undefined,
+    });
   };
 
   return (
     <Box className={cn('gap-y-3 p-2', className)} {...props}>
       <VStack className="gap-3">
+        <Controller
+          control={control}
+          name="avatar"
+          render={({ field: { value, onChange } }) => (
+            <FormControl isInvalid={!!errors.avatar}>
+              <FormControlLabel className="self-center">
+                <FormControlLabelText>Avatar</FormControlLabelText>
+              </FormControlLabel>
+              <AvatarInput value={value} onChange={onChange} />
+
+              <FormControlError>
+                <FormControlErrorIcon as={AlertCircleIcon} />
+
+                <FormControlErrorText>{errors.avatar?.message}</FormControlErrorText>
+              </FormControlError>
+            </FormControl>
+          )}
+        />
+
         <Controller
           control={control}
           name="firstName"

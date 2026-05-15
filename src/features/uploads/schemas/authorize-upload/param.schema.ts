@@ -5,4 +5,4 @@ export const authorizeUploadParamSchema = type({
   mimeType: 'string',
 });
 
-export type AuthroizeUploadPram = typeof authorizeUploadParamSchema.infer;
+export type AuthroizeUploadParam = typeof authorizeUploadParamSchema.infer;

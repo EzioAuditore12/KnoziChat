@@ -9,7 +9,7 @@ export const getUsersApi = async (data: SearchUserParam) => {
   return typedFetch({
     url: `${env.API_URL}/user`,
     method: 'GET',
-    params: data,
+    query: data,
     schema: userSearchResponseSchema,
   });
 };

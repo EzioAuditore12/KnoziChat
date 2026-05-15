@@ -77,8 +77,9 @@ interface TypedAuthenticatedFetchProps<
 > extends AuthenticatedFetchProps {
   method: HttpMethods;
   schema: S;
-  body?: object;
-  params?: object;
+  body?: object | FormData;
+  query?: object;
+  contentType?: string | null;
 }
 
 export const authenticatedTypedFetch = async <S extends s.StandardSchemaV1>({
@@ -88,29 +89,36 @@ export const authenticatedTypedFetch = async <S extends s.StandardSchemaV1>({
   responseStatus = 401,
   body,
   schema,
-  params,
+  query,
   method,
+  contentType = 'application/json',
   ...props
 }: TypedAuthenticatedFetchProps<S>): Promise<s.StandardSchemaV1.InferOutput<S>> => {
   const accessToken = useAuthStore.getState().tokens?.accessToken;
 
   if (!accessToken) throw new Error('No authentication token provided');
-
-  let authHeaders = {
-    'Content-Type': 'application/json',
+  let authHeaders: Record<string, string> = {
     Authorization: `Bearer ${accessToken}`,
-    ...(headers || {}),
+    ...((headers as Record<string, string>) || {}),
   };
 
-  if (params !== undefined) {
-    const paramsValues = new URLSearchParams(params as Record<string, string>).toString();
-    url = url + (url.includes('?') ? '&' : '?') + paramsValues;
+  const isFormData = typeof FormData !== 'undefined' && body instanceof FormData;
+
+  // Only set JSON content-type when not sending FormData and not already provided.
+  // If caller explicitly passes `null` for `contentType`, skip adding the header.
+  if (!isFormData && contentType !== null && !authHeaders['Content-Type']) {
+    authHeaders['Content-Type'] = contentType;
   }
 
   const requestOptions = {
     method,
-    body: body ? JSON.stringify(body) : undefined,
+    body: isFormData ? (body as FormData) : body ? JSON.stringify(body) : undefined,
   };
+
+  if (query !== undefined) {
+    const paramsValues = new URLSearchParams(query as Record<string, string>).toString();
+    url = url + (url.includes('?') ? '&' : '?') + paramsValues;
+  }
 
   const apiUrl = `${baseUrl}/${url}`;
 
@@ -128,12 +136,16 @@ export const authenticatedTypedFetch = async <S extends s.StandardSchemaV1>({
       // 2. Get new token
       const newAccessToken = useAuthStore.getState().tokens?.accessToken;
 
-      // 3. Update headers
       authHeaders = {
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${newAccessToken}`,
-        ...(headers || {}),
+        ...((headers as Record<string, string>) || {}),
       };
+
+      // Preserve the same Content-Type behavior on retry: only set it when
+      // not sending FormData and the caller didn't explicitly request skipping it.
+      if (!isFormData && contentType !== null && !authHeaders['Content-Type']) {
+        authHeaders['Content-Type'] = contentType;
+      }
 
       // 4. Retry request
       response = await fetch(apiUrl, {

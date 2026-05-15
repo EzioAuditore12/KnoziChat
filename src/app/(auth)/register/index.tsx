@@ -25,7 +25,8 @@ export default function RegisterFormScreen() {
         paddingTop: safeAreaInsets.top,
         paddingBottom: safeAreaInsets.bottom,
       }}
-      contentContainerClassName="flex-grow-1 gap-y-2 items-center justify-center p-2">
+      extraKeyboardSpace={50}
+      contentContainerClassName="grow gap-y-2 items-center justify-center p-2">
       <Heading size="2xl" className="self-start font-bold md:self-center">
         Register your Details !
       </Heading>

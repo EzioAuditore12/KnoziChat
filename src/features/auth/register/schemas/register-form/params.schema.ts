@@ -4,9 +4,16 @@ import { phoneSchema, strongPasswordSchema } from '@/lib/schemas';
 
 export const registerFormParamSchema = type({
   firstName: '0 < string <= 50',
-  middleName: type.string.atMostLength(50).optional(),
+  middleName: type('0 < string <= 50').or('undefined'),
   lastName: '0 < string <= 50',
   email: '0 < string.email <= 240',
+  avatar: type(
+    type({
+      uri: 'string',
+      name: 'string',
+      type: 'string',
+    })
+  ).or('undefined'),
   phoneNumber: phoneSchema.or('null').or('undefined'),
   password: strongPasswordSchema,
   confirmPassword: 'string',

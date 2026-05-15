@@ -1,6 +1,7 @@
 import { Stack } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { Heading } from '@/components/ui/heading';
 import { Box } from '@/components/ui/box';
 
 import { HomeHeader } from '@/features/home/components/header';
@@ -12,7 +13,6 @@ import { useAuthStore } from '@/store/auth';
 
 import { OnlineUsersList } from '@/features/home/components/list/online-users';
 import { useGetOnlineUsers } from '@/features/home/hooks/database/use-live-get-online-users';
-import { Heading } from '@/components/ui/heading';
 
 export default function HomeScreen() {
   const safeAreaInsets = useSafeAreaInsets();

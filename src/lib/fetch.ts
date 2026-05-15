@@ -14,8 +14,9 @@ interface TypedFetchProps<S extends s.StandardSchemaV1> extends Omit<
   url: string;
   schema: S;
   method: HttpMethods;
-  params?: object;
-  body?: object;
+  query?: object;
+  body?: object | FormData;
+  contentType?: string | null;
 }
 
 export { fetch };
@@ -24,18 +25,24 @@ export const typedFetch = async <S extends s.StandardSchemaV1>({
   url,
   schema,
   headers,
-  params,
+  query,
   method,
   body,
+  contentType = 'application/json',
   ...props
 }: TypedFetchProps<S>): Promise<s.StandardSchemaV1.InferOutput<S>> => {
-  const typedFetchHeader = {
-    'Content-Type': 'application/json',
-    ...headers,
+  let typedFetchHeader: Record<string, string> = {
+    ...((headers as Record<string, string>) || {}),
   };
 
-  if (params !== undefined) {
-    const paramsValues = new URLSearchParams(params as Record<string, string>).toString();
+  const isFormData = typeof FormData !== 'undefined' && body instanceof FormData;
+
+  if (!isFormData && contentType !== null && !typedFetchHeader['Content-Type']) {
+    typedFetchHeader['Content-Type'] = contentType;
+  }
+
+  if (query !== undefined) {
+    const paramsValues = new URLSearchParams(query as Record<string, string>).toString();
 
     url = url + (url.includes('?') ? '&' : '?') + paramsValues;
   }
@@ -43,7 +50,7 @@ export const typedFetch = async <S extends s.StandardSchemaV1>({
   const response = await fetch(url, {
     headers: typedFetchHeader,
     method: method,
-    body: body ? JSON.stringify(body) : undefined,
+    body: isFormData ? (body as FormData) : body ? JSON.stringify(body) : undefined,
     ...props,
   });
 

@@ -16,6 +16,7 @@ export function useLiveConversationDetails(currentUserId: string, pageSize: numb
     .select({
       id: conversationDirectTable.id,
       name: userTable.firstName,
+      avatar: userTable.avatar,
       updatedAt: conversationDirectTable.updatedAt,
       type: sql<ConversationType>`'direct'`.as('type'),
       userId: conversationDirectTable.userId,
@@ -38,6 +39,7 @@ export function useLiveConversationDetails(currentUserId: string, pageSize: numb
     .select({
       id: conversationGroupTable.id,
       name: conversationGroupTable.name,
+      avatar: conversationGroupTable.avatar,
       updatedAt: conversationGroupTable.updatedAt,
       type: sql<ConversationType>`'group'`.as('type'),
       userId: sql<string>`NULL`.as('userId'),

@@ -1,5 +1,5 @@
 import { cn } from '@gluestack-ui/utils';
-import type { ComponentProps } from 'react';
+import { Activity, type ComponentProps } from 'react';
 
 import { ThrottledTouchable, type ThrottledTouchableProps } from '@/components/throttled-touchable';
 
@@ -60,9 +60,11 @@ export function ChatterInfo({
 
       <ThrottledTouchable onPress={onPress}>
         <Avatar className="border-background-tertiary size-14 border">
-          <AvatarImage />
+          <AvatarImage source={{ uri: data.avatar ?? undefined }} />
 
-          <AvatarFallbackText className="font-semibold">{data.firstName?.[0]}</AvatarFallbackText>
+          <Activity mode={data.avatar ? 'hidden' : 'visible'}>
+            <AvatarFallbackText className="font-semibold">{data.firstName?.[0]}</AvatarFallbackText>
+          </Activity>
         </Avatar>
       </ThrottledTouchable>
       <VStack className="flex-1 justify-center">

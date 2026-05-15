@@ -33,7 +33,7 @@ export default function MainLayoutScreens() {
   return (
     <Stack initialRouteName="index">
       <Stack.Screen name="index" />
-      <Stack.Screen name="setting" options={{ headerShown: false }} />
+      <Stack.Screen name="setting" />
 
       <Stack.Screen name="user/[id]" options={{ headerShown: false }} />
 

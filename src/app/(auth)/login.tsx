@@ -26,7 +26,8 @@ export default function LoginScreen() {
         paddingTop: safeAreaInsets.top,
         paddingBottom: safeAreaInsets.bottom,
       }}
-      contentContainerClassName="flex-grow-1 items-center justify-center p-2">
+      extraKeyboardSpace={50}
+      contentContainerClassName="grow items-center justify-center p-2">
       <Heading size="2xl">Welcome Back !</Heading>
 
       <LoginBanner />
