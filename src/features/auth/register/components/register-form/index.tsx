@@ -77,6 +77,7 @@ export function RegisterForm({
               <FormControlLabel className="self-center">
                 <FormControlLabelText>Avatar</FormControlLabelText>
               </FormControlLabel>
+
               <AvatarInput value={value} onChange={onChange} />
 
               <FormControlError>

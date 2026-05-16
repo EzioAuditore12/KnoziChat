@@ -15,6 +15,8 @@ import {
   uploadFileToAppWrite,
 } from '@/features/uploads/config/appwrite';
 
+import { Link } from '@/components/native-link';
+
 export default function TestScreen() {
   const [uploadedImageUri, setUploadedImageUri] = useState<string | null>(null);
   const [isUploadedSuccessfully, setIsUploadedSuccessfully] = useState(false);
@@ -74,6 +76,8 @@ export default function TestScreen() {
         <Button onPress={handleUploadTestFile}>
           <ButtonText>Pick File</ButtonText>
         </Button>
+
+        <Link href={'/(main)/test/chunked-upload'}>Test Chunked Upload</Link>
 
         <Activity mode={isUploadedSuccessfully && uploadedImageUri ? 'visible' : 'hidden'}>
           <VStack className="items-center gap-4">

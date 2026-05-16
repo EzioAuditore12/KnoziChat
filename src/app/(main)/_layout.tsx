@@ -49,7 +49,8 @@ export default function MainLayoutScreens() {
       <Stack.Screen name="chat/new/direct/[id]" />
       <Stack.Screen name="chat/new/group/index" />
 
-      <Stack.Screen name="test/index" />
+      <Stack.Screen name="test/index" options={{ headerShown: false }} />
+      <Stack.Screen name="test/chunked-upload" options={{ headerShown: false }} />
     </Stack>
   );
 }

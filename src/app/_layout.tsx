@@ -1,5 +1,6 @@
 import '../../global.css';
 import 'react-native-url-polyfill';
+import 'react-native-reanimated';
 
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
@@ -7,7 +8,6 @@ import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
-import 'react-native-reanimated';
 import { SafeAreaListener } from 'react-native-safe-area-context';
 import { Uniwind } from 'uniwind';
 import { setLocale } from '@bernagl/react-native-date';

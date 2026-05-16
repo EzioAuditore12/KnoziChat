@@ -66,3 +66,11 @@ export async function createAppWriteSession({
     return session;
   }
 }
+
+export async function createAppWriteJwtToken({ client }: { client: Client }) {
+  const account = new Account(client);
+
+  const jwt = await account.createJWT();
+
+  return jwt.jwt;
+}

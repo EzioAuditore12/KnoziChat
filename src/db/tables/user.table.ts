@@ -1,6 +1,6 @@
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-arktype';
-import crypto from 'react-native-nitro-crypto';
+import { randomUUID } from 'react-native-nitro-crypto';
 import { type } from 'arktype';
 
 export const USER_TABLE_NAME = 'user';
@@ -8,7 +8,7 @@ export const USER_TABLE_NAME = 'user';
 export const userTable = sqliteTable(USER_TABLE_NAME, {
   id: text('id')
     .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
+    .$defaultFn(() => randomUUID()),
   phoneNumber: text('phone_number').unique(),
   email: text('email', { length: 240 }).unique().notNull(),
   avatar: text('avatar'),
