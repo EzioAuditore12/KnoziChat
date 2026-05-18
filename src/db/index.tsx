@@ -25,3 +25,4 @@ export function PowerSyncDatabaseProvider({ children }: PropsWithChildren) {
 }
 
 export { usePowerSync };
+export type DbType = typeof db | Parameters<Parameters<typeof db.transaction>[0]>[0];

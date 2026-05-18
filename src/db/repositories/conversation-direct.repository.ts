@@ -1,4 +1,4 @@
-import { db } from '@/db';
+import { db, DbType } from '@/db';
 import { desc, eq } from 'drizzle-orm';
 import { chatDirectTable } from '../tables/chat-direct.table';
 import {
@@ -9,9 +9,13 @@ import {
 import { userTable } from '../tables/user.table';
 
 export class ConversationDirectRepository {
-  private readonly database = db;
+  private readonly database: DbType;
   private readonly table = conversationDirectTable;
   private readonly userTable = userTable;
+
+  constructor(database: DbType = db) {
+    this.database = database;
+  }
 
   public async create(
     insertConversationOneToOne: InsertConversationDirect
@@ -21,6 +25,10 @@ export class ConversationDirectRepository {
       .values(insertConversationOneToOne)
       .returning()
       .get();
+  }
+
+  public async createMultiple(insertConversationDirect: InsertConversationDirect[]): Promise<void> {
+    await this.database.insert(this.table).values(insertConversationDirect);
   }
 
   public async get(id: string): Promise<ConversationDirect | undefined> {

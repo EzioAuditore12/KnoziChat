@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
 
-import { db } from '@/db';
+import { db, DbType } from '@/db';
 import { chatGroupTable, type ChatGroup, type InsertChatGroup } from '../tables/chat-group.table';
 import { userTable } from '../tables/user.table';
 import {
@@ -10,13 +10,21 @@ import {
 } from '../tables/chat-attachment.table';
 
 export class ChatGroupRepository {
-  private readonly database = db;
+  private readonly database: DbType;
   private readonly table = chatGroupTable;
   private readonly userTable = userTable;
   private readonly attachmentTable = chatAttachmentTable;
 
+  constructor(database: DbType = db) {
+    this.database = database;
+  }
+
   public async create(insertChatGroup: InsertChatGroup): Promise<ChatGroup> {
     return await this.database.insert(this.table).values(insertChatGroup).returning().get();
+  }
+
+  public async createMultiple(insertChatGroup: InsertChatGroup[]): Promise<void> {
+    await this.database.insert(this.table).values(insertChatGroup);
   }
 
   public async findOne(id: string): Promise<ChatGroup | undefined> {

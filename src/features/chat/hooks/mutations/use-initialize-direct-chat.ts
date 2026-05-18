@@ -1,44 +1,44 @@
 import { useMutation } from '@tanstack/react-query';
-import { eq } from 'drizzle-orm';
 import { router } from 'expo-router';
 
 import { getUserApi } from '@/features/common/api/get-user.api';
 import { initializeDirectChatApi } from '../../api/initialize-direct-chat.api';
 
 import { db } from '@/db';
-import { chatDirectTable } from '@/db/tables/chat-direct.table';
-import { conversationDirectTable } from '@/db/tables/conversation-direct.table';
-import { userTable } from '@/db/tables/user.table';
+
+import { UserRepository } from '@/db/repositories/user.repository';
+import { ConversationDirectRepository } from '@/db/repositories/conversation-direct.repository';
+import { ChatDirectRepository } from '@/db/repositories/chat-direct.repository';
 
 export const useInitializeDirectChat = () => {
   return useMutation({
     mutationFn: initializeDirectChatApi,
     onSuccess: async (data) => {
       await db.transaction(async (transaction) => {
-        const isExistingUser = await transaction
-          .select({ id: userTable.id })
-          .from(userTable)
-          .where(eq(userTable.id, data.receiverId))
-          .get();
+        const userRepository = new UserRepository(transaction);
+        const conversationDirectRepository = new ConversationDirectRepository(transaction);
+        const chatDirectRepository = new ChatDirectRepository(transaction);
+
+        const isExistingUser = await userRepository.isExisting(data.receiverId);
 
         if (!isExistingUser) {
           const userDetails = await getUserApi(data.receiverId);
 
-          await transaction.insert(userTable).values({
+          await userRepository.create({
             ...userDetails,
             createdAt: new Date(userDetails.createdAt).getTime(),
             updatedAt: new Date(userDetails.updatedAt).getTime(),
           });
         }
 
-        await transaction.insert(conversationDirectTable).values({
+        await conversationDirectRepository.create({
           id: data.conversationId,
           userId: data.receiverId,
           createdAt: new Date(data.createdAt).getTime(),
           updatedAt: new Date(data.updatedAt).getTime(),
         });
 
-        await transaction.insert(chatDirectTable).values({
+        await chatDirectRepository.create({
           id: data.id,
           conversationId: data.conversationId,
           mode: 'SENT',

@@ -1,13 +1,21 @@
-import { db } from '@/db';
+import { db, type DbType } from '@/db';
 import { eq, inArray } from 'drizzle-orm';
 import { type InsertUser, type User, userTable } from '../tables/user.table';
 
 export class UserRepository {
-  private readonly database = db;
+  private readonly database: DbType;
   private readonly table = userTable;
+
+  constructor(database: DbType = db) {
+    this.database = database;
+  }
 
   public async create(insertUser: InsertUser): Promise<User> {
     return await this.database.insert(this.table).values(insertUser).returning().get();
+  }
+
+  public async createMultiple(insertUser: InsertUser[]): Promise<void> {
+    await this.database.insert(this.table).values(insertUser);
   }
 
   public async get(id: string): Promise<User | undefined> {

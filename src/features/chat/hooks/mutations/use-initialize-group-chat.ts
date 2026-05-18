@@ -1,29 +1,26 @@
 import { useMutation } from '@tanstack/react-query';
-import { inArray } from 'drizzle-orm';
 import { router } from 'expo-router';
 
 import { initializeGroupChatApi } from '../../api/initialize-group-chat.api';
 import { getMultipleUsersApi } from '@/features/common/api/get-multiple-users.api';
 
 import { db } from '@/db';
-import { userTable } from '@/db/tables/user.table';
-import { conversationGroupTable } from '@/db/tables/conversation-group.table';
-import {
-  ConversationGroupMember,
-  conversationGroupMemberTable,
-} from '@/db/tables/conversation-group-member.table';
+
+import { ConversationGroupMember } from '@/db/tables/conversation-group-member.table';
+import { UserRepository } from '@/db/repositories/user.repository';
+import { ConversationGroupRepository } from '@/db/repositories/conversation-group.repository';
 
 export function useInitializeGroupChat() {
   return useMutation({
     mutationFn: initializeGroupChatApi,
     onSuccess: async (data) => {
       await db.transaction(async (transaction) => {
-        const existingUsers = await transaction
-          .select({ id: userTable.id })
-          .from(userTable)
-          .where(inArray(userTable.id, data.participantIds));
+        const userRepository = new UserRepository(transaction);
+        const conversationGroupRepository = new ConversationGroupRepository(transaction);
 
-        const existingUserIds = new Set(existingUsers.map((u) => u.id));
+        const existingUsers = await userRepository.areExistingManyById(data.participantIds);
+
+        const existingUserIds = new Set(existingUsers);
 
         const newUserIds = data.participantIds.filter((id) => !existingUserIds.has(id));
 
@@ -36,10 +33,10 @@ export function useInitializeGroupChat() {
             updatedAt: new Date(u.updatedAt).getTime(),
           }));
 
-          await transaction.insert(userTable).values(mappedNewUserDetails);
+          await userRepository.createMany(mappedNewUserDetails);
         }
 
-        await transaction.insert(conversationGroupTable).values({
+        await conversationGroupRepository.create({
           id: data.id,
           name: data.name,
           avatar: data.avatar,
@@ -61,9 +58,7 @@ export function useInitializeGroupChat() {
           })
         );
 
-        await transaction
-          .insert(conversationGroupMemberTable)
-          .values(mappedConversationGroupMembers);
+        await conversationGroupRepository.insertMultipleMembers(mappedConversationGroupMembers);
       });
 
       router.replace({

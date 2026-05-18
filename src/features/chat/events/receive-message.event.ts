@@ -3,11 +3,14 @@ import { useEffect } from 'react';
 import type { Socket } from '@/lib/socket-io';
 import type { ReceiveMessage } from '@/lib/socket-io/schemas/receive-message.schema';
 
-import { chatDirectRepository } from '@/db/repositories/chat-direct.repository';
-import { conversationDirectRepository } from '@/db/repositories/conversation-direct.repository';
-import { userRepository } from '@/db/repositories/user.repository';
 import { getUserApi } from '@/features/common/api/get-user.api';
 import { useSocketState } from '@/store/socket';
+
+import { db } from '@/db';
+
+import { UserRepository } from '@/db/repositories/user.repository';
+import { ConversationDirectRepository } from '@/db/repositories/conversation-direct.repository';
+import { ChatDirectRepository } from '@/db/repositories/chat-direct.repository';
 
 const handleReceiveMessage = async (message: ReceiveMessage) => {
   const {
@@ -22,63 +25,67 @@ const handleReceiveMessage = async (message: ReceiveMessage) => {
     senderId,
   } = message;
 
-  console.log(message);
+  await db.transaction(async (transaction) => {
+    const userRepository = new UserRepository(transaction);
+    const conversationDirectRepository = new ConversationDirectRepository(transaction);
+    const chatDirectRepository = new ChatDirectRepository(transaction);
 
-  const isExistingConversation =
-    await conversationDirectRepository.isExistingConversationWithUser(senderId);
+    const isExistingConversation =
+      await conversationDirectRepository.isExistingConversationWithUser(senderId);
 
-  if (!isExistingConversation) {
-    console.log('started new chat');
+    if (!isExistingConversation) {
+      console.log('started new chat');
 
-    const isExistingUser = await userRepository.isExisting(senderId);
+      const isExistingUser = await userRepository.isExisting(senderId);
 
-    if (!isExistingUser) {
-      const { createdAt, updatedAt, ...rest } = await getUserApi(senderId);
+      if (!isExistingUser) {
+        const { createdAt, updatedAt, ...rest } = await getUserApi(senderId);
 
-      await userRepository.create({
-        ...rest,
-        createdAt: new Date(createdAt).getTime(),
-        updatedAt: new Date(updatedAt).getTime(),
+        await userRepository.create({
+          ...rest,
+          createdAt: new Date(createdAt).getTime(),
+          updatedAt: new Date(updatedAt).getTime(),
+        });
+      }
+
+      await conversationDirectRepository.create({
+        userId: senderId,
+        id: conversationId,
       });
+
+      // NEW: Request presence for this new sender
+      const socket = useSocketState.getState().socket;
+
+      if (socket?.connected) {
+        socket.emit('presence:get', [senderId]);
+      }
     }
 
-    await conversationDirectRepository.create({
-      userId: senderId,
-      id: conversationId,
+    const saveDirectChat = await chatDirectRepository.create({
+      id: id,
+      conversationId,
+      mode: 'RECEIVED',
+      content,
+      contentType,
+      deletedAt: deletedAt !== null ? new Date(deletedAt).getTime() : null,
+      status: 'DELIVERED',
+      createdAt: new Date(createdAt).getTime(),
+      updatedAt: new Date(updatedAt).getTime(),
     });
 
-    // NEW: Request presence for this new sender
-    const socket = useSocketState.getState().socket;
+    if (attachmentUrl)
+      await chatDirectRepository.createAttachment({
+        id: saveDirectChat.id,
+        remoteUrl: attachmentUrl,
+        transferStatus: 'PENDING',
+        transferType: 'DOWNLOAD',
+      });
 
-    if (socket?.connected) {
-      socket.emit('presence:get', [senderId]);
-    }
-  }
-
-  const saveDirectChat = await chatDirectRepository.create({
-    id: id,
-    conversationId,
-    mode: 'RECEIVED',
-    content,
-    contentType,
-    deletedAt: deletedAt !== null ? new Date(deletedAt).getTime() : null,
-    status: 'DELIVERED',
-    createdAt: new Date(createdAt).getTime(),
-    updatedAt: new Date(updatedAt).getTime(),
+    await conversationDirectRepository.updateTime(
+      saveDirectChat.conversationId,
+      new Date(createdAt).getTime()
+    );
   });
-
-  if (attachmentUrl)
-    await chatDirectRepository.createAttachment({
-      id: saveDirectChat.id,
-      remoteUrl: attachmentUrl,
-      transferStatus: 'PENDING',
-      transferType: 'DOWNLOAD',
-    });
-
-  await conversationDirectRepository.updateTime(
-    saveDirectChat.conversationId,
-    new Date(createdAt).getTime()
-  );
 };
 
 export function useReceiveMessageEvent(socket: Socket | null) {
