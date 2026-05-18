@@ -108,12 +108,16 @@ export function SendDirectMessage({
     }
   };
 
+  // TODO: Need to implement photo upload
   const onSubmit = (data: { text: string }) => {
     handleSubmit({
       conversationId,
       receiverId,
       socket,
-      text: data.text,
+      contentType: 'text',
+      content: data.text,
+      attachmentUrl: null,
+      deletedAt: undefined,
     });
 
     stopTyping.cancel();

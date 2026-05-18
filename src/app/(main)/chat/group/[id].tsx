@@ -1,5 +1,5 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Box } from '@/components/ui/box';
@@ -21,17 +21,28 @@ import { useSocketState } from '@/store/socket';
 import { useLiveGroupInfo } from '@/features/chat/hooks/database/use-live-group-info';
 import { Socket } from '@/lib/socket-io';
 
-export default function ChattingGroupScreen() {
+export default function GroupChatScreen() {
   const safeAreaInsets = useSafeAreaInsets();
   const { id } = useLocalSearchParams() as {
     id: string;
   };
+  const [selectedMessageIds, setSelectedMessageIds] = useState<string[]>([]);
+  const isSelectionMode = selectedMessageIds.length > 0;
 
-  const { user } = useAuthStore((state) => state);
+  const currentUserId = useAuthStore((state) => state.user?.id!);
+
+  const { data: groupInfo, isLoading: isGroupInfoLoading } = useLiveGroupInfo(id, currentUserId);
+  const {
+    data: groupedMessages,
+    isLoading: isGroupMessagesLoading,
+    fetchNextPage: fetchNextChats,
+  } = useLiveGroupConversationChats({
+    currentUserId,
+    id,
+    pageSize: 10,
+  });
 
   const { socket } = useSocketState();
-
-  const { data: groupInfo, isLoading: isGroupInfoLoading } = useLiveGroupInfo(id);
 
   useEffect(() => {
     if (socket?.connected) {
@@ -45,26 +56,7 @@ export default function ChattingGroupScreen() {
     };
   }, [socket, id, socket?.connected]);
 
-  const {
-    groupedMessages,
-    isLoading,
-    fetchNextPage: fetchNextChats,
-  } = useLiveGroupConversationChats({
-    id,
-    currentUserId: user?.id as string,
-  });
-
-  const reversedGroupedMessages = useMemo(() => {
-    return [...groupedMessages].reverse().map((section) => ({
-      ...section,
-      data: [...section.data].reverse(),
-    }));
-  }, [groupedMessages]);
-
-  const [selectedMessageIds, setSelectedMessageIds] = useState<string[]>([]);
-  const isSelectionMode = selectedMessageIds.length > 0;
-
-  if (isLoading) return <GroupScreenLoading />;
+  if (isGroupMessagesLoading) return <GroupScreenLoading />;
 
   return (
     <>
@@ -89,19 +81,17 @@ export default function ChattingGroupScreen() {
             ),
         }}
       />
-
       <Box className="flex-1 p-2">
         <ChatGroupList
-          data={reversedGroupedMessages}
+          data={groupedMessages}
           onStartReached={fetchNextChats}
           selectedMessageIds={selectedMessageIds}
           onSelectionChange={setSelectedMessageIds}
         />
-
         <SendGroupMessage
           className="items-center"
           id={id}
-          senderId={user?.id as string}
+          senderId={currentUserId}
           socket={socket as Socket}
           handleSubmit={sendGroupMessageEvent}
           onFocus={() => {

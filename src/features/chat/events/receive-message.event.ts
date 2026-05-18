@@ -10,7 +10,17 @@ import { getUserApi } from '@/features/common/api/get-user.api';
 import { useSocketState } from '@/store/socket';
 
 const handleReceiveMessage = async (message: ReceiveMessage) => {
-  const { id, conversationId, createdAt, text, updatedAt, senderId } = message;
+  const {
+    id,
+    conversationId,
+    createdAt,
+    content,
+    contentType,
+    attachmentUrl,
+    deletedAt,
+    updatedAt,
+    senderId,
+  } = message;
 
   console.log(message);
 
@@ -49,11 +59,21 @@ const handleReceiveMessage = async (message: ReceiveMessage) => {
     id: id,
     conversationId,
     mode: 'RECEIVED',
-    text,
+    content,
+    contentType,
+    deletedAt: deletedAt !== null ? new Date(deletedAt).getTime() : null,
     status: 'DELIVERED',
     createdAt: new Date(createdAt).getTime(),
     updatedAt: new Date(updatedAt).getTime(),
   });
+
+  if (attachmentUrl)
+    await chatDirectRepository.createAttachment({
+      id: saveDirectChat.id,
+      remoteUrl: attachmentUrl,
+      transferStatus: 'PENDING',
+      transferType: 'DOWNLOAD',
+    });
 
   await conversationDirectRepository.updateTime(
     saveDirectChat.conversationId,

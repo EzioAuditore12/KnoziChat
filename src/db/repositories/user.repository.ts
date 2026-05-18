@@ -27,14 +27,17 @@ export class UserRepository {
   }
 
   public async getManyById(ids: string[]): Promise<User[]> {
+    if (ids.length === 0) return [];
     return await this.database.select().from(this.table).where(inArray(this.table.id, ids)).all();
   }
 
   public async createMany(users: InsertUser[]): Promise<User[]> {
+    if (users.length === 0) return [];
     return await this.database.insert(this.table).values(users).returning().all();
   }
 
   public async areExistingManyById(ids: string[]): Promise<string[]> {
+    if (ids.length === 0) return [];
     const result = await this.database
       .select({ id: this.table.id })
       .from(this.table)

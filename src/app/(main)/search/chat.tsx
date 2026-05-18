@@ -126,7 +126,9 @@ export default function SearchThroughChatsScreen() {
 
   const renderItem = ({ item }: { item: ChatSearchResult }) => (
     <View className="bg-secondary/10 mb-2 rounded-md p-3">
-      <Text className="mb-1 font-semibold">{item.name}</Text>
+      <Text className="mb-1 font-semibold">
+        <HighlightedText text={item.name || ''} highlight={debouncedSearch} />
+      </Text>
 
       <Text>
         <HighlightedText text={item.lastMessage || ''} highlight={debouncedSearch} />

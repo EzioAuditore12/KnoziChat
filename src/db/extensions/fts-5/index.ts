@@ -14,7 +14,7 @@ export async function setupFts<T extends Record<string, unknown>>(db: PowerSyncS
       CREATE VIRTUAL TABLE IF NOT EXISTS ${FTS_DIRECT_TABLE_NAME}
       USING fts5(
         id UNINDEXED,
-        text
+        content
       );
     `)
   );
@@ -23,9 +23,10 @@ export async function setupFts<T extends Record<string, unknown>>(db: PowerSyncS
     sql.raw(`
       CREATE TRIGGER IF NOT EXISTS chat_direct_ai
       INSTEAD OF INSERT ON ${CHAT_DIRECT_TABLE_NAME}
+      WHEN new.content IS NOT NULL
       BEGIN
-        INSERT INTO ${FTS_DIRECT_TABLE_NAME}(id, text)
-        VALUES (new.id, new.text);
+        INSERT INTO ${FTS_DIRECT_TABLE_NAME}(id, content)
+        VALUES (new.id, new.content);
       END;
     `)
   );
@@ -45,17 +46,21 @@ export async function setupFts<T extends Record<string, unknown>>(db: PowerSyncS
       CREATE TRIGGER IF NOT EXISTS chat_direct_au
       INSTEAD OF UPDATE ON ${CHAT_DIRECT_TABLE_NAME}
       BEGIN
-        UPDATE ${FTS_DIRECT_TABLE_NAME} SET text = new.text WHERE id = old.id;
+        DELETE FROM ${FTS_DIRECT_TABLE_NAME} WHERE id = old.id;
+      
+        INSERT INTO ${FTS_DIRECT_TABLE_NAME}(id, content) 
+        SELECT new.id, new.content 
+        WHERE new.content IS NOT NULL;
       END;
     `)
   );
 
   await db.run(
     sql.raw(`
-      INSERT INTO ${FTS_DIRECT_TABLE_NAME}(id, text)
-      SELECT id, text
+      INSERT INTO ${FTS_DIRECT_TABLE_NAME}(id, content)
+      SELECT id, content
       FROM ${CHAT_DIRECT_TABLE_NAME}
-      WHERE id NOT IN (
+      WHERE content IS NOT NULL AND id NOT IN (
         SELECT id FROM ${FTS_DIRECT_TABLE_NAME}
       );
     `)
@@ -67,7 +72,7 @@ export async function setupFts<T extends Record<string, unknown>>(db: PowerSyncS
       CREATE VIRTUAL TABLE IF NOT EXISTS ${FTS_GROUP_TABLE_NAME}
       USING fts5(
         id UNINDEXED,
-        text
+        content
       );
     `)
   );
@@ -76,9 +81,10 @@ export async function setupFts<T extends Record<string, unknown>>(db: PowerSyncS
     sql.raw(`
       CREATE TRIGGER IF NOT EXISTS chat_group_ai
       INSTEAD OF INSERT ON ${CHAT_GROUP_TABLE_NAME}
+      WHEN new.content IS NOT NULL
       BEGIN
-        INSERT INTO ${FTS_GROUP_TABLE_NAME}(id, text)
-        VALUES (new.id, new.text);
+        INSERT INTO ${FTS_GROUP_TABLE_NAME}(id, content)
+        VALUES (new.id, new.content);
       END;
     `)
   );
@@ -98,17 +104,21 @@ export async function setupFts<T extends Record<string, unknown>>(db: PowerSyncS
       CREATE TRIGGER IF NOT EXISTS chat_group_au
       INSTEAD OF UPDATE ON ${CHAT_GROUP_TABLE_NAME}
       BEGIN
-        UPDATE ${FTS_GROUP_TABLE_NAME} SET text = new.text WHERE id = old.id;
+        DELETE FROM ${FTS_GROUP_TABLE_NAME} WHERE id = old.id;
+
+        INSERT INTO ${FTS_GROUP_TABLE_NAME}(id, content) 
+        SELECT new.id, new.content 
+        WHERE new.content IS NOT NULL;
       END;
     `)
   );
 
   await db.run(
     sql.raw(`
-      INSERT INTO ${FTS_GROUP_TABLE_NAME}(id, text)
-      SELECT id, text
+      INSERT INTO ${FTS_GROUP_TABLE_NAME}(id, content)
+      SELECT id, content
       FROM ${CHAT_GROUP_TABLE_NAME}
-      WHERE id NOT IN (
+      WHERE content IS NOT NULL AND id NOT IN (
         SELECT id FROM ${FTS_GROUP_TABLE_NAME}
       );
     `)
@@ -132,16 +142,21 @@ export async function searchChatMessages<T extends Record<string, unknown>>(
         'direct' as type,
         u.id as userId,
         CASE 
-          WHEN m.mode = 'SENT' THEN 'You: ' || m.text
-          ELSE m.text
+          WHEN m.mode = 'SENT' THEN 'You: ' || m.content
+          ELSE m.content
         END as lastMessage
       FROM chat_direct m
       INNER JOIN conversation_direct c ON m.conversation_id = c.id
       INNER JOIN user u ON c.user_id = u.id
-      WHERE m.id IN (
-        SELECT id
-        FROM ${sql.raw(FTS_DIRECT_TABLE_NAME)}
-        WHERE ${sql.raw(FTS_DIRECT_TABLE_NAME)} MATCH ${search}
+      WHERE (
+        m.id IN (
+          SELECT id
+          FROM ${sql.raw(FTS_DIRECT_TABLE_NAME)}
+          WHERE ${sql.raw(FTS_DIRECT_TABLE_NAME)} MATCH ${search}
+        )
+        OR u.first_name LIKE '%' || ${search} || '%'
+        OR u.last_name LIKE '%' || ${search} || '%'
+        OR u.middle_name LIKE '%' || ${search} || '%'
       )
     ),
     group_matches AS (
@@ -153,16 +168,19 @@ export async function searchChatMessages<T extends Record<string, unknown>>(
         'group' as type,
         NULL as userId,
         CASE 
-          WHEN m.sender_id = ${currentUserId} THEN 'You: ' || m.text
-          ELSE IFNULL(u.first_name, 'Unknown') || ': ' || m.text
+          WHEN m.sender_id = ${currentUserId} THEN 'You: ' || m.content
+          ELSE IFNULL(u.first_name, 'Unknown') || ': ' || m.content
         END as lastMessage
       FROM chat_group m
       INNER JOIN conversation_group c ON m.conversation_id = c.id
       LEFT JOIN user u ON m.sender_id = u.id
-      WHERE m.id IN (
-        SELECT id
-        FROM ${sql.raw(FTS_GROUP_TABLE_NAME)}
-        WHERE ${sql.raw(FTS_GROUP_TABLE_NAME)} MATCH ${search}
+      WHERE (
+        m.id IN (
+          SELECT id
+          FROM ${sql.raw(FTS_GROUP_TABLE_NAME)}
+          WHERE ${sql.raw(FTS_GROUP_TABLE_NAME)} MATCH ${search}
+        )
+        OR c.name LIKE '%' || ${search} || '%'
       )
     )
     SELECT * FROM direct_matches

@@ -1,12 +1,11 @@
 import { eq, sql } from 'drizzle-orm';
-
 import { db } from '@/db';
-
 import { useLiveQuery } from '@/db/hooks/use-live-query';
 import { conversationGroupTable } from '@/db/tables/conversation-group.table';
 import { userTable } from '@/db/tables/user.table';
+import { conversationGroupMemberTable } from '@/db/tables/conversation-group-member.table';
 
-export function useLiveGroupInfo(id: string) {
+export function useLiveGroupInfo(id: string, currentUserId: string) {
   const { data, ...rest } = useLiveQuery(
     db
       .select({
@@ -14,25 +13,33 @@ export function useLiveGroupInfo(id: string) {
         name: conversationGroupTable.name,
         avatar: conversationGroupTable.avatar,
 
-        members: sql<string>`
-          (
-            SELECT group_concat(${userTable.firstName}, ', ')
-            FROM user
-            WHERE EXISTS (
-              SELECT 1
-              FROM json_each(${conversationGroupTable.participantIds})
-              WHERE json_each.value = user.id
-            )
-          )
-        `.as('members'),
+        // Use a CASE statement to swap the current user's name with 'You'
+        members: sql<string>`group_concat(
+          CASE 
+            WHEN ${userTable.id} = ${currentUserId} THEN 'You' 
+            ELSE ${userTable.firstName} 
+          END, 
+          ', '
+        )`.as('membersCsv'),
+
+        membersCount: sql<number>`json_array_length(json_group_array(${userTable.firstName}))`.as(
+          'membersCount'
+        ),
       })
-      .from(conversationGroupTable)
-      .where(eq(conversationGroupTable.id, id))
-      .limit(1)
+      .from(conversationGroupMemberTable)
+      .innerJoin(userTable, eq(conversationGroupMemberTable.userId, userTable.id))
+      .innerJoin(
+        conversationGroupTable,
+        eq(conversationGroupMemberTable.groupId, conversationGroupTable.id)
+      )
+      .where(eq(conversationGroupMemberTable.groupId, id))
+      .groupBy(conversationGroupTable.id, conversationGroupTable.name)
   );
 
+  const groupDetails = data?.[0];
+
   return {
-    data: data[0],
+    data: groupDetails,
     ...rest,
   };
 }

@@ -4,10 +4,12 @@ import type { InitializeDirectChatParam } from '../schemas/initialize-direct-cha
 import { initializeDirectChatResponseSchema } from '../schemas/initialize-direct-chat/response.schema';
 
 export const initializeDirectChatApi = async (data: InitializeDirectChatParam) => {
+  const { receiverId, ...rest } = data;
+
   return await authenticatedTypedFetch({
-    url: 'chat',
+    url: `chat/${receiverId}`,
     method: 'POST',
-    body: data,
+    body: rest,
     schema: initializeDirectChatResponseSchema,
   });
 };

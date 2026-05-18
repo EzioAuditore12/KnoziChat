@@ -12,16 +12,24 @@ import { userTable } from '@/db/tables/user.table';
 import { PullChangesResponse } from '@/features/sync/schemas/pull-changes/response.schema';
 import { chatGroupTable } from '../tables/chat-group.table';
 import { conversationGroupTable } from '../tables/conversation-group.table';
+import { chatAttachmentTable } from '../tables/chat-attachment.table';
+import { conversationGroupMemberTable } from '../tables/conversation-group-member.table';
 
 type TransactionType = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
 export class SyncDatabase {
   private readonly database = db;
+
   private readonly userTable = userTable;
-  private readonly conversationOneToOneTable = conversationDirectTable;
+
+  private readonly conversationDirectTable = conversationDirectTable;
+
   private readonly conversationGroupTable = conversationGroupTable;
-  private readonly chatOneToOneTable = chatDirectTable;
+  private readonly conversationGroupMemberTable = conversationGroupMemberTable;
+
+  private readonly chatDirectTable = chatDirectTable;
   private readonly chatGroupTable = chatGroupTable;
+  private readonly chatAttachmentTable = chatAttachmentTable;
 
   public async pullChanges() {
     const lastSyncedAt = this.getLastSyncedAt();
@@ -33,8 +41,8 @@ export class SyncDatabase {
 
       await this.synchronizeRecords(
         transaction,
-        this.conversationOneToOneTable,
-        changes.conversationOneToOne
+        this.conversationDirectTable,
+        changes.conversationDirect
       );
 
       await this.synchronizeRecords(
@@ -43,9 +51,21 @@ export class SyncDatabase {
         changes.conversationGroup
       );
 
-      await this.synchronizeRecords(transaction, this.chatOneToOneTable, changes.chatsOneToOne);
+      await this.synchronizeRecords(
+        transaction,
+        this.conversationGroupMemberTable,
+        changes.conversationGroupMembers
+      );
+
+      await this.synchronizeRecords(transaction, this.chatDirectTable, changes.chatsDirect);
 
       await this.synchronizeRecords(transaction, this.chatGroupTable, changes.chatsGroup);
+
+      await this.synchronizeRecords(
+        transaction,
+        this.chatAttachmentTable,
+        changes.chatsAttachments
+      );
 
       this.updateLastSyncedAt(timestamp);
     });

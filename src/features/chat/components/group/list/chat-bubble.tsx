@@ -53,8 +53,10 @@ export function ChatGroupBubble({
   onLongPress,
   ...props
 }: ChatGroupBubbleProps) {
-  const { mode, text, createdAt, senderName, senderAvatar } = data;
-  const userColor = getUserBubbleColor(senderName);
+  const { mode, content, createdAt, senderName, senderAvatar } = data;
+  const safeSenderName = senderName ?? 'Unknown';
+  const userColor = getUserBubbleColor(safeSenderName);
+  const senderInitial = safeSenderName[0] ?? '?';
 
   return (
     <Pressable
@@ -71,7 +73,7 @@ export function ChatGroupBubble({
       <Activity mode={mode === 'RECEIVED' ? 'visible' : 'hidden'}>
         <Avatar>
           <AvatarImage source={senderAvatar ? { uri: senderAvatar } : undefined} />
-          <AvatarFallbackText>{senderName[0]}</AvatarFallbackText>
+          <AvatarFallbackText>{senderInitial}</AvatarFallbackText>
         </Avatar>
       </Activity>
 
@@ -84,10 +86,10 @@ export function ChatGroupBubble({
         )}
         {...props}>
         <Activity mode={mode === 'RECEIVED' ? 'visible' : 'hidden'}>
-          <Text className="font-bold text-white">{senderName}</Text>
+          <Text className="font-bold text-white">{safeSenderName}</Text>
         </Activity>
 
-        <Text className="text-white">{text}</Text>
+        <Text className="text-white">{content}</Text>
 
         <Text className="mt-1 text-sm text-white/70">
           {' '}

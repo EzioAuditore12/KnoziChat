@@ -1,7 +1,12 @@
 import { FlashList } from '@shopify/flash-list';
 import { useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { desc, eq, sql } from 'drizzle-orm';
 
+import { db } from '@/db';
+import { conversationGroupMemberTable } from '@/db/tables/conversation-group-member.table';
+import { userTable } from '@/db/tables/user.table';
+import { useLiveInfiniteQuery } from '@/db/hooks/use-live-infinite-query';
 import { useAuthStore } from '@/store/auth';
 
 import { Center } from '@/components/ui/center';
@@ -12,20 +17,35 @@ import { ChatGroupDetailsHeader } from '@/features/chat/components/group/details
 import { GroupMemberCard } from '@/features/chat/components/group/details/member-card';
 
 import { useLiveGroupConversationDetails } from '@/features/chat/hooks/database/use-live-group-conversation-details';
-import { useLiveGroupConversationMembers } from '@/features/chat/hooks/database/use-live-group-conversation-members';
+
+type GroupConversationMember = {
+  id: string;
+  name: string;
+  isAdmin: boolean;
+  isMe: boolean;
+};
 
 export default function ChatGroupDetails() {
   const safeAreaInsets = useSafeAreaInsets();
 
   const { id } = useLocalSearchParams() as { id: string };
 
-  const currentUserId = useAuthStore((state) => state.user?.id!);
+  const currentUserId = useAuthStore((state) => state.user?.id ?? '');
 
-  const { data, isLoading } = useLiveGroupConversationDetails(id);
+  const { data: groupDetails, isLoading } = useLiveGroupConversationDetails(id);
 
-  const { data: members, isLoading: isMembersLoading } = useLiveGroupConversationMembers({
-    id,
-    currentUserId,
+  const { data: members, isLoading: isMembersLoading } = useLiveInfiniteQuery({
+    query: db
+      .select({
+        id: conversationGroupMemberTable.id,
+        name: userTable.firstName,
+        isAdmin: conversationGroupMemberTable.isAdmin,
+        isMe: sql<boolean>`${conversationGroupMemberTable.userId} = ${currentUserId}`.as('isMe'),
+      })
+      .from(conversationGroupMemberTable)
+      .innerJoin(userTable, eq(conversationGroupMemberTable.userId, userTable.id))
+      .where(eq(conversationGroupMemberTable.groupId, id))
+      .orderBy(desc(conversationGroupMemberTable.isAdmin), userTable.firstName),
     pageSize: 10,
   });
 
@@ -37,8 +57,8 @@ export default function ChatGroupDetails() {
     );
 
   return (
-    <FlashList
-      data={members}
+    <FlashList<GroupConversationMember>
+      data={members ?? []}
       contentContainerStyle={{
         paddingBottom: safeAreaInsets.bottom,
       }}
@@ -48,11 +68,11 @@ export default function ChatGroupDetails() {
           style={{ paddingTop: safeAreaInsets.top + 20 }}
           className="items-center px-5"
           data={{
-            avatar: data[0].avatar,
-            membersLength: members.length,
-            name: data[0].name,
-            createdAt: new Date(data[0].createdAt),
-            updatedAt: new Date(data[0].updatedAt),
+            avatar: groupDetails?.avatar ?? null,
+            membersLength: members?.length ?? 0,
+            name: groupDetails?.name ?? 'Group Chat',
+            createdAt: new Date(groupDetails?.createdAt ?? Date.now()),
+            updatedAt: new Date(groupDetails?.updatedAt ?? Date.now()),
           }}
         />
       }

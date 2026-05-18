@@ -25,7 +25,7 @@ export function ChatOneToOneBubble({
   onLongPress,
   ...props
 }: ChatOneToOneBubbleProps) {
-  const { mode, text, createdAt } = data;
+  const { mode, content, createdAt } = data;
 
   return (
     <Pressable
@@ -47,7 +47,7 @@ export function ChatOneToOneBubble({
         )}
         {...props}>
         <Text className={mode === 'SENT' ? 'text-white' : 'text-black dark:text-white'}>
-          {text}
+          {content}
         </Text>
         <Text
           className="mt-1 text-sm"

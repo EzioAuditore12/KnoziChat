@@ -3,7 +3,7 @@ import fs, { pickFiles, Paths } from 'react-native-nitro-file-system';
 import { Buffer } from 'react-native-nitro-buffer';
 import { randomUUID } from 'react-native-nitro-crypto';
 import { fetch } from 'react-native-nitro-fetch';
-import { useVideoPlayer, VideoView, type VideoViewProps } from 'react-native-video';
+import { useVideoPlayer, VideoView, type VideoViewProps } from 'expo-video';
 
 import { Box } from '@/components/ui/box';
 import { Button, ButtonText, ButtonSpinner } from '@/components/ui/button';
@@ -171,9 +171,7 @@ export default function ChunkedUploadTestScreen() {
   const [progress, setProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
-  const [videoUrl, setVideoUrl] = useState(
-    'https://sgp.cloud.appwrite.io/v1/storage/buckets/6a05f3be002a62a78441/files/6b62a72c-6a70-4159-917a-1b9e104011ae/view?project=6a05cad20007c64a6ffc'
-  );
+  const [videoUrl, setVideoUrl] = useState('');
 
   const handleUpload = async () => {
     try {
@@ -243,7 +241,8 @@ export default function ChunkedUploadTestScreen() {
               width: '100%',
               aspectRatio: 16 / 9,
             }}
-            controls
+            nativeControls
+            allowsPictureInPicture
           />
 
           <Text size="xs" className="mt-2">

@@ -10,16 +10,29 @@ export type SendMessageEvent = Omit<SendMessage, 'id' | 'createdAt' | 'updatedAt
 
 export const sendMessageEvent = async ({
   conversationId,
-  text,
+  content,
+  contentType,
   receiverId,
   socket,
+  attachmentUrl,
+  deletedAt,
 }: SendMessageEvent) => {
   const saveDirectChat = await chatDirectRepository.create({
     conversationId,
     status: 'SENT',
     mode: 'SENT',
-    text,
+    content,
+    contentType,
   });
+
+  // TODO: // Need to implement this later on
+  if (attachmentUrl)
+    await chatDirectRepository.createAttachment({
+      id: saveDirectChat.id,
+      remoteUrl: attachmentUrl,
+      transferType: 'UPLOAD',
+      transferStatus: 'COMPLETED',
+    });
 
   await conversationDirectRepository.updateTime(saveDirectChat.conversationId, Date.now());
 
@@ -28,7 +41,10 @@ export const sendMessageEvent = async ({
     conversationId: saveDirectChat.conversationId,
     status: 'SENT',
     receiverId,
-    text: saveDirectChat.text,
+    content: saveDirectChat.content,
+    attachmentUrl,
+    deletedAt,
+    contentType: saveDirectChat.contentType,
     createdAt: new Date(saveDirectChat.createdAt),
     updatedAt: new Date(saveDirectChat.updatedAt),
   });

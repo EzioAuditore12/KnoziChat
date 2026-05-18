@@ -1,5 +1,4 @@
 import { createInsertSchema, createSelectSchema, createUpdateSchema } from 'drizzle-arktype';
-import { sql } from 'drizzle-orm';
 import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { SnowFlakeId } from '@/lib/snowflake';
@@ -15,31 +14,36 @@ export const chatGroupTable = sqliteTable(
     id: text('id')
       .primaryKey()
       .$defaultFn(() => new SnowFlakeId(1).generate().toString()),
+
     conversationId: text('conversation_id')
       .notNull()
       .references(() => conversationGroupTable.id, { onDelete: 'cascade' }),
+
     senderId: text('sender_id')
       .notNull()
       .references(() => userTable.id),
-    text: text('text', { length: 2000 }).notNull(),
-    deliveredTo: text('delivered_to', { mode: 'json' })
-      .$type<string[]>()
-      .notNull()
-      .default(sql`'[]'`),
-    seenBy: text('seen_by', { mode: 'json' })
-      .$type<string[]>()
-      .notNull()
-      .default(sql`'[]'`),
+
+    contentType: text('content_type', { enum: ['image', 'video', 'text', 'file'] }).notNull(),
+
+    content: text('content'),
+
     deletedBy: text('deleted_by'),
+
     createdAt: integer('created_at')
       .$defaultFn(() => Date.now())
       .notNull(),
+
     updatedAt: integer('updated_at')
       .$onUpdate(() => Date.now())
       .notNull(),
+
     deletedAt: integer('deleted_at'),
   },
-  (t) => [index('conversation_group_idx').on(t.conversationId), index('sender_idx').on(t.senderId)]
+  (t) => [
+    index('chat_group_conversation_group_idx').on(t.conversationId),
+
+    index('chat_group_sender_idx').on(t.senderId),
+  ]
 );
 
 export const chatGroupSchema = createSelectSchema(chatGroupTable);

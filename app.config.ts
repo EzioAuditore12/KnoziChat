@@ -54,14 +54,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
     [
-      'react-native-video',
+      'expo-video',
       {
-        enableAndroidPictureInPicture: true,
-        enableBackgroundAudio: true,
-        androidExtensions: {
-          useExoplayerDash: true,
-          useExoplayerHls: true,
-        },
+        supportsBackgroundPlayback: true,
+        supportsPictureInPicture: true,
       },
     ],
     'react-native-nitro-fetch',

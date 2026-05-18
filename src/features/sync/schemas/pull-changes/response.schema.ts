@@ -1,31 +1,38 @@
 import { type } from 'arktype';
 
-import { chatDirectSchema } from '@/db/tables/chat-direct.table';
-import { chatGroupSchema } from '@/db/tables/chat-group.table';
-import { conversationDirectSchema } from '@/db/tables/conversation-direct.table';
-import { conversationGroupSchema } from '@/db/tables/conversation-group.table';
-import { selectUserSchema } from '@/db/tables/user.table';
-
 import { createChangesSchema } from '../create-change.schema';
+import { userSyncSchema } from '../sync-tables/user-sync.schema';
+import { conversationDirectSyncSchema } from '../sync-tables/conversation-direct-sync.schema';
+import { conversationGroupSyncSchema } from '../sync-tables/conversation-group-sync.schema';
+import { chatDirectSyncSchema } from '../sync-tables/chat-direct-sync.schema';
+import { chatGroupSyncSchema } from '../sync-tables/chat-group-sync.schema';
+import { chatAttachmentSyncSchema } from '../sync-tables/chat-attachment-sync.schema';
+import { conversationGroupMemberSchema } from '@/db/tables/conversation-group-member.table';
 
-const userChangeSchema = createChangesSchema(selectUserSchema);
+const userChangeSchema = createChangesSchema(userSyncSchema);
 
-const conversationOneToOneChangeSchema = createChangesSchema(conversationDirectSchema);
+const conversationDirectChangeSchema = createChangesSchema(conversationDirectSyncSchema);
 
-const conversationGroupChangeSchema = createChangesSchema(conversationGroupSchema);
+const conversationGroupChangeSchema = createChangesSchema(conversationGroupSyncSchema);
 
-const chatOneToOneChangeSchema = createChangesSchema(chatDirectSchema);
+const conversationGroupMembersChangeSchema = createChangesSchema(conversationGroupMemberSchema);
 
-const chatGroupChangeSchema = createChangesSchema(chatGroupSchema);
+const chatDirectChangeSchema = createChangesSchema(chatDirectSyncSchema);
+
+const chatGroupChangeSchema = createChangesSchema(chatGroupSyncSchema);
+
+const chatAttachmentChangeSchema = createChangesSchema(chatAttachmentSyncSchema);
 
 export const pullChangesResponseSchema = type({
   timestamp: 'number',
   changes: {
     user: userChangeSchema,
-    conversationOneToOne: conversationOneToOneChangeSchema,
+    conversationDirect: conversationDirectChangeSchema,
     conversationGroup: conversationGroupChangeSchema,
-    chatsOneToOne: chatOneToOneChangeSchema,
+    conversationGroupMembers: conversationGroupMembersChangeSchema,
+    chatsDirect: chatDirectChangeSchema,
     chatsGroup: chatGroupChangeSchema,
+    chatsAttachments: chatAttachmentChangeSchema,
   },
 });
 

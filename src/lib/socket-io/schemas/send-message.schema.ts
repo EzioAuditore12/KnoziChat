@@ -1,13 +1,16 @@
 import { type } from 'arktype';
 
 export const sendMessageSchema = type({
-  id: 'string',
+  id: 'string | undefined',
   conversationId: 'string',
   receiverId: 'string.uuid',
-  text: '0 < string < 1000',
-  status: "'SENT' |'DELIVERED' | 'SEEN'",
-  createdAt: 'Date',
-  updatedAt: 'Date',
+  contentType: '"file" | "text" | "image" | "video"',
+  content: 'string | null',
+  attachmentUrl: 'string | null',
+  status: '"SENT" | "DELIVERED" | "SEEN"',
+  createdAt: 'Date | undefined',
+  updatedAt: 'Date | undefined',
+  deletedAt: 'Date | undefined',
 });
 
 export type SendMessage = typeof sendMessageSchema.infer;

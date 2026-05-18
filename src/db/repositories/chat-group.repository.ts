@@ -3,11 +3,17 @@ import { eq } from 'drizzle-orm';
 import { db } from '@/db';
 import { chatGroupTable, type ChatGroup, type InsertChatGroup } from '../tables/chat-group.table';
 import { userTable } from '../tables/user.table';
+import {
+  ChatAttachment,
+  chatAttachmentTable,
+  InsertChatAttachment,
+} from '../tables/chat-attachment.table';
 
 export class ChatGroupRepository {
   private readonly database = db;
   private readonly table = chatGroupTable;
   private readonly userTable = userTable;
+  private readonly attachmentTable = chatAttachmentTable;
 
   public async create(insertChatGroup: InsertChatGroup): Promise<ChatGroup> {
     return await this.database.insert(this.table).values(insertChatGroup).returning().get();
@@ -15,6 +21,14 @@ export class ChatGroupRepository {
 
   public async findOne(id: string): Promise<ChatGroup | undefined> {
     return await this.database.select().from(this.table).where(eq(this.table.id, id)).get();
+  }
+
+  async createAttachment(insertChatAttachment: InsertChatAttachment): Promise<ChatAttachment> {
+    return await this.database
+      .insert(this.attachmentTable)
+      .values(insertChatAttachment)
+      .returning()
+      .get();
   }
 
   public async getAllWithUser(
@@ -25,9 +39,8 @@ export class ChatGroupRepository {
         id: chatGroupTable.id,
         conversationId: chatGroupTable.conversationId,
         senderId: chatGroupTable.senderId,
-        text: chatGroupTable.text,
-        deliveredTo: chatGroupTable.deliveredTo,
-        seenBy: chatGroupTable.seenBy,
+        content: chatGroupTable.content,
+        contentType: chatGroupTable.contentType,
         deletedAt: chatGroupTable.deletedAt,
         deletedBy: chatGroupTable.deletedBy,
         createdAt: chatGroupTable.createdAt,

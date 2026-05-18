@@ -5,7 +5,11 @@ export const initializeDirectChatResponseSchema = type({
   conversationId: 'string',
   senderId: 'string.uuid',
   receiverId: 'string.uuid',
-  text: '0 < string <= 1000',
+  content: '0 < string <= 1000 | null',
+  contentType: "'image'| 'video' | 'text'|'file'",
+  attachmentUrl: 'string.url | null',
+  status: "'SENT' | 'DELIVERED' | 'SEEN'",
+  deletedAt: 'string.date.iso | null',
   createdAt: 'string.date.iso',
   updatedAt: 'string.date.iso',
 });

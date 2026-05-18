@@ -43,7 +43,9 @@ export const useInitializeDirectChat = () => {
           conversationId: data.conversationId,
           mode: 'SENT',
           status: 'DELIVERED',
-          text: data.text,
+          content: data.content,
+          contentType: data.contentType,
+          deletedAt: data.deletedAt === null ? null : new Date(data.deletedAt).getTime(),
           createdAt: new Date(data.createdAt).getTime(),
           updatedAt: new Date(data.updatedAt).getTime(),
         });
@@ -55,7 +57,6 @@ export const useInitializeDirectChat = () => {
       });
     },
     onError: (error) => {
-      console.log(error.message);
       alert(`${error.message}`);
     },
   });

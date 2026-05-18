@@ -17,10 +17,10 @@ interface GroupInfoProps extends ComponentProps<typeof Box> {
     avatar: string | null;
     members: string;
   };
-  isLoading: boolean;
+  isLoading?: boolean;
 }
 
-export function GroupInfo({ className, data, isLoading, ...props }: GroupInfoProps) {
+export function GroupInfo({ className, data, isLoading = false, ...props }: GroupInfoProps) {
   if (isLoading) {
     return (
       <Box className="border-background-tertiary flex-row items-center gap-x-3 border-b px-4 py-3">

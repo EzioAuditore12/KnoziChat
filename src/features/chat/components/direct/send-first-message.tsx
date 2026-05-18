@@ -13,6 +13,7 @@ import { useGradualAnimation } from '@/hooks/use-gradual-animation';
 import { Box } from '@/components/ui/box';
 import { HStack } from '@/components/ui/hstack';
 import { InitializeDirectChatParam } from '../../schemas/initialize-direct-chat/param.schema';
+import { SnowFlakeId } from '@/lib/snowflake';
 
 interface SendFirstMessageProps extends ComponentProps<typeof Box> {
   receiverId: string;
@@ -46,8 +47,17 @@ export function SendFirstMessage({
     resolver: arktypeResolver(type({ text: '0 < string <= 1000' })),
   });
 
+  // TODO: Right Now done for text will make it dynamic to all fields
   const onSubmit = (data: { text: string }) => {
-    handleSubmit({ receiverId, text: data.text });
+    handleSubmit({
+      receiverId,
+      content: data.text,
+      contentType: 'text',
+      attachmentUrl: null,
+      createdAt: new Date().toString(),
+      updatedAt: new Date().toString(),
+      id: new SnowFlakeId(1).generate().toString(),
+    });
   };
 
   return (

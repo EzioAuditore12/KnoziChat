@@ -1,12 +1,12 @@
 import { typedFetch } from '@/lib/fetch';
 
-import { initializeGroupChatResponseSchema } from '../schemas/initialize-group-chat/response.schema';
 import { env } from '@/env';
+import { groupDetailsSchema } from '../schemas/group-details.schema';
 
 export const getGroupDetailsApi = async (id: string) => {
   return await typedFetch({
     url: `${env.API_URL}/chat/group/${id}`,
     method: 'GET',
-    schema: initializeGroupChatResponseSchema,
+    schema: groupDetailsSchema,
   });
 };

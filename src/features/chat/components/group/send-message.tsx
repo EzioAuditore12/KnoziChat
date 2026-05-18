@@ -52,7 +52,16 @@ export function SendGroupMessage({
   });
 
   const onSubmit = (data: { text: string }) => {
-    handleSubmit({ conversationId: id, senderId, socket, text: data.text.trimEnd() });
+    handleSubmit({
+      conversationId: id,
+      senderId,
+      socket,
+      content: data.text.trimEnd(),
+      contentType: 'text',
+      attachmentUrl: null,
+      deletedAt: undefined,
+      deletedBy: undefined,
+    });
 
     reset();
   };

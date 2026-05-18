@@ -7,10 +7,15 @@ import {
   type ConversationGroup,
   type InsertConversationGroup,
 } from '../tables/conversation-group.table';
+import {
+  conversationGroupMemberTable,
+  InsertConversationGroupMember,
+} from '../tables/conversation-group-member.table';
 
 export class ConversationGroupRepository {
   private readonly database = db;
   private readonly table = conversationGroupTable;
+  private readonly memberTable = conversationGroupMemberTable;
 
   public async create(
     insertConversationGroup: InsertConversationGroup
@@ -39,6 +44,13 @@ export class ConversationGroupRepository {
     if (!result) return false;
 
     return true;
+  }
+
+  public async insertMultipleMembers(
+    insertGroupMembers: InsertConversationGroupMember[]
+  ): Promise<void> {
+    if (insertGroupMembers.length === 0) return;
+    await this.database.insert(this.memberTable).values(insertGroupMembers);
   }
 }
 

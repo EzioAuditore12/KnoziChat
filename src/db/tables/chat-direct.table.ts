@@ -13,21 +13,30 @@ export const chatDirectTable = sqliteTable(
     id: text('id')
       .primaryKey()
       .$defaultFn(() => new SnowFlakeId(1).generate().toString()),
+
     conversationId: text('conversation_id')
       .notNull()
       .references(() => conversationDirectTable.id, { onDelete: 'cascade' }),
-    text: text('text', { length: 2000 }).notNull(),
+
+    contentType: text('content_type', { enum: ['image', 'video', 'text', 'file'] }).notNull(),
+
+    content: text('content'),
+
     mode: text('mode', { enum: ['SENT', 'RECEIVED'] }).notNull(),
+
     status: text('status', { enum: ['SENT', 'DELIVERED', 'SEEN'] }).notNull(),
+
     createdAt: integer('created_at')
       .$defaultFn(() => Date.now())
       .notNull(),
+
     updatedAt: integer('updated_at')
       .$onUpdate(() => Date.now())
       .notNull(),
+
     deletedAt: integer('deleted_at'),
   },
-  (t) => [index('conversation_one_to_one_idx').on(t.conversationId)]
+  (t) => [index('conversation_direct_idx').on(t.conversationId)]
 );
 
 export const chatDirectSchema = createSelectSchema(chatDirectTable);

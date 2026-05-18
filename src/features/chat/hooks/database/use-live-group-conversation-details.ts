@@ -6,7 +6,7 @@ import { db } from '@/db';
 import { conversationGroupTable } from '@/db/tables/conversation-group.table';
 
 export function useLiveGroupConversationDetails(id: string) {
-  return useLiveQuery(
+  const { data, ...rest } = useLiveQuery(
     db
       .select({
         id: conversationGroupTable.id,
@@ -19,4 +19,9 @@ export function useLiveGroupConversationDetails(id: string) {
       .where(eq(conversationGroupTable.id, id))
       .limit(1)
   );
+
+  return {
+    data: data?.[0],
+    ...rest,
+  };
 }

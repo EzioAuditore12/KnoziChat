@@ -4,6 +4,7 @@ import { chatGroupTable } from './tables/chat-group.table';
 import { chatDirectTable } from './tables/chat-direct.table';
 import { conversationGroupTable } from './tables/conversation-group.table';
 import { conversationDirectTable } from './tables/conversation-direct.table';
+
 import { userTable } from './tables/user.table';
 
 import {
@@ -15,13 +16,17 @@ import {
   conversationDirectRelationWithChatDirect,
 } from './relations/one-to-many/conversation-direct-to-chat-direct.relation';
 import { conversationDirectRelationWithUser } from './relations/one-to-one/conversation-direct-to-user.relation';
+import { conversationGroupMemberTable } from './tables/conversation-group-member.table';
+import { chatAttachmentTable } from './tables/chat-attachment.table';
 
 export const drizzleSchema = {
   userTable,
   conversationDirectTable,
   chatDirectTable,
   conversationGroupTable,
+  conversationGroupMemberTable,
   chatGroupTable,
+  chatAttachmentTable,
   conversationDirectRelationWithUser,
   conversationDirectRelationWithChatDirect,
   chatDirectRelationWithConversationDirect,

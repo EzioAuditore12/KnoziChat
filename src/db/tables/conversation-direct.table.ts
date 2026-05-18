@@ -13,18 +13,21 @@ export const conversationDirectTable = sqliteTable(
     id: text('id')
       .primaryKey()
       .$defaultFn(() => new SnowFlakeId(1).generate().toString()),
+
     userId: text('user_id')
       .unique()
       .notNull()
       .references(() => userTable.id),
+
     createdAt: integer('created_at')
       .$defaultFn(() => Date.now())
       .notNull(),
+
     updatedAt: integer('updated_at')
       .$onUpdate(() => Date.now())
       .notNull(),
   },
-  (t) => [index('user_id_idx').on(t.userId)]
+  (t) => [index('conversation_user_id_idx').on(t.userId)]
 );
 
 export const conversationDirectSchema = createSelectSchema(conversationDirectTable);

@@ -15,13 +15,18 @@ export type SendGroupMessageEvent = Omit<
 export const sendGroupMessageEvent = async ({
   senderId,
   conversationId,
-  text,
+  attachmentUrl,
+  content,
+  contentType,
+  deletedAt,
+  deletedBy,
   socket,
 }: SendGroupMessageEvent) => {
   const savedGroupChat = await chatGroupRepository.create({
     senderId,
     conversationId,
-    text,
+    content,
+    contentType,
   });
 
   await conversationGroupRepository.update(savedGroupChat.conversationId, {
@@ -31,7 +36,11 @@ export const sendGroupMessageEvent = async ({
   socket.emit('message-group:send', {
     id: savedGroupChat.id,
     conversationId: savedGroupChat.conversationId,
-    text: savedGroupChat.text,
+    content: savedGroupChat.content,
+    contentType: savedGroupChat.contentType,
+    attachmentUrl,
+    deletedAt,
+    deletedBy,
     createdAt: new Date(savedGroupChat.createdAt),
     updatedAt: new Date(savedGroupChat.updatedAt),
   });

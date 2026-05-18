@@ -9,15 +9,23 @@ export const userTable = sqliteTable(USER_TABLE_NAME, {
   id: text('id')
     .primaryKey()
     .$defaultFn(() => randomUUID()),
+
   phoneNumber: text('phone_number').unique(),
+
   email: text('email', { length: 240 }).unique().notNull(),
+
   avatar: text('avatar'),
+
   firstName: text('first_name', { length: 50 }).notNull(),
+
   middleName: text('middle_name', { length: 50 }),
+
   lastName: text('last_name', { length: 50 }).notNull(),
+
   createdAt: integer('created_at')
     .$defaultFn(() => Date.now())
     .notNull(),
+
   updatedAt: integer('updated_at')
     .$onUpdate(() => Date.now())
     .notNull(),

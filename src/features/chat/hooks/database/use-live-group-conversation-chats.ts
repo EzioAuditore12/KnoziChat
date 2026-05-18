@@ -1,22 +1,16 @@
 import { useMemo } from 'react';
-
 import { desc, eq, sql } from 'drizzle-orm';
-
 import { diffInDays, format, isToday, isYesterday } from '@bernagl/react-native-date';
 
 import { db } from '@/db';
-
 import { useLiveInfiniteQuery } from '@/db/hooks/use-live-infinite-query';
 
 import { chatGroupTable } from '@/db/tables/chat-group.table';
-
 import { userTable } from '@/db/tables/user.table';
 
 interface UseLiveGroupConversationChatsOptions {
   id: string;
-
   currentUserId: string;
-
   pageSize?: number;
 }
 
@@ -48,20 +42,19 @@ export function useLiveGroupConversationChats({
   const query = useLiveInfiniteQuery({
     query: db
       .select({
+        // 1. Group Chat specific fields
         id: chatGroupTable.id,
-
-        senderId: userTable.id,
-
-        senderName: userTable.firstName,
-
-        senderAvatar: userTable.avatar,
-
-        text: chatGroupTable.text,
-
+        content: chatGroupTable.content,
+        contentType: chatGroupTable.contentType,
+        senderId: chatGroupTable.senderId,
         createdAt: chatGroupTable.createdAt,
-
         updatedAt: chatGroupTable.updatedAt,
 
+        // 2. User specific fields mapped to the UI contract
+        senderName: userTable.firstName,
+        senderAvatar: userTable.avatar,
+
+        // 3. Computed mode field to determine UI placement
         mode: sql<'SENT' | 'RECEIVED'>`
           CASE
             WHEN ${chatGroupTable.senderId} = ${currentUserId}
@@ -71,17 +64,26 @@ export function useLiveGroupConversationChats({
         `.as('mode'),
       })
       .from(chatGroupTable)
-      .where(eq(chatGroupTable.conversationId, id))
+
+      // 4. Using your working innerJoin instead of leftJoin
       .innerJoin(userTable, eq(chatGroupTable.senderId, userTable.id))
+
+      // 5. Filter and Order
+      .where(eq(chatGroupTable.conversationId, id))
       .orderBy(desc(chatGroupTable.createdAt)),
 
     pageSize,
   });
 
-  const groupedMessages = useMemo(() => {
-    const groups: Record<string, typeof query.data> = {};
+  const { data } = query;
 
-    for (const message of query.data) {
+  const groupedMessages = useMemo(() => {
+    // Return empty array early if data is missing to prevent crashes
+    if (!data) return [];
+
+    const groups: Record<string, typeof data> = {};
+
+    for (const message of data) {
       const date = formatChatDate(message.createdAt);
 
       if (!groups[date]) {
@@ -91,14 +93,15 @@ export function useLiveGroupConversationChats({
       groups[date].push(message);
     }
 
+    // Convert the dictionary back to an array of objects
     return Object.entries(groups).map(([date, messages]) => ({
       date,
-      data: messages,
+      data: messages.reverse(),
     }));
-  }, [query]);
+  }, [data]);
 
   return {
     ...query,
-    groupedMessages,
+    data: groupedMessages,
   };
 }
