@@ -24,7 +24,9 @@ export const chatDirectTable = sqliteTable(
 
     mode: text('mode', { enum: ['SENT', 'RECEIVED'] }).notNull(),
 
-    status: text('status', { enum: ['SENT', 'DELIVERED', 'SEEN'] }).notNull(),
+    status: text('status', {
+      enum: ['PENDING', 'DELIVERED', 'SEEN', 'FAILED'],
+    }).notNull(),
 
     createdAt: integer('created_at')
       .$defaultFn(() => Date.now())

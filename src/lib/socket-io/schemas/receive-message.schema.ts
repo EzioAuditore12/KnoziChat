@@ -8,7 +8,7 @@ export const receiveMessageSchema = type({
   content: '0 < string < 1000 | null',
   contentType: '"file" | "text" | "image" | "video"',
   attachmentUrl: 'string.url | null',
-  status: "'SENT' |'DELIVERED' | 'SEEN'",
+  status: "'DELIVERED' | 'SEEN'",
   createdAt: 'Date',
   updatedAt: 'Date',
   deletedAt: 'Date | null',

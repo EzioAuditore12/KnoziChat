@@ -38,6 +38,11 @@ export interface ServerToClientEvents {
   'presence:list': (users: { userId: string; online: boolean }[]) => void;
   'presence:update': (user: { userId: string; online: boolean }) => void;
   'message:receive': (message: ReceiveMessage) => void;
+  'message:seen:update': (payload: {
+    conversationId: string;
+    userId: string;
+    messageIds: string[];
+  }) => void;
   'message-group:receive': (message: ReceiveGroupMessage) => void;
   'conversation-group:created': (message: ReceiveGroupCreated) => void;
   typing: (payload: { senderId: string; isTyping: boolean }) => void;
@@ -50,7 +55,11 @@ export interface ClientToServerEvents {
   'conversation:leave': (conversationId: string) => void;
   'conversation-group:join': (conversationId: string) => void;
   'conversation-group:leave': (conversationId: string) => void;
-  'message:send': (dto: SendMessage) => void;
+  'message:send': (
+    dto: SendMessage,
+    callback: (response: { success: boolean; messageId: string }) => void
+  ) => void;
+  'message:seen': (payload: { conversationId: string }) => void;
   'message-group:send': (dto: SendGroupMessage) => void;
   'conversation:typing': (payload: { conversationId: string; isTyping: boolean }) => void;
   'conversation-group:typing': (payload: { conversationId: string; isTyping: boolean }) => void;

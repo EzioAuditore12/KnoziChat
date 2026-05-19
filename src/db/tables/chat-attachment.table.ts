@@ -35,7 +35,7 @@ export const chatAttachmentTable = sqliteTable(CHAT_ATTACHMENT_TABLE_NANE, {
   }).notNull(),
 
   transferStatus: text('transfer_status', {
-    enum: ['PENDING', 'DOWNLOADING', 'PAUSED', 'COMPLETED', 'FAILED'],
+    enum: ['PENDING', 'UPLOADING', 'DOWNLOADING', 'PAUSED', 'COMPLETED', 'FAILED'],
   }).notNull(),
 
   updatedAt: integer('updated_at')

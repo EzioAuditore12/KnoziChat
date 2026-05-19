@@ -10,6 +10,7 @@ import {
   chatAttachmentTable,
   InsertChatAttachment,
 } from '../tables/chat-attachment.table';
+import { and, eq, inArray, ne } from 'drizzle-orm';
 
 export class ChatDirectRepository {
   private readonly database: DbType;
@@ -26,6 +27,37 @@ export class ChatDirectRepository {
 
   public async createMultiple(insertChatOneToOne: InsertChatDirect[]): Promise<void> {
     await this.database.insert(this.table).values(insertChatOneToOne);
+  }
+
+  public async updateStatus(id: string, status: ChatDirect['status']): Promise<void> {
+    await this.database.update(this.table).set({ status }).where(eq(this.table.id, id));
+  }
+
+  public async markConversationAsSeen(conversationId: string): Promise<void> {
+    await this.database
+      .update(this.table)
+      .set({
+        status: 'SEEN',
+      })
+      .where(
+        and(
+          eq(this.table.conversationId, conversationId),
+
+          eq(this.table.mode, 'SENT'),
+
+          ne(this.table.status, 'SEEN')
+        )
+      );
+  }
+
+  public async markMessagesAsSeen(messageIds: string[]): Promise<void> {
+    if (!messageIds || messageIds.length === 0) return;
+    await this.database
+      .update(this.table)
+      .set({
+        status: 'SEEN',
+      })
+      .where(and(inArray(this.table.id, messageIds), ne(this.table.status, 'SEEN')));
   }
 
   public async createAttachment(

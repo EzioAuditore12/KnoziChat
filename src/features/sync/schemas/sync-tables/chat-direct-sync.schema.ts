@@ -6,8 +6,7 @@ export const chatDirectSyncSchema = type({
   mode: "'SENT' | 'RECEIVED'",
   contentType: "'image' | 'video' | 'text' | 'file'",
   content: 'string | null',
-  status: "'SENT' | 'DELIVERED' | 'SEEN'",
-
+  status: "'DELIVERED' | 'SEEN'",
   createdAt: 'number',
   updatedAt: 'number',
   deletedAt: 'number | null',

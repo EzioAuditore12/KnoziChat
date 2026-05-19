@@ -10,6 +10,7 @@ import { useSocketState } from '@/store/socket';
 import { useReceiveGroupMessageEvent } from '@/features/chat/events/receive-group-message.event';
 import { useReceiveMessageEvent } from '@/features/chat/events/receive-message.event';
 import { useReceiveGroupCreatedEvent } from '@/features/chat/events/receive-group-created.event';
+import { useMessageSeenUpdateEvent } from '@/features/chat/events/message-seen-update.event';
 
 export default function MainLayoutScreens() {
   const { user } = useAuthStore((state) => state);
@@ -27,6 +28,7 @@ export default function MainLayoutScreens() {
   useReceiveMessageEvent(socket);
   useReceiveGroupMessageEvent(socket);
   useReceiveGroupCreatedEvent(socket);
+  useMessageSeenUpdateEvent(socket);
 
   if (!user) return <Redirect href="/(auth)/login" />;
 
@@ -50,7 +52,6 @@ export default function MainLayoutScreens() {
       <Stack.Screen name="chat/new/group/index" />
 
       <Stack.Screen name="test/index" options={{ headerShown: false }} />
-      <Stack.Screen name="test/chunked-upload" options={{ headerShown: false }} />
     </Stack>
   );
 }

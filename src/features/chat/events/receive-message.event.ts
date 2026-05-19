@@ -18,6 +18,7 @@ const handleReceiveMessage = async (message: ReceiveMessage) => {
     conversationId,
     createdAt,
     content,
+    status,
     contentType,
     attachmentUrl,
     deletedAt,
@@ -68,7 +69,7 @@ const handleReceiveMessage = async (message: ReceiveMessage) => {
       content,
       contentType,
       deletedAt: deletedAt !== null ? new Date(deletedAt).getTime() : null,
-      status: 'DELIVERED',
+      status,
       createdAt: new Date(createdAt).getTime(),
       updatedAt: new Date(updatedAt).getTime(),
     });
@@ -85,6 +86,11 @@ const handleReceiveMessage = async (message: ReceiveMessage) => {
       saveDirectChat.conversationId,
       new Date(createdAt).getTime()
     );
+
+    const { activeConversationId, socket } = useSocketState.getState();
+    if (activeConversationId === conversationId && socket?.connected) {
+      socket.emit('message:seen', { conversationId });
+    }
   });
 };
 

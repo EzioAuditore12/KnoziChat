@@ -20,18 +20,35 @@ import { SelectedMessageHeader } from '@/features/chat/components/selected-messa
 
 export default function ChattingScreen() {
   const safeAreaInsets = useSafeAreaInsets();
-  const { id, userId } = useLocalSearchParams() as {
+
+  const { id, userId } = useLocalSearchParams<{
     id: string;
     userId: string;
-  };
+  }>();
 
   const { data: chatterData, isLoading: isLoadingChatterInfo } = useLiveChatterInfo(userId);
 
   const { socket } = useSocketState();
 
   useEffect(() => {
+    useSocketState.setState({
+      activeConversationId: id,
+    });
+
+    return () => {
+      useSocketState.setState({
+        activeConversationId: null,
+      });
+    };
+  }, [id]);
+
+  useEffect(() => {
     if (socket?.connected) {
       socket.emit('conversation:join', id);
+
+      socket.emit('message:seen', {
+        conversationId: id,
+      });
     }
 
     return () => {
@@ -54,7 +71,9 @@ export default function ChattingScreen() {
   }, [groupedMessages]);
 
   const [selectedMessageIds, setSelectedMessageIds] = useState<string[]>([]);
+
   const isSelectionMode = selectedMessageIds.length > 0;
+
   const [isTyping, setIsTyping] = useState(false);
 
   useEffect(() => {
@@ -81,16 +100,21 @@ export default function ChattingScreen() {
             isSelectionMode ? (
               <SelectedMessageHeader
                 className="min-h-23"
-                style={{ paddingTop: safeAreaInsets.top }}
+                style={{
+                  paddingTop: safeAreaInsets.top,
+                }}
                 onPressArrowBack={() => setSelectedMessageIds([])}
                 selectedMessagesLength={selectedMessageIds.length}
               />
             ) : (
               <ChatterInfo
-                style={{ paddingTop: safeAreaInsets.top }}
+                style={{
+                  paddingTop: safeAreaInsets.top,
+                }}
                 onPress={() =>
                   router.push({
                     pathname: '/(main)/chat/direct/profile/[id]',
+
                     params: {
                       id: userId,
                     },
@@ -122,8 +146,10 @@ export default function ChattingScreen() {
           onFocus={() => {
             if (isSelectionMode) {
               setSelectedMessageIds([]);
+
               return true;
             }
+
             return false;
           }}
         />

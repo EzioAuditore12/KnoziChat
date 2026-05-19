@@ -7,7 +7,6 @@ export const sendMessageSchema = type({
   contentType: '"file" | "text" | "image" | "video"',
   content: 'string | null',
   attachmentUrl: 'string | null',
-  status: '"SENT" | "DELIVERED" | "SEEN"',
   createdAt: 'Date | undefined',
   updatedAt: 'Date | undefined',
   deletedAt: 'Date | undefined',

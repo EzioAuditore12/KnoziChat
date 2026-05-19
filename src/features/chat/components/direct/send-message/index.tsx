@@ -15,9 +15,11 @@ import { HStack } from '@/components/ui/hstack';
 import { Input, InputField } from '@/components/ui/input';
 
 import { Socket } from '@/lib/socket-io';
-import { SendMessageEvent } from '../../events/send-message.event';
+import { SendMessageEvent } from '../../../events/send-message.event';
 
 import { Toast, ToastDescription, ToastTitle, useToast } from '@/components/ui/toast';
+import { MediaPicker } from './media-picker';
+import { File, fileSchema } from '@/features/common/schemas/file.schema';
 
 interface SendDirectMessageProps extends ComponentProps<typeof Box> {
   conversationId: string;
@@ -48,11 +50,17 @@ export function SendDirectMessage({
     control,
     reset,
     handleSubmit: handleFormSubmit,
-  } = useForm<{ text: string }>({
+  } = useForm({
     defaultValues: {
       text: '',
+      file: undefined,
     },
-    resolver: arktypeResolver(type({ text: '0 < string <= 1000' })),
+    resolver: arktypeResolver(
+      type({
+        text: '0 < string <= 1000',
+        file: fileSchema.or('undefined'),
+      })
+    ),
   });
 
   const toast = useToast();
@@ -109,14 +117,15 @@ export function SendDirectMessage({
   };
 
   // TODO: Need to implement photo upload
-  const onSubmit = (data: { text: string }) => {
+  const onSubmit = (data: { text: string; file: File | undefined }) => {
+    console.log(data);
+
     handleSubmit({
       conversationId,
       receiverId,
       socket,
-      contentType: 'text',
       content: data.text,
-      attachmentUrl: null,
+      file: data.file,
       deletedAt: undefined,
     });
 
@@ -134,19 +143,28 @@ export function SendDirectMessage({
 
   return (
     <Box className={cn('border-t-2 border-gray-400', className)} {...props}>
-      <HStack className="items-center p-2">
+      <HStack className="items-end gap-2 px-2 py-2">
+        <Controller
+          control={control}
+          name="file"
+          render={({ field: { onChange, value } }) => (
+            <MediaPicker value={value} onChange={onChange} />
+          )}
+        />
+
         <Controller
           control={control}
           name="text"
           render={({ field: { onChange, value } }) => (
-            <Input className="mr-2 w-[80%]">
+            <Input className="max-h-32 flex-1 rounded-2xl">
               <InputField
                 placeholder="Type a message..."
                 value={value}
                 textAlignVertical="top"
                 multiline
-                numberOfLines={8}
+                numberOfLines={1}
                 maxLength={1000}
+                className="py-3"
                 onFocus={() => {
                   handleFocus();
                 }}
@@ -179,7 +197,7 @@ export function SendDirectMessage({
           )}
         />
 
-        <Button onPress={handleFormSubmit(onSubmit)} size="sm">
+        <Button onPress={handleFormSubmit(onSubmit)} size="sm" className="h-11 rounded-2xl px-4">
           <ButtonText>Send</ButtonText>
         </Button>
       </HStack>

@@ -9,14 +9,13 @@ import { Badge, BadgeText } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ArrowDownIcon, Icon } from '@/components/ui/icon';
 
-import type { ChatDirect } from '@/db/tables/chat-direct.table';
-
 import { ChatOneToOneBubble } from './chat-bubble';
+import { DirectChatWithAttachment } from '@/features/chat/types/direct-chats';
 
 interface ChatSection {
   date: string;
 
-  data: ChatDirect[];
+  data: DirectChatWithAttachment[];
 }
 
 interface FlattenedHeader {
@@ -27,7 +26,7 @@ interface FlattenedHeader {
   title: string;
 }
 
-interface FlattenedMessage extends ChatDirect {
+interface FlattenedMessage extends DirectChatWithAttachment {
   type: 'MESSAGE';
 }
 
