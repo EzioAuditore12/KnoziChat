@@ -41,7 +41,7 @@ export interface ServerToClientEvents {
   'message:seen:update': (payload: {
     conversationId: string;
     userId: string;
-    messageIds: string[];
+    lastSeenAt: string; // The ISODate string coming from the backend
   }) => void;
   'message-group:receive': (message: ReceiveGroupMessage) => void;
   'conversation-group:created': (message: ReceiveGroupCreated) => void;

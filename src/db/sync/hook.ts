@@ -11,6 +11,7 @@ const POLLING_INTERVAL_MS = 1000 * 60 * 10; // e.g., run every 10 minutes while 
 export function useSyncEngine() {
   const { user } = useAuthStore((state) => state);
   const isSyncing = useRef(false);
+  const pendingSyncRef = useRef(false);
 
   // Core syncing logic
   const runForegroundSync = useCallback(async () => {
@@ -24,13 +25,23 @@ export function useSyncEngine() {
       console.error('[Foreground Sync] Failed:', error);
     } finally {
       isSyncing.current = false;
+
+      if (pendingSyncRef.current) {
+        pendingSyncRef.current = false;
+        void runForegroundSync();
+      }
     }
   }, [user]);
 
   // 1. Run sync immediately when app comes to the foreground
   useAppState((status: AppStateStatus) => {
     if (status === 'active') {
-      runForegroundSync();
+      if (isSyncing.current) {
+        pendingSyncRef.current = true;
+        return;
+      }
+
+      void runForegroundSync();
     }
   });
 

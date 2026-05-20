@@ -31,9 +31,34 @@ export const useInitializeDirectChat = () => {
           });
         }
 
+        // Initialize to 0 defaults
+        let myLastSeenAt = 0;
+        let theirLastSeenAt = 0;
+
+        // Extract values if lastSeenAt map is returned from the API
+        if (data.lastSeenAt) {
+          // Extract the receiver's read receipt
+          if (data.lastSeenAt[data.receiverId]) {
+            const theirTime = data.lastSeenAt[data.receiverId];
+            // ensure it's a number (timestamp)
+            theirLastSeenAt =
+              typeof theirTime === 'number' ? theirTime : new Date(theirTime).getTime();
+          }
+
+          // Extract my read receipt by finding the ID that isn't the receiver's ID
+          const myId = Object.keys(data.lastSeenAt).find((id) => id !== data.receiverId);
+          if (myId && data.lastSeenAt[myId]) {
+            const myTime = data.lastSeenAt[myId];
+            myLastSeenAt = typeof myTime === 'number' ? myTime : new Date(myTime).getTime();
+          }
+        }
+
+        // 3. Save to local DB using the new schema
         await conversationDirectRepository.create({
           id: data.conversationId,
           userId: data.receiverId,
+          myLastSeenAt,
+          theirLastSeenAt,
           createdAt: new Date(data.createdAt).getTime(),
           updatedAt: new Date(data.updatedAt).getTime(),
         });

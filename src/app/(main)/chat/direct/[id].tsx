@@ -43,20 +43,30 @@ export default function ChattingScreen() {
   }, [id]);
 
   useEffect(() => {
-    if (socket?.connected) {
+    if (!socket) return;
+
+    const markConversationSeen = () => {
       socket.emit('conversation:join', id);
 
       socket.emit('message:seen', {
         conversationId: id,
       });
+    };
+
+    if (socket.connected) {
+      markConversationSeen();
     }
 
+    socket.on('connect', markConversationSeen);
+
     return () => {
+      socket.off('connect', markConversationSeen);
+
       if (socket?.connected) {
         socket.emit('conversation:leave', id);
       }
     };
-  }, [socket, id, socket?.connected]);
+  }, [socket, id]);
 
   const { groupedMessages, fetchNextPage: fetchNextChats } = useLiveDirectChats({
     id,

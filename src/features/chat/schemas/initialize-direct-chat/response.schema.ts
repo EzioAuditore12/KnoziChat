@@ -7,6 +7,7 @@ export const initializeDirectChatResponseSchema = type({
   receiverId: 'string.uuid',
   content: '0 < string <= 1000 | null',
   contentType: "'image'| 'video' | 'text'|'file'",
+  lastSeenAt: 'Record<string, number>',
   attachmentUrl: 'string.url | null',
   status: "'SENT' | 'DELIVERED' | 'SEEN'",
   deletedAt: 'string.date.iso | null',

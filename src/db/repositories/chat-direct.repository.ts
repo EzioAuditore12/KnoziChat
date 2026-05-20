@@ -10,11 +10,13 @@ import {
   chatAttachmentTable,
   InsertChatAttachment,
 } from '../tables/chat-attachment.table';
-import { and, eq, inArray, ne } from 'drizzle-orm';
+import { and, eq, lte, ne } from 'drizzle-orm';
+import { conversationDirectTable } from '../tables/conversation-direct.table';
 
 export class ChatDirectRepository {
   private readonly database: DbType;
   private readonly table = chatDirectTable;
+  private readonly conversationTable = conversationDirectTable;
   private readonly attachmentTable = chatAttachmentTable;
 
   constructor(database: DbType = db) {
@@ -30,34 +32,58 @@ export class ChatDirectRepository {
   }
 
   public async updateStatus(id: string, status: ChatDirect['status']): Promise<void> {
-    await this.database.update(this.table).set({ status }).where(eq(this.table.id, id));
+    const condition =
+      status === 'DELIVERED'
+        ? and(eq(this.table.id, id), ne(this.table.status, 'SEEN'))
+        : eq(this.table.id, id);
+
+    await this.database.update(this.table).set({ status }).where(condition);
   }
 
-  public async markConversationAsSeen(conversationId: string): Promise<void> {
+  // in chat-direct.repository.ts
+  public async updateConversationWatermark(
+    conversationId: string,
+    currentUserId: string,
+    readUserId: string,
+    lastSeenAt: number
+  ): Promise<void> {
+    const columnToUpdate =
+      currentUserId === readUserId ? { myLastSeenAt: lastSeenAt } : { theirLastSeenAt: lastSeenAt };
+
     await this.database
-      .update(this.table)
-      .set({
-        status: 'SEEN',
-      })
-      .where(
-        and(
-          eq(this.table.conversationId, conversationId),
+      .update(this.conversationTable)
+      .set(columnToUpdate)
+      .where(eq(this.conversationTable.id, conversationId));
 
-          eq(this.table.mode, 'SENT'),
+    if (currentUserId === readUserId) {
+      await this.database
+        .update(this.table)
+        .set({ status: 'SEEN' })
+        .where(
+          and(
+            eq(this.table.conversationId, conversationId),
+            eq(this.table.mode, 'RECEIVED'),
+            ne(this.table.status, 'SEEN'),
+            lte(this.table.createdAt, lastSeenAt)
+          )
+        );
+      return;
+    }
 
-          ne(this.table.status, 'SEEN')
-        )
-      );
-  }
-
-  public async markMessagesAsSeen(messageIds: string[]): Promise<void> {
-    if (!messageIds || messageIds.length === 0) return;
-    await this.database
-      .update(this.table)
-      .set({
-        status: 'SEEN',
-      })
-      .where(and(inArray(this.table.id, messageIds), ne(this.table.status, 'SEEN')));
+    // Only update local "SEEN" status for messages we sent when the other person reads them.
+    if (currentUserId !== readUserId) {
+      await this.database
+        .update(this.table)
+        .set({ status: 'SEEN' })
+        .where(
+          and(
+            eq(this.table.conversationId, conversationId),
+            eq(this.table.mode, 'SENT'),
+            ne(this.table.status, 'SEEN'),
+            lte(this.table.createdAt, lastSeenAt)
+          )
+        );
+    }
   }
 
   public async createAttachment(
