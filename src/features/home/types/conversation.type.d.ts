@@ -8,4 +8,5 @@ export type Conversation = {
   type: ConversationType;
   userId: string;
   lastMessage: string | null;
+  unreadCount: number;
 };

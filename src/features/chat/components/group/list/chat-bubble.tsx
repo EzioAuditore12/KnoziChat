@@ -1,6 +1,6 @@
 import { cn } from '@gluestack-ui/utils';
 
-import { Activity, type ComponentProps } from 'react';
+import { Activity, useState, type ComponentProps } from 'react';
 
 import { format } from '@bernagl/react-native-date';
 
@@ -10,6 +10,7 @@ import { Text } from '@/components/ui/text';
 import { Pressable } from '@/components/ui/pressable';
 
 import { ChatGroupWithUserDetails } from '@/features/chat/types/group-chats';
+
 import { Haptics } from 'react-native-nitro-haptics';
 
 interface ChatGroupBubbleProps extends ComponentProps<typeof Box> {
@@ -39,9 +40,11 @@ const USER_COLORS = [
 
 export function getUserBubbleColor(name: string) {
   let hash = 0;
+
   for (let i = 0; i < name.length; i++) {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
   }
+
   return USER_COLORS[Math.abs(hash) % USER_COLORS.length];
 }
 
@@ -54,47 +57,58 @@ export function ChatGroupBubble({
   ...props
 }: ChatGroupBubbleProps) {
   const { mode, content, createdAt, senderName, senderAvatar } = data;
+
+  const [isPressed, setIsPressed] = useState(false);
+
   const safeSenderName = senderName ?? 'Unknown';
+
   const userColor = getUserBubbleColor(safeSenderName);
+
   const senderInitial = safeSenderName[0] ?? '?';
+
+  const isSent = mode === 'SENT';
 
   return (
     <Pressable
       onPress={onPress}
+      onPressIn={() => setIsPressed(true)}
+      onPressOut={() => setIsPressed(false)}
       onLongPress={(e) => {
         Haptics.impact('rigid');
         onLongPress?.(e);
       }}
       className={cn(
-        'w-full flex-row gap-x-2 px-2 py-1 active:opacity-70',
-        mode === 'SENT' ? 'justify-end' : 'justify-start',
-        selected && 'bg-blue-500/20 dark:bg-blue-400/20'
+        'w-full flex-row gap-x-2 px-2 py-1',
+        isSent ? 'justify-end' : 'justify-start',
+        selected && 'bg-emerald-500/20 dark:bg-emerald-400/20',
+        isPressed && 'opacity-70'
       )}>
-      <Activity mode={mode === 'RECEIVED' ? 'visible' : 'hidden'}>
-        <Avatar>
+      <Activity mode={!isSent ? 'visible' : 'hidden'}>
+        <Avatar className="mt-1">
           <AvatarImage source={senderAvatar ? { uri: senderAvatar } : undefined} />
+
           <AvatarFallbackText>{senderInitial}</AvatarFallbackText>
         </Avatar>
       </Activity>
 
       <Box
         className={cn(
-          // Replaced max-w-xs with max-w-[80%] to prevent screen overflow
-          'my-1 max-w-[80%] shrink rounded-xl p-3',
-          mode === 'SENT' ? 'bg-blue-600' : userColor,
+          'my-1 max-w-[80%] shrink rounded-2xl p-3',
+          isSent ? 'bg-emerald-600/95 dark:bg-emerald-500/90' : userColor,
           className
         )}
         {...props}>
-        <Activity mode={mode === 'RECEIVED' ? 'visible' : 'hidden'}>
-          <Text className="font-bold text-white">{safeSenderName}</Text>
+        <Activity mode={!isSent ? 'visible' : 'hidden'}>
+          <Text className="mb-1 text-[13px] font-semibold text-white/90">{safeSenderName}</Text>
         </Activity>
 
-        <Text className="text-white">{content}</Text>
+        <Text className="text-[15px] leading-5 text-white">{content}</Text>
 
-        <Text className="mt-1 text-sm text-white/70">
-          {' '}
-          {format(new Date(createdAt), 'hh:mm aa')}
-        </Text>
+        <Box className="mt-1 flex-row justify-end">
+          <Text className="text-[11px] text-white/70">
+            {format(new Date(createdAt), 'hh:mm aa')}
+          </Text>
+        </Box>
       </Box>
     </Pressable>
   );

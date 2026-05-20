@@ -7,9 +7,9 @@ type TickDoubleProps = {
 };
 
 export function TickDouble({
-  size = 18,
-  colorStart = '#60a5fa',
-  colorEnd = '#2563eb',
+  size = 20,
+  colorStart = '#53bdeb',
+  colorEnd = '#34B7F1',
 }: TickDoubleProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
@@ -20,21 +20,20 @@ export function TickDouble({
         </LinearGradient>
       </Defs>
 
-      {/* Back Tick */}
+      {/* Back Tick (Left) */}
       <Path
-        d="M2.5 12.5L7.5 17.5L17 8"
+        d="M1.5 13.5L6.5 18.5L15 9"
         stroke="url(#tickGradient)"
-        strokeWidth={2.4}
+        strokeWidth={2.5}
         strokeLinecap="round"
         strokeLinejoin="round"
-        opacity={0.65}
       />
 
-      {/* Front Tick */}
+      {/* Front Tick (Right) */}
       <Path
-        d="M7 12.5L12 17.5L22 7.5"
+        d="M8.5 13.5L13.5 18.5L23 8"
         stroke="url(#tickGradient)"
-        strokeWidth={2.6}
+        strokeWidth={2.8}
         strokeLinecap="round"
         strokeLinejoin="round"
       />

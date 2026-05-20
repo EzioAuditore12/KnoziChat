@@ -30,17 +30,20 @@ export function ChatOneToOneBubble({
   ...props
 }: ChatOneToOneBubbleProps) {
   const { mode, content, createdAt, contentType, status, attachment } = data;
+
   const [isPressed, setIsPressed] = useState(false);
+
+  const isSent = mode === 'SENT';
+  const hasMedia = contentType === 'image' || contentType === 'video';
 
   return (
     <Box
       className={cn(
         'relative w-full flex-row px-2 py-1',
-        mode === 'SENT' ? 'justify-end' : 'justify-start',
-        selected && 'bg-blue-500/20 dark:bg-blue-400/20',
+        isSent ? 'justify-end' : 'justify-start',
+        selected && 'bg-emerald-500/20 dark:bg-emerald-400/20',
         isPressed && 'opacity-70'
       )}>
-      {/* Background pressable to catch full row interactions without intercepting video touches */}
       <Pressable
         className="absolute inset-0 z-0"
         onPressIn={() => setIsPressed(true)}
@@ -54,14 +57,15 @@ export function ChatOneToOneBubble({
 
       <Box
         className={cn(
-          'z-10 my-1 max-w-[80%] shrink rounded-xl p-3',
-          mode === 'SENT' ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700',
+          'z-10 my-1 max-w-[80%] shrink overflow-hidden rounded-2xl p-3',
+          isSent ? 'bg-emerald-600/95 dark:bg-emerald-500/90' : 'bg-gray-200 dark:bg-gray-700',
+          hasMedia && 'p-1.5',
           className
         )}
         pointerEvents="box-none"
         {...props}>
         <Activity mode={contentType === 'image' ? 'visible' : 'hidden'}>
-          <Box pointerEvents="none">
+          <Box className="overflow-hidden rounded-xl" pointerEvents="none">
             <ChatDirectImage
               source={{
                 uri: attachment?.remoteUrl ?? attachment?.localUri ?? undefined,
@@ -80,23 +84,27 @@ export function ChatOneToOneBubble({
           <Text
             pointerEvents="none"
             className={cn(
-              mode === 'SENT' ? 'text-white' : 'text-black dark:text-white',
-              (contentType === 'image' || contentType === 'video') && 'mt-2'
+              'text-[15px] leading-5',
+              isSent ? 'text-white' : 'text-black dark:text-white',
+              hasMedia && 'px-2 pt-2 pb-1'
             )}>
             {content}
           </Text>
         </Activity>
 
-        <Box className="mt-1 flex-row items-center justify-end gap-1" pointerEvents="none">
+        <Box
+          className={cn('mt-1 flex-row items-center justify-end gap-1', hasMedia && 'px-2 pb-1')}
+          pointerEvents="none">
           <Text
-            className="text-sm"
+            className="text-[11px]"
             style={{
-              color: mode === 'SENT' ? '#dbeafe' : '#6b7280',
+              color: isSent ? '#d1fae5' : '#9ca3af',
             }}>
             {format(new Date(createdAt), 'hh:mm aa')}
           </Text>
-          <Activity mode={mode === 'SENT' ? 'visible' : 'hidden'}>
-            <StatusIcon status={status} color="#dbeafe" size={14} />
+
+          <Activity mode={isSent ? 'visible' : 'hidden'}>
+            <StatusIcon status={status} color="#d1fae5" size={14} />
           </Activity>
         </Box>
       </Box>

@@ -67,6 +67,14 @@ export function useLiveConversationDetails(currentUserId: string, pageSize: numb
         ORDER BY chat_direct.created_at DESC
         LIMIT 1
       )`.as('lastMessage'),
+
+      unreadCount: sql<number>`(
+        SELECT count(*)
+        FROM chat_direct
+        WHERE chat_direct.conversation_id = conversation_direct.id
+          AND chat_direct.mode = 'RECEIVED'
+          AND chat_direct.status != 'SEEN'
+      )`.as('unreadCount'),
     })
     .from(conversationDirectTable)
     .innerJoin(userTable, eq(conversationDirectTable.userId, userTable.id));
@@ -135,6 +143,8 @@ export function useLiveConversationDetails(currentUserId: string, pageSize: numb
         ORDER BY chat_group.created_at DESC
         LIMIT 1
       )`.as('lastMessage'),
+
+      unreadCount: sql<number>`0`.as('unreadCount'),
     })
     .from(conversationGroupTable)
 

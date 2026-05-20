@@ -19,10 +19,10 @@ export function StatusIcon({ status, color = '#dbeafe', size = 16 }: StatusIconP
     return <FailedIcon size={size} />;
   }
   if (status === 'DELIVERED') {
-    return <TickDouble color={color} size={size} />;
+    return <TickDouble colorStart={color} colorEnd={color} size={size} />;
   }
   if (status === 'SEEN') {
-    return <TickDouble color="#60a5fa" size={size} />;
+    return <TickDouble size={size} />;
   }
   if (status === 'SENT') {
     return <TickSingle color={color} size={size} />;

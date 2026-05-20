@@ -1,6 +1,6 @@
 import { cn } from '@gluestack-ui/utils';
 import { format, isToday, isYesterday } from '@bernagl/react-native-date';
-import type { ComponentProps } from 'react';
+import { Activity, type ComponentProps } from 'react';
 
 import { Avatar, AvatarFallbackText, AvatarImage } from '@/components/ui/avatar';
 import { Box } from '@/components/ui/box';
@@ -12,6 +12,8 @@ import { ThrottledTouchable, type ThrottledTouchableProps } from '@/components/t
 
 import type { Conversation } from '@/features/home/types/conversation.type';
 import { VStack } from '@/components/ui/vstack';
+
+import { Badge, BadgeText } from '@/components/ui/badge';
 
 interface ConversationCardProps extends ComponentProps<typeof Card> {
   onPress: ThrottledTouchableProps['onPress'];
@@ -37,7 +39,7 @@ function formatChatDate(timestamp: number) {
 }
 
 export function ConversationCard({ className, data, onPress, ...props }: ConversationCardProps) {
-  const { name, updatedAt, lastMessage, avatar } = data;
+  const { name, updatedAt, lastMessage, avatar, unreadCount } = data;
 
   return (
     <ThrottledTouchable onPress={onPress}>
@@ -57,9 +59,19 @@ export function ConversationCard({ className, data, onPress, ...props }: Convers
               <Text className="ml-3 text-xs">{formatChatDate(updatedAt)}</Text>
             </Box>
 
-            <Text numberOfLines={1} className="mt-1 text-sm">
-              {lastMessage}
-            </Text>
+            <Box className="mt-1 flex-row items-center justify-between">
+              <Text numberOfLines={1} className="flex-1 text-sm">
+                {lastMessage}
+              </Text>
+
+              <Activity mode={unreadCount > 0 ? 'visible' : 'hidden'}>
+                <Badge className="ml-2 min-w-5 justify-center rounded-full border-0 bg-green-500 px-1.5 py-0.5">
+                  <BadgeText className="text-xs font-bold text-white">
+                    {unreadCount > 99 ? '99+' : unreadCount}
+                  </BadgeText>
+                </Badge>
+              </Activity>
+            </Box>
           </VStack>
         </Box>
       </Card>
