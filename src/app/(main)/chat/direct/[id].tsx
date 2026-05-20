@@ -12,7 +12,7 @@ import { SendDirectMessage } from '@/features/chat/components/direct/send-messag
 
 import { useSocketState } from '@/store/socket';
 
-import { sendMessageEvent } from '@/features/chat/events/send-message.event';
+import { sendMessageEvent } from '@/features/chat/events/send-message';
 
 import { useLiveChatterInfo } from '@/features/chat/hooks/database/use-live-chatter-info';
 import { useLiveDirectChats } from '@/features/chat/hooks/database/use-live-one-to-one-chats';

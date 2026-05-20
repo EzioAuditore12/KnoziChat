@@ -1,10 +1,6 @@
 import { Activity, useRef, useState } from 'react';
-import NetInfo from '@react-native-community/netinfo';
-
-import fs, { pickFiles, Paths } from 'react-native-nitro-file-system';
-import { Buffer } from 'react-native-nitro-buffer';
+import { pickFiles } from 'react-native-nitro-file-system';
 import { randomUUID } from 'react-native-nitro-crypto';
-import { fetch } from 'react-native-nitro-fetch';
 import { useVideoPlayer, VideoView, type VideoViewProps } from 'expo-video';
 
 import { Box } from '@/components/ui/box';
@@ -15,9 +11,12 @@ import { Heading } from '@/components/ui/heading';
 import { Text } from '@/components/ui/text';
 import { Progress, ProgressFilledTrack } from '@/components/ui/progress';
 
-import { authorizeUploadVideoApi } from '@/features/uploads/api/authorize-upload-video.api';
-
-const MAX_CHUNK_SIZE = 8 * 1024 * 1024;
+// 👇 Import the newly created service and types
+import {
+  chunkedUploadService,
+  type UploadSession,
+} from '@/features/uploads/services/chunked-upload.service';
+import type { File } from '@/features/common/schemas/file.schema';
 
 type ChatAttachment = {
   id: string;
@@ -38,334 +37,6 @@ type ChatAttachment = {
   updatedAt: number;
 };
 
-type UploadResult = {
-  fileId: string;
-  url: string;
-};
-
-type UploadSession = {
-  fileId: string;
-  filePath: string;
-  offset: number;
-  totalSize: number;
-  mimeType: string;
-  fileName: string;
-  url: string;
-  endpoint: string;
-  bucketId: string;
-  authorizationToken: string;
-  projectId: string;
-};
-
-function getInitialChunkSize(networkType: string | null, cellularGeneration: string | null) {
-  if (networkType === 'wifi') {
-    return 4 * 1024 * 1024;
-  }
-
-  switch (cellularGeneration) {
-    case '2g':
-      return 128 * 1024;
-
-    case '3g':
-      return 512 * 1024;
-
-    case '4g':
-      return 2 * 1024 * 1024;
-
-    case '5g':
-      return 6 * 1024 * 1024;
-
-    default:
-      return 512 * 1024;
-  }
-}
-
-function adaptChunkSize(bytesPerSecond: number) {
-  if (bytesPerSecond < 300_000) {
-    return 256 * 1024;
-  }
-
-  if (bytesPerSecond < 1_000_000) {
-    return 512 * 1024;
-  }
-
-  if (bytesPerSecond < 5_000_000) {
-    return 2 * 1024 * 1024;
-  }
-
-  if (bytesPerSecond < 15_000_000) {
-    return 4 * 1024 * 1024;
-  }
-
-  return MAX_CHUNK_SIZE;
-}
-
-async function chunkedUploadApi(
-  pauseRef: React.MutableRefObject<boolean>,
-  uploadSessionRef: React.MutableRefObject<UploadSession | null>,
-  onAttachmentChange: (attachment: ChatAttachment) => void,
-  onProgress: (percent: number) => void,
-  onStatusChange: (status: string) => void,
-  onSpeedChange: (speed: string) => void
-): Promise<UploadResult> {
-  let file:
-    | {
-        path: string;
-        type?: string | null;
-        size?: number;
-        name: string;
-      }
-    | undefined;
-
-  if (uploadSessionRef.current) {
-    file = {
-      path: uploadSessionRef.current.filePath,
-      type: uploadSessionRef.current.mimeType,
-      size: uploadSessionRef.current.totalSize,
-      name: uploadSessionRef.current.fileName,
-    };
-  } else {
-    onStatusChange('Waiting for file selection...');
-
-    const importedFiles = await pickFiles({
-      multiple: false,
-      mode: 'import',
-    });
-
-    file = importedFiles[0];
-  }
-
-  if (!file) {
-    throw new Error('File selection cancelled.');
-  }
-
-  const mimeType = file.type ?? 'application/octet-stream';
-  const totalSize = file.size;
-
-  if (!totalSize) {
-    throw new Error('Missing file size');
-  }
-
-  const existingSession = uploadSessionRef.current;
-
-  const attachmentId = existingSession?.fileId ?? randomUUID();
-
-  let attachment: ChatAttachment = {
-    id: attachmentId,
-    localUri: file.path,
-    remoteUrl: null,
-    mimeType,
-    fileName: file.name,
-    fileSize: totalSize,
-    width: null,
-    height: null,
-    duration: null,
-    thumbnailUri: null,
-    uploadId: existingSession?.fileId ?? null,
-    transferredBytes: existingSession?.offset ?? 0,
-    totalBytes: totalSize,
-    transferType: 'UPLOAD',
-    transferStatus: 'DOWNLOADING',
-    updatedAt: Date.now(),
-  };
-
-  onAttachmentChange(attachment);
-
-  const networkState = await NetInfo.fetch();
-
-  let dynamicChunkSize = getInitialChunkSize(
-    networkState.type,
-    networkState.type === 'cellular' ? networkState.details.cellularGeneration : null
-  );
-
-  const uploadConfig =
-    uploadSessionRef.current ??
-    (await authorizeUploadVideoApi({
-      fileName: file.name,
-      mimeType,
-    }));
-
-  const { url, endpoint, bucketId, authorizationToken, projectId } = uploadConfig;
-
-  const fileId = existingSession?.fileId ?? randomUUID();
-
-  let offset = existingSession?.offset ?? 0;
-
-  onStatusChange('Opening file...');
-
-  const fd = await fs.promises.open(file.path, 'r');
-
-  let uploadedFileResponse: any = null;
-
-  try {
-    while (offset < totalSize) {
-      if (pauseRef.current) {
-        attachment = {
-          ...attachment,
-          transferredBytes: offset,
-          transferStatus: 'PAUSED',
-          updatedAt: Date.now(),
-        };
-
-        onAttachmentChange(attachment);
-
-        uploadSessionRef.current = {
-          fileId,
-          filePath: file.path,
-          offset,
-          totalSize,
-          mimeType,
-          fileName: file.name,
-          url,
-          endpoint,
-          bucketId,
-          authorizationToken,
-          projectId,
-        };
-
-        onStatusChange('Upload paused');
-
-        throw new Error('UPLOAD_PAUSED');
-      }
-
-      const length = Math.min(dynamicChunkSize, totalSize - offset);
-
-      const chunkBuffer = Buffer.alloc(length);
-
-      fs.readSync(fd, chunkBuffer, 0, length, offset);
-
-      const tempChunkPath = `${Paths.cache}/chunk_${fileId}_${offset}`;
-
-      await fs.promises.writeFile(tempChunkPath, chunkBuffer);
-
-      const formData = new FormData();
-
-      formData.append('fileId', fileId);
-
-      formData.append('file', {
-        uri: `file://${tempChunkPath}`,
-        name: file.name,
-        type: mimeType,
-      } as any);
-
-      const headers: Record<string, string> = {
-        'x-appwrite-project': projectId,
-        'x-appwrite-jwt': authorizationToken,
-        'content-range': `bytes ${offset}-${offset + length - 1}/${totalSize}`,
-      };
-
-      if (offset > 0) {
-        headers['x-appwrite-id'] = fileId;
-      }
-
-      const mbUploaded = (offset / (1024 * 1024)).toFixed(1);
-      const mbTotal = (totalSize / (1024 * 1024)).toFixed(1);
-
-      onStatusChange(`Uploading chunk: ${mbUploaded} MB / ${mbTotal} MB...`);
-
-      const uploadStartedAt = Date.now();
-
-      const response = await fetch(url, {
-        method: 'POST',
-        headers,
-        body: formData,
-      });
-
-      const uploadEndedAt = Date.now();
-
-      uploadedFileResponse = await response.json();
-
-      await fs.promises.unlink(tempChunkPath).catch(() => {});
-
-      if (!response.ok) {
-        throw new Error(
-          `Chunk upload failed: ${response.status} - ${JSON.stringify(uploadedFileResponse)}`
-        );
-      }
-
-      const seconds = (uploadEndedAt - uploadStartedAt) / 1000;
-
-      const bytesPerSecond = length / seconds;
-
-      dynamicChunkSize = adaptChunkSize(bytesPerSecond);
-
-      const mbPerSecond = bytesPerSecond / 1024 / 1024;
-
-      const readableSpeed =
-        mbPerSecond >= 1
-          ? `${mbPerSecond.toFixed(2)} MB/s`
-          : `${(bytesPerSecond / 1024).toFixed(0)} KB/s`;
-
-      onSpeedChange(readableSpeed);
-
-      offset += length;
-
-      uploadSessionRef.current = {
-        fileId,
-        filePath: file.path,
-        offset,
-        totalSize,
-        mimeType,
-        fileName: file.name,
-        url,
-        endpoint,
-        bucketId,
-        authorizationToken,
-        projectId,
-      };
-
-      attachment = {
-        ...attachment,
-        transferredBytes: offset,
-        updatedAt: Date.now(),
-      };
-
-      onAttachmentChange(attachment);
-
-      const percent = Math.round((offset / totalSize) * 100);
-
-      onProgress(Math.min(percent, 100));
-    }
-
-    const remoteUrl = `${endpoint}/storage/buckets/${bucketId}/files/${uploadedFileResponse.$id}/view?project=${projectId}`;
-
-    attachment = {
-      ...attachment,
-      remoteUrl,
-      transferredBytes: totalSize,
-      transferStatus: 'COMPLETED',
-      updatedAt: Date.now(),
-    };
-
-    onAttachmentChange(attachment);
-
-    uploadSessionRef.current = null;
-
-    onStatusChange('Finishing up...');
-
-    return {
-      fileId: uploadedFileResponse.$id,
-      url: remoteUrl,
-    };
-  } catch (error) {
-    if ((error as Error).message !== 'UPLOAD_PAUSED') {
-      attachment = {
-        ...attachment,
-        transferStatus: 'FAILED',
-        updatedAt: Date.now(),
-      };
-
-      onAttachmentChange(attachment);
-
-      onStatusChange('Upload encountered an error.');
-    }
-
-    throw error;
-  } finally {
-    fs.closeSync(fd);
-  }
-}
-
 function CustomVideoPlayer({ uri, ...props }: Omit<VideoViewProps, 'player'> & { uri: string }) {
   const player = useVideoPlayer({
     uri,
@@ -382,41 +53,68 @@ export default function ChunkedUploadTestScreen() {
   const [videoUrl, setVideoUrl] = useState('');
   const [attachment, setAttachment] = useState<ChatAttachment | null>(null);
 
-  const pauseRef = useRef(false);
-
+  // 👇 Refs for managing state across renders without triggering re-renders
+  const abortControllerRef = useRef<AbortController | null>(null);
   const uploadSessionRef = useRef<UploadSession | null>(null);
+  const currentFileRef = useRef<File | null>(null);
 
-  const startUpload = async () => {
+  const startUpload = async (file: File) => {
     try {
-      pauseRef.current = false;
-
+      abortControllerRef.current = new AbortController();
       setIsUploading(true);
 
-      const result = await chunkedUploadApi(
-        pauseRef,
-        uploadSessionRef,
-        (updatedAttachment) => {
-          setAttachment(updatedAttachment);
+      const result = await chunkedUploadService.uploadFile(
+        file,
+        {
+          onProgress: ({ transferredBytes, totalBytes, progress: percent }) => {
+            setProgress(percent);
+            setAttachment((prev) =>
+              prev ? { ...prev, transferredBytes, totalBytes, updatedAt: Date.now() } : null
+            );
+          },
+          onStatusChange: (status) => setStatusMessage(status),
+          onSpeedChange: (speed) => setUploadSpeed(speed),
+          onSessionCreated: (session) => {
+            uploadSessionRef.current = session;
+            setAttachment((prev) =>
+              prev && !prev.uploadId ? { ...prev, uploadId: session.fileId } : prev
+            );
+          },
         },
-        (percent) => {
-          setProgress(percent);
-        },
-        (status) => {
-          setStatusMessage(status);
-        },
-        (speed) => {
-          setUploadSpeed(speed);
-        }
+        uploadSessionRef.current ?? undefined,
+        abortControllerRef.current.signal
       );
 
       setVideoUrl(result.url);
-
       setStatusMessage('Upload Complete! 🎉');
+      setAttachment((prev) =>
+        prev
+          ? {
+              ...prev,
+              remoteUrl: result.url,
+              transferStatus: 'COMPLETED',
+              transferredBytes: prev.totalBytes ?? 0,
+              updatedAt: Date.now(),
+            }
+          : null
+      );
+
+      // Clear session after success
+      uploadSessionRef.current = null;
+      currentFileRef.current = null;
     } catch (error) {
       console.error(error);
 
-      if ((error as Error).message !== 'UPLOAD_PAUSED') {
+      if ((error as Error).message === 'UPLOAD_PAUSED' || (error as Error).name === 'AbortError') {
+        setStatusMessage('Upload Paused ⏸️');
+        setAttachment((prev) =>
+          prev ? { ...prev, transferStatus: 'PAUSED', updatedAt: Date.now() } : null
+        );
+      } else {
         setStatusMessage('Upload Failed ❌');
+        setAttachment((prev) =>
+          prev ? { ...prev, transferStatus: 'FAILED', updatedAt: Date.now() } : null
+        );
       }
     } finally {
       setIsUploading(false);
@@ -424,26 +122,76 @@ export default function ChunkedUploadTestScreen() {
   };
 
   const handleUpload = async () => {
-    setProgress(0);
-    setUploadSpeed('');
-    setVideoUrl('');
-    setStatusMessage('Initializing...');
+    setStatusMessage('Waiting for file selection...');
 
-    await startUpload();
-  };
+    const importedFiles = await pickFiles({
+      multiple: false,
+      mode: 'import',
+    });
 
-  const handlePause = () => {
-    pauseRef.current = true;
-  };
+    const selectedFile = importedFiles[0];
 
-  const handleResume = async () => {
-    if (!uploadSessionRef.current) {
+    if (!selectedFile || !selectedFile.size) {
+      setStatusMessage('File selection cancelled or missing size.');
       return;
     }
 
-    setStatusMessage('Resuming upload...');
+    // Map nitro file output to your File schema
+    const file: File = {
+      uri: selectedFile.path,
+      name: selectedFile.name,
+      type: selectedFile.type ?? 'application/octet-stream',
+      size: selectedFile.size,
+      contentType: 'video',
+    };
 
-    await startUpload();
+    // Save it to ref so we can pass it to the service again if we resume
+    currentFileRef.current = file;
+
+    // Reset UI state
+    setProgress(0);
+    setUploadSpeed('');
+    setVideoUrl('');
+    uploadSessionRef.current = null;
+
+    setAttachment({
+      id: randomUUID(),
+      localUri: file.uri,
+      remoteUrl: null,
+      mimeType: file.type,
+      fileName: file.name,
+      fileSize: file.size,
+      width: null,
+      height: null,
+      duration: null,
+      thumbnailUri: null,
+      uploadId: null,
+      transferredBytes: 0,
+      totalBytes: file.size,
+      transferType: 'UPLOAD',
+      transferStatus: 'DOWNLOADING',
+      updatedAt: Date.now(),
+    });
+
+    await startUpload(file);
+  };
+
+  const handlePause = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+  };
+
+  const handleResume = async () => {
+    if (!uploadSessionRef.current || !currentFileRef.current) {
+      return;
+    }
+
+    setAttachment((prev) =>
+      prev ? { ...prev, transferStatus: 'DOWNLOADING', updatedAt: Date.now() } : null
+    );
+
+    await startUpload(currentFileRef.current);
   };
 
   return (
@@ -475,17 +223,12 @@ export default function ChunkedUploadTestScreen() {
           <Activity mode={attachment ? 'visible' : 'hidden'}>
             <Box className="border-outline-200 mt-4 rounded-xl border p-3">
               <Text size="sm">File: {attachment?.fileName}</Text>
-
               <Text size="sm">Status: {attachment?.transferStatus}</Text>
-
               <Text size="sm">
-                Uploaded: {((attachment?.transferredBytes ?? 0) / 1024 / 1024).toFixed(2)}
-                MB
+                Uploaded: {((attachment?.transferredBytes ?? 0) / 1024 / 1024).toFixed(2)} MB
               </Text>
-
               <Text size="sm">
-                Total: {((attachment?.totalBytes ?? 0) / 1024 / 1024).toFixed(2)}
-                MB
+                Total: {((attachment?.totalBytes ?? 0) / 1024 / 1024).toFixed(2)} MB
               </Text>
             </Box>
           </Activity>
@@ -497,7 +240,6 @@ export default function ChunkedUploadTestScreen() {
           <Activity mode={isUploading ? 'visible' : 'hidden'}>
             <ButtonSpinner className="mr-2" />
           </Activity>
-
           <ButtonText>{isUploading ? 'Processing...' : 'Pick & Upload'}</ButtonText>
         </Button>
 

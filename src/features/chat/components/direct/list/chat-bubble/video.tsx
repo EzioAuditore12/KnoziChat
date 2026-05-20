@@ -4,8 +4,8 @@ import { useVideoPlayer, VideoView, type VideoViewProps } from 'expo-video';
 
 export function ChatDirectVideo({
   uri,
-  nativeControls = Platform.OS === 'android' ? false : true,
-  allowsPictureInPicture = Platform.OS === 'android' ? false : true,
+  nativeControls = true,
+  allowsPictureInPicture = true,
   style = {
     width: '100%',
     aspectRatio: 16 / 9,

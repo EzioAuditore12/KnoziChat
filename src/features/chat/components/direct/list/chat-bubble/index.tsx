@@ -1,21 +1,29 @@
 import { cn } from '@gluestack-ui/utils';
 import { Activity, useState, type ComponentProps } from 'react';
 import { Haptics } from 'react-native-nitro-haptics';
-
 import { format } from '@bernagl/react-native-date';
 
 import { Box } from '@/components/ui/box';
 import { Text } from '@/components/ui/text';
 import { Pressable } from '@/components/ui/pressable';
+import { Progress, ProgressFilledTrack } from '@/components/ui/progress';
+import { Button } from '@/components/ui/button';
 
 import { ChatDirectVideo } from './video';
 import { ChatDirectImage } from './image';
 import { StatusIcon } from './status-icon';
 
-import { DirectChatWithAttachment } from '@/features/chat/types/direct-chats';
+import type { DirectChatWithAttachment } from '@/features/chat/types/direct-chats';
+
+import { activeUploadControllers } from '@/lib/upload-manager';
+import { sendMessageEvent } from '@/features/chat/events/send-message';
+import { useSocketState } from '@/store/socket';
+import { PauseIcon } from './status-icon/icons/pauseIcon';
+import { PlayIcon } from './status-icon/icons/playIcon';
 
 interface ChatOneToOneBubbleProps extends ComponentProps<typeof Box> {
   data: DirectChatWithAttachment;
+  receiverId: string;
   selected?: boolean;
   onPress?: ComponentProps<typeof Pressable>['onPress'];
   onLongPress?: ComponentProps<typeof Pressable>['onLongPress'];
@@ -23,6 +31,7 @@ interface ChatOneToOneBubbleProps extends ComponentProps<typeof Box> {
 
 export function ChatOneToOneBubble({
   data,
+  receiverId,
   className,
   selected,
   onPress,
@@ -30,11 +39,42 @@ export function ChatOneToOneBubble({
   ...props
 }: ChatOneToOneBubbleProps) {
   const { mode, content, createdAt, contentType, status, attachment } = data;
-
   const [isPressed, setIsPressed] = useState(false);
+
+  const socket = useSocketState((state) => state.socket);
 
   const isSent = mode === 'SENT';
   const hasMedia = contentType === 'image' || contentType === 'video';
+  const isUploadingOrPaused =
+    attachment && ['UPLOADING', 'PAUSED'].includes(attachment.transferStatus);
+
+  const handlePause = () => {
+    const controller = activeUploadControllers.get(data.id);
+    if (controller) {
+      controller.abort();
+    }
+  };
+
+  const handleResume = () => {
+    if (!socket || !attachment || !attachment.localUri) return;
+
+    sendMessageEvent({
+      conversationId: data.conversationId,
+      receiverId,
+      socket,
+      file: {
+        uri: attachment.localUri,
+        name: attachment.fileName ?? 'file',
+        type: attachment.mimeType ?? 'application/octet-stream',
+        size: attachment.totalBytes ?? 0,
+        contentType: contentType as 'video' | 'image' | 'file',
+      },
+      content: content,
+      isResume: true,
+      messageId: data.id,
+      deletedAt: undefined,
+    });
+  };
 
   return (
     <Box
@@ -64,6 +104,7 @@ export function ChatOneToOneBubble({
         )}
         pointerEvents="box-none"
         {...props}>
+        {/* MEDIA COMPONENTS */}
         <Activity mode={contentType === 'image' ? 'visible' : 'hidden'}>
           <Box className="overflow-hidden rounded-xl" pointerEvents="none">
             <ChatDirectImage
@@ -80,6 +121,77 @@ export function ChatOneToOneBubble({
           </Box>
         </Activity>
 
+        {/* UPLOAD PROGRESS & CONTROLS UI */}
+        <Activity
+          mode={
+            isUploadingOrPaused || attachment?.transferStatus === 'FAILED' ? 'visible' : 'hidden'
+          }>
+          <Box
+            className={cn(
+              'mt-2 rounded-xl p-3',
+              isSent ? 'bg-black/20' : 'bg-black/5 dark:bg-white/10'
+            )}
+            pointerEvents="auto">
+            <Text
+              size="sm"
+              className={isSent ? 'text-white' : 'text-neutral-800 dark:text-white'}
+              numberOfLines={1}>
+              {attachment?.fileName}
+            </Text>
+
+            {isUploadingOrPaused && (
+              <Box className="mt-2 flex-row items-center justify-between">
+                <Box className="mr-3 flex-1">
+                  <Progress
+                    value={
+                      attachment?.totalBytes
+                        ? ((attachment.transferredBytes ?? 0) / attachment.totalBytes) * 100
+                        : 0
+                    }
+                    className="h-2 w-full bg-white/30">
+                    <ProgressFilledTrack className={isSent ? 'bg-white' : 'bg-emerald-500'} />
+                  </Progress>
+                  <Text
+                    size="xs"
+                    className={cn('mt-1', isSent ? 'text-white/70' : 'text-neutral-500')}>
+                    {((attachment?.transferredBytes ?? 0) / 1024 / 1024).toFixed(1)} /{' '}
+                    {((attachment?.totalBytes ?? 0) / 1024 / 1024).toFixed(1)} MB
+                  </Text>
+                </Box>
+
+                {/* 👇 Explicitly rendering the SVG components and passing color directly */}
+                {attachment?.transferStatus === 'UPLOADING' ? (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-8 w-8 rounded-full border-white/50 p-0"
+                    onPress={handlePause}>
+                    <PauseIcon size={14} color={isSent ? '#ffffff' : '#262626'} />
+                  </Button>
+                ) : (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    className="h-8 w-8 rounded-full bg-white p-0"
+                    onPress={handleResume}>
+                    <PlayIcon
+                      size={14}
+                      color="#059669" // Tailwind emerald-600 hex
+                    />
+                  </Button>
+                )}
+              </Box>
+            )}
+
+            {attachment?.transferStatus === 'FAILED' && (
+              <Text size="xs" className="mt-2 font-bold text-red-300">
+                Upload Failed. Tap resume to retry.
+              </Text>
+            )}
+          </Box>
+        </Activity>
+
+        {/* TEXT CONTENT */}
         <Activity mode={!!content ? 'visible' : 'hidden'}>
           <Text
             pointerEvents="none"
@@ -92,14 +204,11 @@ export function ChatOneToOneBubble({
           </Text>
         </Activity>
 
+        {/* TIMESTAMPS & STATUS */}
         <Box
           className={cn('mt-1 flex-row items-center justify-end gap-1', hasMedia && 'px-2 pb-1')}
           pointerEvents="none">
-          <Text
-            className="text-[11px]"
-            style={{
-              color: isSent ? '#d1fae5' : '#9ca3af',
-            }}>
+          <Text className="text-[11px]" style={{ color: isSent ? '#d1fae5' : '#9ca3af' }}>
             {format(new Date(createdAt), 'hh:mm aa')}
           </Text>
 

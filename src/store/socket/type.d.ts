@@ -6,4 +6,5 @@ export interface SocketState {
   onlineUsers: string[];
   connectSocket: () => void;
   disconnectSocket: () => void;
+  setActiveConversationId: (id: string | null) => void; // 👈 Add this
 }

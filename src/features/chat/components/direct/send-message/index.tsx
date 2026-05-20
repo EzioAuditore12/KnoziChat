@@ -15,11 +15,12 @@ import { HStack } from '@/components/ui/hstack';
 import { Input, InputField } from '@/components/ui/input';
 
 import { Socket } from '@/lib/socket-io';
-import { SendMessageEvent } from '../../../events/send-message.event';
+import { SendMessageEvent } from '../../../events/send-message';
 
 import { Toast, ToastDescription, ToastTitle, useToast } from '@/components/ui/toast';
 import { MediaPicker } from './media-picker';
 import { File, fileSchema } from '@/features/common/schemas/file.schema';
+import { MediaPreviewActivity } from './media-preview';
 
 interface SendDirectMessageProps extends ComponentProps<typeof Box> {
   conversationId: string;
@@ -143,64 +144,77 @@ export function SendDirectMessage({
 
   return (
     <Box className={cn('border-t-2 border-gray-400', className)} {...props}>
-      <HStack className="items-end gap-2 px-2 py-2">
-        <Controller
-          control={control}
-          name="file"
-          render={({ field: { onChange, value } }) => (
-            <MediaPicker value={value} onChange={onChange} />
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="text"
-          render={({ field: { onChange, value } }) => (
-            <Input className="max-h-32 flex-1 rounded-2xl">
-              <InputField
-                placeholder="Type a message..."
-                value={value}
-                textAlignVertical="top"
-                multiline
-                numberOfLines={1}
-                maxLength={1000}
-                className="py-3"
-                onFocus={() => {
-                  handleFocus();
-                }}
-                onBlur={() => {
-                  stopTyping.cancel();
-
-                  socket?.emit('conversation:typing', {
-                    conversationId,
-                    isTyping: false,
-                  });
-
-                  isTypingRef.current = false;
-                }}
-                onChangeText={(text) => {
-                  onChange(text);
-
-                  if (!isTypingRef.current) {
-                    isTypingRef.current = true;
-
-                    socket?.emit('conversation:typing', {
-                      conversationId,
-                      isTyping: true,
-                    });
-                  }
-
-                  stopTyping();
-                }}
+      <Controller
+        control={control}
+        name="file"
+        render={({ field: { onChange, value } }) => (
+          <>
+            {value && (
+              <MediaPreviewActivity
+                file={value}
+                onRemove={() => onChange(undefined)}
+                className="mx-2 mt-2"
               />
-            </Input>
-          )}
-        />
+            )}
 
-        <Button onPress={handleFormSubmit(onSubmit)} size="sm" className="h-11 rounded-2xl px-4">
-          <ButtonText>Send</ButtonText>
-        </Button>
-      </HStack>
+            <HStack className="items-end gap-2 px-2 py-2">
+              <MediaPicker value={value} onChange={onChange} />
+
+              <Controller
+                control={control}
+                name="text"
+                render={({ field: { onChange, value } }) => (
+                  <Input className="max-h-32 flex-1 rounded-2xl">
+                    <InputField
+                      placeholder="Type a message..."
+                      value={value}
+                      textAlignVertical="top"
+                      multiline
+                      numberOfLines={1}
+                      maxLength={1000}
+                      className="py-3"
+                      onFocus={() => {
+                        handleFocus();
+                      }}
+                      onBlur={() => {
+                        stopTyping.cancel();
+
+                        socket?.emit('conversation:typing', {
+                          conversationId,
+                          isTyping: false,
+                        });
+
+                        isTypingRef.current = false;
+                      }}
+                      onChangeText={(text) => {
+                        onChange(text);
+
+                        if (!isTypingRef.current) {
+                          isTypingRef.current = true;
+
+                          socket?.emit('conversation:typing', {
+                            conversationId,
+                            isTyping: true,
+                          });
+                        }
+
+                        stopTyping();
+                      }}
+                    />
+                  </Input>
+                )}
+              />
+
+              <Button
+                onPress={handleFormSubmit(onSubmit)}
+                size="sm"
+                className="h-11 self-end rounded-2xl px-4">
+                <ButtonText>Send</ButtonText>
+              </Button>
+            </HStack>
+          </>
+        )}
+      />
 
       <Animated.View style={keyboardPadding} />
     </Box>

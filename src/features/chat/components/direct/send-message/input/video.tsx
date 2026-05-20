@@ -2,6 +2,7 @@ import { requestMediaLibraryPermissionsAsync, launchImageLibraryAsync } from 'ex
 import { type ComponentProps } from 'react';
 import { cn } from '@gluestack-ui/utils';
 import Svg, { Path, Polygon, Rect, type SvgProps } from 'react-native-svg';
+import { MediaToolkit } from 'react-native-media-toolkit';
 
 import { ThrottledTouchable } from '@/components/throttled-touchable';
 
@@ -54,12 +55,21 @@ export function MediaVideoInput({ className, value, onChange, ...props }: MediaV
           if (!file.fileName || !file.mimeType || !file.fileSize)
             throw new Error('Unable to accept the file , either corrupted');
 
+          const thumbNail = await MediaToolkit.getThumbnail(file.uri, {
+            timeMs: 3000, // frame time in milliseconds, default 0
+            quality: 85, // 0–100, default 80
+            maxWidth: 720, // max thumbnail width (does not affect returned metadata)
+          });
+
+          console.log(thumbNail.uri);
+
           onChange({
             name: file.fileName,
             type: file.mimeType,
             uri: file.uri,
             size: file.fileSize,
             contentType: 'video',
+            thumbnail: thumbNail.uri,
           });
         }}>
         <VStack space="sm" className={cn('bg-background-100 items-center rounded-3xl p-5')}>

@@ -59,6 +59,7 @@
     "react-native": "0.83.6",
     "react-native-gesture-handler": "~2.30.0",
     "react-native-keyboard-controller": "1.20.7",
+    "react-native-media-toolkit": "^2.3.2",
     "react-native-mmkv": "^4.3.1",
     "react-native-nitro-buffer": "^0.2.2",
     "react-native-nitro-crypto": "^0.3.2",

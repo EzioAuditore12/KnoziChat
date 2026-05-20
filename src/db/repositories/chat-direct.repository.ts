@@ -95,6 +95,31 @@ export class ChatDirectRepository {
       .returning()
       .get();
   }
+
+  public async updateAttachmentProgress(
+    id: string,
+    transferredBytes: number,
+    totalBytes: number
+  ): Promise<void> {
+    await this.database
+      .update(this.attachmentTable)
+      .set({ transferredBytes })
+      .where(eq(this.attachmentTable.id, id));
+  }
+
+  public async updateAttachmentStatus(
+    id: string,
+    status: ChatAttachment['transferStatus'],
+    remoteUrl?: string
+  ): Promise<void> {
+    const updateData: Partial<ChatAttachment> = { transferStatus: status };
+    if (remoteUrl) updateData.remoteUrl = remoteUrl;
+
+    await this.database
+      .update(this.attachmentTable)
+      .set(updateData)
+      .where(eq(this.attachmentTable.id, id));
+  }
 }
 
 export const chatDirectRepository = new ChatDirectRepository();

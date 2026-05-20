@@ -67,6 +67,7 @@ export function MediaImageInput({ className, value, onChange, ...props }: MediaI
             uri: file.uri,
             size: file.fileSize,
             contentType: 'image',
+            thumbnail: file.uri,
           });
         }}>
         <VStack space="sm" className={cn('bg-background-100 items-center rounded-3xl p-5')}>
