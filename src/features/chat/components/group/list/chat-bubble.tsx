@@ -1,10 +1,11 @@
 import { cn } from '@gluestack-ui/utils';
 
-import { Activity, useState, type ComponentProps } from 'react';
+import { Activity, useMemo, useState, type ComponentProps } from 'react';
 
 import { format } from '@bernagl/react-native-date';
 
 import { Avatar, AvatarFallbackText, AvatarImage } from '@/components/ui/avatar';
+
 import { Box } from '@/components/ui/box';
 import { Text } from '@/components/ui/text';
 import { Pressable } from '@/components/ui/pressable';
@@ -15,8 +16,11 @@ import { Haptics } from 'react-native-nitro-haptics';
 
 interface ChatGroupBubbleProps extends ComponentProps<typeof Box> {
   data: ChatGroupWithUserDetails;
+
   selected?: boolean;
+
   onPress?: ComponentProps<typeof Pressable>['onPress'];
+
   onLongPress?: ComponentProps<typeof Pressable>['onLongPress'];
 }
 
@@ -48,6 +52,31 @@ export function getUserBubbleColor(name: string) {
   return USER_COLORS[Math.abs(hash) % USER_COLORS.length];
 }
 
+function getSystemMessage(data: ChatGroupWithUserDetails) {
+  switch (data.systemEventType) {
+    case 'member_left':
+      return `${data.senderName} left the group`;
+
+    case 'member_joined':
+      return `${data.senderName} joined the group`;
+
+    case 'admin_changed':
+      return `${data.senderName} became admin`;
+
+    case 'group_created':
+      return `${data.senderName} created the group`;
+
+    case 'group_name_changed':
+      return `Group name was changed`;
+
+    case 'group_avatar_changed':
+      return `Group avatar was changed`;
+
+    default:
+      return 'System event';
+  }
+}
+
 export function ChatGroupBubble({
   data,
   className,
@@ -56,7 +85,7 @@ export function ChatGroupBubble({
   onLongPress,
   ...props
 }: ChatGroupBubbleProps) {
-  const { mode, content, createdAt, senderName, senderAvatar } = data;
+  const { mode, content, createdAt, senderName, senderAvatar, contentType } = data;
 
   const [isPressed, setIsPressed] = useState(false);
 
@@ -68,6 +97,32 @@ export function ChatGroupBubble({
 
   const isSent = mode === 'SENT';
 
+  const isSystem = contentType === 'system';
+
+  const systemMessage = useMemo(() => getSystemMessage(data), [data]);
+
+  /**
+   * SYSTEM EVENT
+   */
+  if (isSystem) {
+    return (
+      <Box className="my-2 items-center px-4">
+        <Box className="rounded-full bg-neutral-200 px-4 py-2 dark:bg-neutral-800">
+          <Text className="text-center text-[12px] font-medium text-neutral-700 dark:text-neutral-300">
+            {systemMessage}
+          </Text>
+
+          <Text className="mt-1 text-center text-[10px] text-neutral-500">
+            {format(new Date(createdAt), 'hh:mm aa')}
+          </Text>
+        </Box>
+      </Box>
+    );
+  }
+
+  /**
+   * NORMAL MESSAGE
+   */
   return (
     <Pressable
       onPress={onPress}
@@ -75,17 +130,29 @@ export function ChatGroupBubble({
       onPressOut={() => setIsPressed(false)}
       onLongPress={(e) => {
         Haptics.impact('rigid');
+
         onLongPress?.(e);
       }}
       className={cn(
         'w-full flex-row gap-x-2 px-2 py-1',
+
         isSent ? 'justify-end' : 'justify-start',
+
         selected && 'bg-emerald-500/20 dark:bg-emerald-400/20',
+
         isPressed && 'opacity-70'
       )}>
       <Activity mode={!isSent ? 'visible' : 'hidden'}>
         <Avatar className="mt-1">
-          <AvatarImage source={senderAvatar ? { uri: senderAvatar } : undefined} />
+          <AvatarImage
+            source={
+              senderAvatar
+                ? {
+                    uri: senderAvatar,
+                  }
+                : undefined
+            }
+          />
 
           <AvatarFallbackText>{senderInitial}</AvatarFallbackText>
         </Avatar>
@@ -94,7 +161,9 @@ export function ChatGroupBubble({
       <Box
         className={cn(
           'my-1 max-w-[80%] shrink rounded-2xl p-3',
+
           isSent ? 'bg-emerald-600/95 dark:bg-emerald-500/90' : userColor,
+
           className
         )}
         {...props}>

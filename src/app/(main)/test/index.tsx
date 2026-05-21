@@ -281,7 +281,7 @@ export default function ChunkedUploadTestScreen() {
         </Box>
       </Activity>
 
-      <Button onPress={()=> router.push('/(main)/test/chunked-download')}>
+      <Button onPress={() => router.push('/(main)/test/chunked-download')}>
         <ButtonText>Go to chunked download test</ButtonText>
       </Button>
     </Box>

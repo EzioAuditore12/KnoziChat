@@ -11,9 +11,7 @@ import { getGroupDetailsApi } from '../api/get-group-details.api';
 import { getMultipleUsersApi } from '@/features/common/api/get-multiple-users.api';
 import { getGroupMembersApi } from '../api/get-group-members.api';
 
-const handleReceiveGroupMessage = async (
-  message: Omit<ReceiveGroupMessage, 'deliveredTo' | 'seenBy'>
-) => {
+const handleReceiveGroupMessage = async (message: ReceiveGroupMessage) => {
   const {
     id,
     conversationId,
@@ -25,6 +23,8 @@ const handleReceiveGroupMessage = async (
     deletedAt,
     deletedBy,
     updatedAt,
+    metadata,
+    systemEventType,
   } = message;
 
   console.log(message);
@@ -73,7 +73,9 @@ const handleReceiveGroupMessage = async (
             groupId: m.groupId,
             userId: m.userId,
             isAdmin: Boolean(m.isAdmin),
-            joinedAt: new Date(m.joinedAt).getTime(),
+            createdAt: new Date(m.createdAt).getTime(),
+            updatedAt: new Date(m.updatedAt).getTime(),
+            deletedAt: m.deletedAt ? new Date(m.deletedAt).getTime() : null,
           }))
         );
       }
@@ -84,6 +86,8 @@ const handleReceiveGroupMessage = async (
       senderId,
       content,
       contentType,
+      metadata,
+      systemEventType,
       deletedAt: deletedAt != null ? new Date(deletedAt).getTime() : null,
       deletedBy,
       createdAt: new Date(createdAt).getTime(),

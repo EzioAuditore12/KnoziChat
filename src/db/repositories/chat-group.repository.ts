@@ -49,6 +49,8 @@ export class ChatGroupRepository {
         senderId: chatGroupTable.senderId,
         content: chatGroupTable.content,
         contentType: chatGroupTable.contentType,
+        systemEventType: chatGroupTable.systemEventType,
+        metadata: chatGroupTable.metadata,
         deletedAt: chatGroupTable.deletedAt,
         deletedBy: chatGroupTable.deletedBy,
         createdAt: chatGroupTable.createdAt,

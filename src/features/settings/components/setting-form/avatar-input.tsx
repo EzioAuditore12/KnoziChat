@@ -44,7 +44,7 @@ export function AvatarInput({
 
     const result = await launchImageLibraryAsync({
       mediaTypes: ['images'],
-      allowsEditing: false,
+      allowsEditing: true,
       selectionLimit: 1,
       aspect: [4, 3],
       quality: 1,

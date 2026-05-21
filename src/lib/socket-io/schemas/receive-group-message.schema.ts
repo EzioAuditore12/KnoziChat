@@ -3,14 +3,17 @@ import { type } from 'arktype';
 export const receiveGroupMessageSchema = type({
   id: 'string',
   conversationId: 'string',
-  senderId: 'string.uuid',
-  contentType: '"file" | "text" | "image" | "video"',
+  senderId: 'string',
+  contentType: '"file" | "image" | "video" | "text" | "system"',
   content: 'string | null',
+  systemEventType:
+    '"member_left" | "member_joined" | "admin_changed" | "group_name_changed" | "group_avatar_changed" | "group_created" | null',
+  metadata: 'Record<string, unknown> | null',
   attachmentUrl: 'string | null',
-  deletedBy: 'string | null | undefined',
   createdAt: 'string.date.iso',
   updatedAt: 'string.date.iso',
-  deletedAt: 'string.date.iso | null | undefined',
+  deletedBy: 'string | null | undefined',
+  deletedAt: 'string | null | undefined',
 });
 
 export type ReceiveGroupMessage = typeof receiveGroupMessageSchema.infer;

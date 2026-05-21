@@ -5,7 +5,9 @@ export const groupMemberSchema = type({
   groupId: 'string',
   userId: 'string.uuid',
   isAdmin: 'boolean',
-  joinedAt: 'string.date.iso',
+  createdAt: 'string.date.iso',
+  updatedAt: 'string.date.iso',
+  deletedAt: 'string.date.iso | null',
 });
 
 export type GroupMember = typeof groupMemberSchema.infer;

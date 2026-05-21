@@ -46,6 +46,8 @@ export function useLiveGroupConversationChats({
         id: chatGroupTable.id,
         content: chatGroupTable.content,
         contentType: chatGroupTable.contentType,
+        systemEventType: chatGroupTable.systemEventType,
+        metadata: chatGroupTable.metadata,
         senderId: chatGroupTable.senderId,
         createdAt: chatGroupTable.createdAt,
         updatedAt: chatGroupTable.updatedAt,

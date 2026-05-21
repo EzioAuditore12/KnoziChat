@@ -204,8 +204,8 @@ importers:
         specifier: ^0.1.20
         version: 0.1.20(tailwindcss@4.3.0)
       uniwind:
-        specifier: ^1.6.5
-        version: 1.6.5(react-native@0.83.6(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)(tailwindcss@4.3.0)
+        specifier: ^1.7.0
+        version: 1.7.0(react-native@0.83.6(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)(tailwindcss@4.3.0)
       use-debounce:
         specifier: ^10.1.1
         version: 10.1.1(react@19.2.0)
@@ -5075,8 +5075,8 @@ packages:
   unimodules-app-loader@55.0.5:
     resolution: {integrity: sha512-2eLjtaAVQTK3EeiUAgRbfEnX78f6cMtw5Js8Ri4OcEdkrozsmvG3Wu8YVfr6kfhea17FHZkKZmO1m4dL/Ky2Bg==}
 
-  uniwind@1.6.5:
-    resolution: {integrity: sha512-KjOtZzC+YW0I7+TogyLFGexsKCy2A3ZRVS70Cs5Exs+wyY2ll7Zd22nXywr1w/Jo0eryCie+ekX9ZPdZheb1kw==}
+  uniwind@1.7.0:
+    resolution: {integrity: sha512-kIixWI3OprrWf/ypjglV2xubYvzCjtTKk110rQmXn8A3ZA/7z/nK6P/8EMxbfPCxjkdvhLcMniafa4qJcYIhZA==}
     peerDependencies:
       react: '>=19.0.0'
       react-native: '>=0.81.0'
@@ -10760,7 +10760,7 @@ snapshots:
 
   unimodules-app-loader@55.0.5: {}
 
-  uniwind@1.6.5(react-native@0.83.6(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)(tailwindcss@4.3.0):
+  uniwind@1.7.0(react-native@0.83.6(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)(tailwindcss@4.3.0):
     dependencies:
       '@tailwindcss/node': 4.2.1
       '@tailwindcss/oxide': 4.2.1

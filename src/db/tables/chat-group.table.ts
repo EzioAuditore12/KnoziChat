@@ -23,7 +23,24 @@ export const chatGroupTable = sqliteTable(
       .notNull()
       .references(() => userTable.id),
 
-    contentType: text('content_type', { enum: ['image', 'video', 'text', 'file'] }).notNull(),
+    contentType: text('content_type', {
+      enum: ['image', 'video', 'text', 'file', 'system'],
+    }).notNull(),
+
+    systemEventType: text('system_event_type', {
+      enum: [
+        'member_left',
+        'member_joined',
+        'admin_changed',
+        'group_name_changed',
+        'group_avatar_changed',
+        'group_created',
+      ],
+    }),
+
+    metadata: text('metadata', {
+      mode: 'json',
+    }).$type<Record<string, unknown> | null>(),
 
     content: text('content'),
 
