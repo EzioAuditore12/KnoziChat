@@ -23,6 +23,10 @@ export const chatGroupTable = sqliteTable(
       .notNull()
       .references(() => userTable.id),
 
+    status: text('status', {
+      enum: ['PENDING', 'DELIVERED', 'SEEN', 'FAILED'],
+    }).notNull(),
+
     contentType: text('content_type', {
       enum: ['image', 'video', 'text', 'file', 'system'],
     }).notNull(),

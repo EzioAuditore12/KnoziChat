@@ -12,14 +12,13 @@ import { GroupScreenLoading } from '@/features/chat/components/group/loading/scr
 
 import { useLiveGroupConversationChats } from '@/features/chat/hooks/database/use-live-group-conversation-chats';
 
-import { sendGroupMessageEvent } from '@/features/chat/events/send-group-message.event';
-
 import { useAuthStore } from '@/store/auth';
 
 import { useSocketState } from '@/store/socket';
 
 import { useLiveGroupInfo } from '@/features/chat/hooks/database/use-live-group-info';
 import { Socket } from '@/lib/socket-io';
+import { sendGroupMessageEvent } from '@/features/chat/events/send-group-message';
 
 export default function GroupChatScreen() {
   const safeAreaInsets = useSafeAreaInsets();

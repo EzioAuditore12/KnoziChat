@@ -9,6 +9,7 @@ export const chatGroupSchema = type({
   systemEventType:
     "'member_left' | 'member_joined' | 'admin_changed' | 'group_name_changed' | 'group_avatar_changed' | 'group_created' | null",
   metadata: 'Record<string, unknown> | null',
+  status: "'DELIVERED' | 'SEEN'",
   attachmentUrl: 'string.url | null',
   deletedBy: 'string | null',
   createdAt: 'string.date.iso',

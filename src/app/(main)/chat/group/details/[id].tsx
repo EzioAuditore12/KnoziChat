@@ -6,8 +6,6 @@ import { desc, eq, sql } from 'drizzle-orm';
 import { db } from '@/db';
 import { conversationGroupMemberTable } from '@/db/tables/conversation-group-member.table';
 import { userTable } from '@/db/tables/user.table';
-import { useLiveInfiniteQuery } from '@/db/hooks/use-live-infinite-query';
-import { useAuthStore } from '@/store/auth';
 
 import { Center } from '@/components/ui/center';
 import { Divider } from '@/components/ui/divider';
@@ -17,6 +15,9 @@ import { ChatGroupDetailsHeader } from '@/features/chat/components/group/details
 import { GroupMemberCard } from '@/features/chat/components/group/details/member-card';
 
 import { useLiveGroupConversationDetails } from '@/features/chat/hooks/database/use-live-group-conversation-details';
+import { useLiveInfiniteQuery } from '@/db/hooks/use-live-infinite-query';
+
+import { useAuthStore } from '@/store/auth';
 
 type GroupConversationMember = {
   id: string;

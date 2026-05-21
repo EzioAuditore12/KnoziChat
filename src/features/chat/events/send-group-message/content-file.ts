@@ -1,42 +1,40 @@
 import { db } from '@/db';
-import {
-  chatDirectRepository,
-  ChatDirectRepository,
-} from '@/db/repositories/chat-direct.repository';
-import { conversationDirectRepository } from '@/db/repositories/conversation-direct.repository';
+import { chatGroupRepository, ChatGroupRepository } from '@/db/repositories/chat-group.repository';
+import { conversationGroupRepository } from '@/db/repositories/conversation-group.repository';
 import { SnowFlakeId } from '@/lib/snowflake';
 
 import { chunkedUploadService } from '@/features/uploads/services/chunked-upload.service';
 import { activeUploadControllers, savedUploadSessions } from '@/lib/upload-manager';
 
-import type { SendMessageEvent } from './index';
+import type { SendGroupMessageEvent } from './index';
 
 export const handleFileMessage = async ({
   conversationId,
   content,
-  receiverId,
   socket,
-  file,
-  deletedAt,
   isResume,
   messageId,
-}: SendMessageEvent) => {
+  file,
+  senderId,
+}: SendGroupMessageEvent) => {
   if (!file) {
     throw new Error('File is required for handleFileMessage');
   }
 
   const targetMessageId = messageId ?? new SnowFlakeId(1).generate().toString();
 
+  let savedGroupChat: any = null;
+
   // 1. Create or Update local Database records
   if (!isResume) {
     await db.transaction(async (transaction) => {
-      const txRepo = new ChatDirectRepository(transaction);
+      const txRepo = new ChatGroupRepository(transaction);
 
-      await txRepo.create({
+      savedGroupChat = await txRepo.create({
         id: targetMessageId,
         conversationId,
         status: 'PENDING',
-        mode: 'SENT',
+        senderId,
         content,
         contentType: file.contentType,
       });
@@ -53,9 +51,14 @@ export const handleFileMessage = async ({
       });
     });
 
-    await conversationDirectRepository.updateTime(conversationId, Date.now());
+    // Update conversation updatedAt to the message createdAt
+    if (savedGroupChat) {
+      await conversationGroupRepository.update(savedGroupChat.conversationId, {
+        updatedAt: savedGroupChat.createdAt,
+      });
+    }
   } else {
-    await chatDirectRepository.updateAttachmentStatus(targetMessageId, 'UPLOADING');
+    await chatGroupRepository.updateAttachmentStatus(targetMessageId, 'UPLOADING');
   }
 
   // 2. Setup Upload Manager Controllers for Pausing
@@ -69,7 +72,7 @@ export const handleFileMessage = async ({
       file,
       {
         onProgress: async (p) => {
-          await chatDirectRepository.updateAttachmentProgress(
+          await chatGroupRepository.updateAttachmentProgress(
             targetMessageId,
             p.transferredBytes,
             p.totalBytes
@@ -86,7 +89,7 @@ export const handleFileMessage = async ({
     // 4. Upload Completed - Clean up registries and finalize DB
     activeUploadControllers.delete(targetMessageId);
     savedUploadSessions.delete(targetMessageId);
-    await chatDirectRepository.updateAttachmentStatus(
+    await chatGroupRepository.updateAttachmentStatus(
       targetMessageId,
       'COMPLETED',
       uploadResult.url
@@ -94,24 +97,27 @@ export const handleFileMessage = async ({
 
     // 5. Emit Socket Event with the new URL
     socket.emit(
-      'message:send',
+      'message-group:send',
       {
         id: targetMessageId,
-        conversationId: conversationId,
-        receiverId,
+        conversationId,
         content: content,
-        attachmentUrl: uploadResult.url,
-        deletedAt,
         contentType: file.contentType,
+        attachmentUrl: uploadResult.url,
+        deletedAt: undefined,
+        deletedBy: null,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
-      async (response) => {
+      async (response: { success: boolean; messageId?: string }) => {
         if (!response.success) {
-          await chatDirectRepository.updateStatus(targetMessageId, 'FAILED');
+          await chatGroupRepository.updateAttachmentStatus(targetMessageId, 'FAILED');
+          await chatGroupRepository.updateStatus(targetMessageId, 'FAILED');
           return;
         }
-        await chatDirectRepository.updateStatus(targetMessageId, 'DELIVERED');
+
+        // mark message delivered locally
+        await chatGroupRepository.updateStatus(targetMessageId, 'DELIVERED');
       }
     );
   } catch (error) {
@@ -119,10 +125,10 @@ export const handleFileMessage = async ({
     activeUploadControllers.delete(targetMessageId);
 
     if ((error as Error).message === 'UPLOAD_PAUSED' || (error as Error).name === 'AbortError') {
-      await chatDirectRepository.updateAttachmentStatus(targetMessageId, 'PAUSED');
+      await chatGroupRepository.updateAttachmentStatus(targetMessageId, 'PAUSED');
     } else {
-      await chatDirectRepository.updateAttachmentStatus(targetMessageId, 'FAILED');
-      await chatDirectRepository.updateStatus(targetMessageId, 'FAILED');
+      await chatGroupRepository.updateAttachmentStatus(targetMessageId, 'FAILED');
+      // No status update method for group messages currently
     }
   }
 };

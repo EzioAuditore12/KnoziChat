@@ -125,7 +125,7 @@ export function SendDirectMessage({
       conversationId,
       receiverId,
       socket,
-      content: data.text,
+      content: data.text.trimEnd(),
       file: data.file,
       deletedAt: undefined,
     });

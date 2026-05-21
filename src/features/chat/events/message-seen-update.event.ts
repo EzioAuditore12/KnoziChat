@@ -3,11 +3,11 @@ import { useEffect } from 'react';
 import type { Socket } from '@/lib/socket-io';
 
 import { chatDirectRepository } from '@/db/repositories/chat-direct.repository';
-import { useAuthStore } from '@/store/auth'; // Import the auth store
+import { useAuthStore } from '@/store/auth';
 
 const handleMessageSeenUpdate = async ({
   conversationId,
-  userId: readUserId, // The backend sends this as 'userId' (the person who just read)
+  userId: readUserId,
   lastSeenAt,
 }: {
   conversationId: string;

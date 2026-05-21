@@ -13,7 +13,10 @@ import { Toast, ToastTitle, ToastDescription, useToast } from '@/components/ui/t
 import { HStack } from '@/components/ui/hstack';
 import { useGradualAnimation } from '@/hooks/use-gradual-animation';
 import { Socket } from '@/lib/socket-io';
-import { SendGroupMessageEvent } from '../../events/send-group-message.event';
+import { SendGroupMessageEvent } from '../../../events/send-group-message';
+import { File, fileSchema } from '@/features/common/schemas/file.schema';
+import { MediaPreviewActivity } from './media-preview';
+import { MediaPicker } from './media-picker';
 
 interface SendGroupMessageProps extends ComponentProps<typeof Box> {
   id: string;
@@ -47,20 +50,21 @@ export function SendGroupMessage({
   } = useForm({
     defaultValues: {
       text: '',
+      file: undefined,
     },
-    resolver: arktypeResolver(type({ text: '0 < string < 1000' })),
+    resolver: arktypeResolver(
+      type({ text: '0 < string <= 1000', file: fileSchema.or('undefined') })
+    ),
   });
 
-  const onSubmit = (data: { text: string }) => {
+  const onSubmit = (data: { text: string; file: File | undefined }) => {
     handleSubmit({
       conversationId: id,
       senderId,
       socket,
       content: data.text.trimEnd(),
-      contentType: 'text',
-      attachmentUrl: null,
-      deletedAt: undefined,
-      deletedBy: undefined,
+      file: data.file,
+      deletedBy: '',
     });
 
     reset();
@@ -93,30 +97,56 @@ export function SendGroupMessage({
 
   return (
     <Box className={cn('border-t-2 border-gray-400', className)} {...props}>
+      <Controller
+        control={control}
+        name="file"
+        render={({ field: { onChange, value } }) => (
+          <>
+            {value && (
+              <MediaPreviewActivity
+                file={value}
+                onRemove={() => onChange(undefined)}
+                className="mx-2 mt-2"
+              />
+            )}
+          </>
+        )}
+      />
+
       <HStack className="items-center p-2">
         <Controller
           control={control}
-          name="text"
-          render={({ field: { onChange, value, onBlur } }) => (
-            <Input className="mr-2 w-[80%]">
-              <InputField
-                placeholder="Type a message..."
-                onFocus={handleFocus}
-                onBlur={onBlur}
-                value={value}
-                onChangeText={onChange}
-                textAlignVertical="top"
-                multiline
-                numberOfLines={8}
-                maxLength={1000}
+          name="file"
+          render={({ field: { onChange, value } }) => (
+            <>
+              <MediaPicker value={value} onChange={onChange} />
+
+              <Controller
+                control={control}
+                name="text"
+                render={({ field: { onChange, value, onBlur } }) => (
+                  <Input className="mr-2 w-[70%]">
+                    <InputField
+                      placeholder="Type a message..."
+                      onFocus={handleFocus}
+                      onBlur={onBlur}
+                      value={value}
+                      onChangeText={onChange}
+                      textAlignVertical="top"
+                      multiline
+                      numberOfLines={8}
+                      maxLength={1000}
+                    />
+                  </Input>
+                )}
               />
-            </Input>
+
+              <Button onPress={handlFormSubmit(onSubmit)} size="sm">
+                <ButtonText>Send</ButtonText>
+              </Button>
+            </>
           )}
         />
-
-        <Button onPress={handlFormSubmit(onSubmit)} size="sm">
-          <ButtonText>Send</ButtonText>
-        </Button>
       </HStack>
 
       <Animated.View style={keyboardPadding} />

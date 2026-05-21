@@ -60,7 +60,9 @@ const handleReceiveGroupCreated = async (message: ReceiveGroupCreated) => {
       groupId: m.groupId,
       userId: m.userId,
       isAdmin: m.isAdmin,
-      joinedAt: new Date(m.joinedAt).getTime(),
+      createdAt: new Date(m.createdAt).getTime(),
+      updatedAt: new Date(m.updatedAt).getTime(),
+      deletedAt: m.deletedAt ? new Date(m.deletedAt).getTime() : null,
     }));
 
     if (mappedMembers.length > 0) {

@@ -1,10 +1,10 @@
 import { Platform } from 'react-native';
-
-import { useVideoPlayer, VideoView, type VideoViewProps } from 'expo-video';
-import { useVideoPlayerContext } from '../video-context';
 import { useEffect } from 'react';
+import { useVideoPlayer, VideoView, type VideoViewProps } from 'expo-video';
 
-export function ChatDirectVideo({
+import { useGroupChatVideoPlayerContext } from '../video-context';
+
+export function ChatGroupVideo({
   uri,
   nativeControls = true,
   allowsPictureInPicture = true,
@@ -19,7 +19,7 @@ export function ChatDirectVideo({
   if (!uri) return null;
 
   return (
-    <ChatDirectVideoPlayer
+    <ChatGroupVideoPlayer
       uri={uri}
       nativeControls={nativeControls}
       allowsPictureInPicture={allowsPictureInPicture}
@@ -29,7 +29,7 @@ export function ChatDirectVideo({
   );
 }
 
-function ChatDirectVideoPlayer({
+function ChatGroupVideoPlayer({
   uri,
   nativeControls,
   allowsPictureInPicture,
@@ -37,7 +37,7 @@ function ChatDirectVideoPlayer({
   ...props
 }: Omit<VideoViewProps, 'player'> & { uri: string }) {
   const player = useVideoPlayer({ uri });
-  const { playingUri, setPlayingUri } = useVideoPlayerContext();
+  const { playingUri, setPlayingUri } = useGroupChatVideoPlayerContext();
 
   useEffect(() => {
     // If there is no player, do nothing

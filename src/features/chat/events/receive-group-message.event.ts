@@ -24,6 +24,7 @@ const handleReceiveGroupMessage = async (message: ReceiveGroupMessage) => {
     deletedBy,
     updatedAt,
     metadata,
+    status,
     systemEventType,
   } = message;
 
@@ -88,6 +89,7 @@ const handleReceiveGroupMessage = async (message: ReceiveGroupMessage) => {
       contentType,
       metadata,
       systemEventType,
+      status,
       deletedAt: deletedAt != null ? new Date(deletedAt).getTime() : null,
       deletedBy,
       createdAt: new Date(createdAt).getTime(),

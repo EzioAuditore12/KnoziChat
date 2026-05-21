@@ -60,7 +60,10 @@ export interface ClientToServerEvents {
     callback: (response: { success: boolean; messageId: string }) => void
   ) => void;
   'message:seen': (payload: { conversationId: string }) => void;
-  'message-group:send': (dto: SendGroupMessage) => void;
+  'message-group:send': (
+    dto: SendGroupMessage,
+    callback: (response: { success: boolean; messageId: string }) => void
+  ) => void;
   'conversation:typing': (payload: { conversationId: string; isTyping: boolean }) => void;
   'conversation-group:typing': (payload: { conversationId: string; isTyping: boolean }) => void;
 }

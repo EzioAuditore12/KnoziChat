@@ -7,6 +7,7 @@ import { useLiveInfiniteQuery } from '@/db/hooks/use-live-infinite-query';
 
 import { chatGroupTable } from '@/db/tables/chat-group.table';
 import { userTable } from '@/db/tables/user.table';
+import { chatAttachmentTable } from '@/db/tables/chat-attachment.table';
 
 interface UseLiveGroupConversationChatsOptions {
   id: string;
@@ -46,6 +47,7 @@ export function useLiveGroupConversationChats({
         id: chatGroupTable.id,
         content: chatGroupTable.content,
         contentType: chatGroupTable.contentType,
+        attachment: chatAttachmentTable,
         systemEventType: chatGroupTable.systemEventType,
         metadata: chatGroupTable.metadata,
         senderId: chatGroupTable.senderId,
@@ -69,7 +71,7 @@ export function useLiveGroupConversationChats({
 
       // 4. Using your working innerJoin instead of leftJoin
       .innerJoin(userTable, eq(chatGroupTable.senderId, userTable.id))
-
+      .leftJoin(chatAttachmentTable, eq(chatAttachmentTable.id, chatGroupTable.id))
       // 5. Filter and Order
       .where(eq(chatGroupTable.conversationId, id))
       .orderBy(desc(chatGroupTable.createdAt)),
