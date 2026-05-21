@@ -141,6 +141,7 @@ export default function ChattingScreen() {
 
       <Box className="flex-1">
         <ChatDirectList
+          receiverId={userId}
           data={reversedGroupedMessages}
           onStartReached={fetchNextChats}
           selectedMessageIds={selectedMessageIds}

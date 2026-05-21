@@ -117,7 +117,10 @@ export function ChatOneToOneBubble({
 
         <Activity mode={contentType === 'video' ? 'visible' : 'hidden'}>
           <Box className="overflow-hidden rounded-xl">
-            <ChatDirectVideo uri={attachment?.remoteUrl ?? attachment?.localUri ?? ''} />
+            <ChatDirectVideo
+              key={attachment?.remoteUrl ?? attachment?.localUri ?? 'empty-video'}
+              uri={attachment?.remoteUrl ?? attachment?.localUri ?? ''}
+            />
           </Box>
         </Activity>
 

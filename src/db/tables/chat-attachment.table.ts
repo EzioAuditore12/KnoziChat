@@ -32,7 +32,9 @@ export const chatAttachmentTable = sqliteTable(CHAT_ATTACHMENT_TABLE_NANE, {
 
   transferType: text('transfer_type', {
     enum: ['UPLOAD', 'DOWNLOAD'],
-  }).notNull(),
+  })
+    .default('DOWNLOAD')
+    .notNull(),
 
   transferStatus: text('transfer_status', {
     enum: ['PENDING', 'UPLOADING', 'DOWNLOADING', 'PAUSED', 'COMPLETED', 'FAILED'],
