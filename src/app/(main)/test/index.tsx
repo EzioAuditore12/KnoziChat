@@ -17,6 +17,7 @@ import {
   type UploadSession,
 } from '@/features/uploads/services/chunked-upload.service';
 import type { File } from '@/features/common/schemas/file.schema';
+import { router } from 'expo-router';
 
 type ChatAttachment = {
   id: string;
@@ -279,6 +280,10 @@ export default function ChunkedUploadTestScreen() {
           </Text>
         </Box>
       </Activity>
+
+      <Button onPress={()=> router.push('/(main)/test/chunked-download')}>
+        <ButtonText>Go to chunked download test</ButtonText>
+      </Button>
     </Box>
   );
 }
