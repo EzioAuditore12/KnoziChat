@@ -10,6 +10,7 @@ export function useGetLiveGroups() {
       .select({
         id: conversationGroupTable.id,
         name: conversationGroupTable.name,
+        avatar: conversationGroupTable.avatar,
       })
       .from(conversationGroupTable)
   );
