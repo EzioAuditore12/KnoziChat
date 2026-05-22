@@ -1,4 +1,4 @@
-import { Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Heading } from '@/components/ui/heading';
@@ -13,6 +13,8 @@ import { useAuthStore } from '@/store/auth';
 
 import { OnlineUsersList } from '@/features/home/components/list/online-users';
 import { useGetOnlineUsers } from '@/features/home/hooks/database/use-live-get-online-users';
+import { Button, ButtonIcon } from '@/components/ui/button';
+import { MessageCircleIcon } from '@/components/ui/icon';
 
 export default function HomeScreen() {
   const safeAreaInsets = useSafeAreaInsets();
@@ -45,6 +47,24 @@ export default function HomeScreen() {
           isFetchingNextPage={isFetching}
           onRefresh={() => syncDatabase.pullChanges()}
         />
+
+        <Button
+          className="absolute right-5"
+          accessibilityHint={'Ai'}
+          style={{
+            bottom: safeAreaInsets.bottom + 20,
+            backgroundColor: '#8b5cf6', // modern purple for AI
+            borderRadius: 32,
+            padding: 16,
+            elevation: 6, // Android shadow
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.25,
+            shadowRadius: 4,
+          }}
+          onPress={() => router.push('/(main)/chat/ai')}>
+          <ButtonIcon as={MessageCircleIcon} color="#fff" size="lg" />
+        </Button>
       </Box>
     </>
   );
