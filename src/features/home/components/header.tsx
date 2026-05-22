@@ -8,7 +8,6 @@ import { Center } from '@/components/ui/center';
 import {
   AddIcon,
   CheckIcon,
-  EyeIcon,
   Icon,
   MenuIcon,
   MoonIcon,
@@ -72,15 +71,6 @@ export function HomeHeader({ className, ...props }: ComponentProps<typeof Box>) 
           className="rounded-2xl px-4 py-3.5">
           <Icon as={AddIcon} className="mr-3 h-5 w-5" />
           <MenuItemLabel className="text-sm font-medium">Search People</MenuItemLabel>
-        </MenuItem>
-
-        <MenuItem
-          key="test"
-          textValue="Test Screens"
-          onPress={() => router.push('/(main)/test')}
-          className="rounded-2xl px-4 py-3.5">
-          <Icon as={EyeIcon} className="mr-3 h-5 w-5" />
-          <MenuItemLabel className="text-sm font-medium">Test Screens</MenuItemLabel>
         </MenuItem>
 
         <MenuItem

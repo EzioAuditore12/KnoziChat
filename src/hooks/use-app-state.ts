@@ -1,11 +1,20 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 
 export function useAppState(onChange: (status: AppStateStatus) => void) {
+  const onChangeRef = useRef(onChange);
+
   useEffect(() => {
-    const subscription = AppState.addEventListener('change', onChange);
+    onChangeRef.current = onChange;
+  }, [onChange]);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (status) => {
+      onChangeRef.current(status);
+    });
+
     return () => {
       subscription.remove();
     };
-  }, [onChange]);
+  }, []);
 }

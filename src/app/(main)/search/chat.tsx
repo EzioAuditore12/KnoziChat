@@ -66,17 +66,24 @@ export default function SearchThroughChatsScreen() {
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const query = debouncedSearch.trim();
+  const handleSearchChange = (text: string) => {
+    setSearch(text);
 
-    if (!query) {
+    if (!text.trim()) {
       setResults([]);
       setOffset(0);
       setHasMore(true);
-      return;
     }
+  };
+
+  useEffect(() => {
+    const query = debouncedSearch.trim();
 
     let isMounted = true;
+
+    if (!query) {
+      return;
+    }
 
     const fetchInitial = async () => {
       setIsLoading(true);
@@ -147,7 +154,7 @@ export default function SearchThroughChatsScreen() {
           <InputIcon as={SearchIcon} />
         </InputSlot>
 
-        <InputField placeholder="Search..." value={search} onChangeText={setSearch} />
+        <InputField placeholder="Search..." value={search} onChangeText={handleSearchChange} />
       </Input>
 
       <FlashList
