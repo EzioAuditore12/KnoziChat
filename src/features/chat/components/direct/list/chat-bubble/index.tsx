@@ -45,6 +45,12 @@ export function ChatOneToOneBubble({
 
   const isSent = mode === 'SENT';
   const hasMedia = contentType === 'image' || contentType === 'video';
+  const attachmentUri = [
+    attachment?.remoteUrl,
+    attachment?.localUri,
+    attachment?.thumbnailUri,
+  ].find((value): value is string => typeof value === 'string' && value.length > 0);
+  const imageSource = attachmentUri ? { uri: attachmentUri } : undefined;
   const isUploadingOrPaused =
     attachment && ['UPLOADING', 'PAUSED'].includes(attachment.transferStatus);
 
@@ -105,22 +111,15 @@ export function ChatOneToOneBubble({
         pointerEvents="box-none"
         {...props}>
         {/* MEDIA COMPONENTS */}
-        <Activity mode={contentType === 'image' ? 'visible' : 'hidden'}>
+        <Activity mode={contentType === 'image' && attachmentUri ? 'visible' : 'hidden'}>
           <Box className="overflow-hidden rounded-xl" pointerEvents="none">
-            <ChatDirectImage
-              source={{
-                uri: attachment?.remoteUrl ?? attachment?.localUri ?? undefined,
-              }}
-            />
+            <ChatDirectImage source={imageSource} />
           </Box>
         </Activity>
 
-        <Activity mode={contentType === 'video' ? 'visible' : 'hidden'}>
+        <Activity mode={contentType === 'video' && attachmentUri ? 'visible' : 'hidden'}>
           <Box className="overflow-hidden rounded-xl">
-            <ChatDirectVideo
-              key={attachment?.remoteUrl ?? attachment?.localUri ?? 'empty-video'}
-              uri={attachment?.remoteUrl ?? attachment?.localUri ?? ''}
-            />
+            <ChatDirectVideo key={attachmentUri} uri={attachmentUri} />
           </Box>
         </Activity>
 

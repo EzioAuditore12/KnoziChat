@@ -17,6 +17,7 @@ import { SendGroupMessageEvent } from '../../../events/send-group-message';
 import { File, fileSchema } from '@/features/common/schemas/file.schema';
 import { MediaPreviewActivity } from './media-preview';
 import { MediaPicker } from './media-picker';
+import crypto from 'react-native-nitro-crypto';
 
 interface SendGroupMessageProps extends ComponentProps<typeof Box> {
   id: string;
@@ -53,16 +54,49 @@ export function SendGroupMessage({
       file: undefined,
     },
     resolver: arktypeResolver(
-      type({ text: '0 < string <= 1000', file: fileSchema.or('undefined') })
+      type({ text: 'string <= 1000', file: fileSchema.or('undefined') }).narrow((data, ctx) => {
+        const isEmptyText = data.text === '' || data.text === undefined;
+
+        if (isEmptyText && data.file === undefined) {
+          ctx.reject({ expected: 'message or file required', actual: '' });
+        }
+
+        return true;
+      })
     ),
   });
 
-  const onSubmit = (data: { text: string; file: File | undefined }) => {
+  const onSubmit = (data: { text?: string; file?: File | undefined }) => {
+    const rawText = typeof data.text === 'string' ? data.text : '';
+    const trimmed = rawText.trimEnd();
+    const content = trimmed === '' ? null : trimmed;
+
+    if (content === null && data.file === undefined) {
+      const newId = crypto.randomInt.toString();
+      setToastId(newId);
+      toast.show({
+        id: newId,
+        placement: 'top',
+        duration: 2000,
+        render: ({ id: toastRenderingId }) => {
+          const uniqueToastId = 'toast-' + toastRenderingId;
+          return (
+            <Toast nativeID={uniqueToastId} action="muted" variant="solid">
+              <ToastTitle>Cannot send empty message</ToastTitle>
+              <ToastDescription>Type a message or attach a file.</ToastDescription>
+            </Toast>
+          );
+        },
+      });
+
+      return;
+    }
+
     handleSubmit({
       conversationId: id,
       senderId,
       socket,
-      content: data.text.trimEnd(),
+      content,
       file: data.file,
       deletedBy: '',
     });

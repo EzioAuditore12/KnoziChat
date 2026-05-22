@@ -21,6 +21,7 @@ import { Toast, ToastDescription, ToastTitle, useToast } from '@/components/ui/t
 import { MediaPicker } from './media-picker';
 import { File, fileSchema } from '@/features/common/schemas/file.schema';
 import { MediaPreviewActivity } from './media-preview';
+import crypto from 'react-native-nitro-crypto';
 
 interface SendDirectMessageProps extends ComponentProps<typeof Box> {
   conversationId: string;
@@ -58,8 +59,19 @@ export function SendDirectMessage({
     },
     resolver: arktypeResolver(
       type({
-        text: '0 < string <= 1000',
+        text: 'string <= 1000',
         file: fileSchema.or('undefined'),
+      }).narrow((data, ctx) => {
+        const isEmptyText = data.text === '' || data.text === undefined;
+
+        if (isEmptyText && data.file === undefined) {
+          ctx.reject({
+            expected: 'message or file required',
+            actual: '',
+          });
+        }
+
+        return true;
       })
     ),
   });
@@ -118,14 +130,42 @@ export function SendDirectMessage({
   };
 
   // TODO: Need to implement photo upload
-  const onSubmit = (data: { text: string; file: File | undefined }) => {
+  const onSubmit = (data: { text?: string; file?: File | undefined }) => {
     console.log(data);
+
+    const rawText = typeof data.text === 'string' ? data.text : '';
+    const trimmed = rawText.trimEnd();
+    const content = trimmed === '' ? null : trimmed;
+
+    // Block sending empty text when there's no file attached
+    if (content === null && data.file === undefined) {
+      const newId = crypto.randomInt.toString();
+
+      toast.show({
+        id: newId,
+        placement: 'top',
+        duration: 2000,
+        render: ({ id: toastRenderingId }) => {
+          const uniqueToastId = 'toast-' + toastRenderingId;
+
+          return (
+            <Toast nativeID={uniqueToastId} action="muted" variant="solid">
+              <ToastTitle>Cannot send empty message</ToastTitle>
+
+              <ToastDescription>Type a message or attach a file.</ToastDescription>
+            </Toast>
+          );
+        },
+      });
+
+      return;
+    }
 
     handleSubmit({
       conversationId,
       receiverId,
       socket,
-      content: data.text.trimEnd(),
+      content,
       file: data.file,
       deletedAt: undefined,
     });

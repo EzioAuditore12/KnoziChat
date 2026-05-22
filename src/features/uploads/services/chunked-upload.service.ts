@@ -5,6 +5,7 @@ import { fetch } from 'react-native-nitro-fetch';
 import type { File } from '@/features/common/schemas/file.schema';
 
 import { authorizeUploadVideoApi } from '@/features/uploads/api/authorize-upload-video.api';
+import { authorizeUploadImageApi } from '../api/authorize-upload-image.api';
 
 // 👇 Appwrite STRICTLY requires chunks to be exactly 5MB (except the last one)
 const APPWRITE_CHUNK_SIZE = 5 * 1024 * 1024;
@@ -38,6 +39,11 @@ export interface UploadCallbacks {
   onSessionCreated?: (session: UploadSession) => void;
 }
 
+enum UploadMediaType {
+  IMAGE = 'image',
+  VIDEO = 'video',
+}
+
 export class ChunkUploadService {
   async uploadFile(
     file: File,
@@ -47,12 +53,19 @@ export class ChunkUploadService {
   ): Promise<UploadResult> {
     callbacks?.onStatusChange?.('Preparing upload...');
 
+    const uploadMediaType = this.getUploadMediaType(file);
+
     const uploadConfig =
       existingSession ??
-      (await authorizeUploadVideoApi({
-        fileName: file.name,
-        mimeType: file.type,
-      }));
+      (uploadMediaType === UploadMediaType.IMAGE
+        ? await authorizeUploadImageApi({
+            fileName: file.name,
+            mimeType: file.type,
+          })
+        : await authorizeUploadVideoApi({
+            fileName: file.name,
+            mimeType: file.type,
+          }));
 
     const { url, endpoint, bucketId, authorizationToken, projectId } = uploadConfig;
     const fileId = existingSession?.fileId ?? randomUUID();
@@ -246,6 +259,14 @@ export class ChunkUploadService {
 
   private getFilePath(uri: string) {
     return uri.startsWith('file://') ? uri.replace('file://', '') : uri;
+  }
+
+  private getUploadMediaType(file: File): UploadMediaType {
+    if (file.contentType === UploadMediaType.IMAGE || file.type.startsWith('image/')) {
+      return UploadMediaType.IMAGE;
+    }
+
+    return UploadMediaType.VIDEO;
   }
 }
 

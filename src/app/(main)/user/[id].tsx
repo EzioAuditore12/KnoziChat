@@ -1,4 +1,4 @@
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -9,44 +9,9 @@ import { UserProfile } from '@/features/common/components/user/profile';
 
 import { useGetUser } from '@/features/common/hooks/queries/use-get-user';
 
-import { conversationDirectRepository } from '@/db/repositories/conversation-direct.repository';
 import { UserProfileLoading } from '@/features/common/components/user/profile-loading';
 import { useRefreshOnFocus } from '@/hooks/use-refresh-on-focus';
-
-const navgateToChat = async ({
-  userId,
-  avatar,
-  firstName,
-  lastName,
-}: {
-  userId: string;
-  avatar: string | null;
-  firstName: string;
-  lastName: string;
-}) => {
-  const existingCoversationWithUser = await conversationDirectRepository.getByUserId(userId);
-
-  router.dismissTo('/(main)');
-
-  if (existingCoversationWithUser) {
-    router.navigate({
-      pathname: '/(main)/chat/direct/[id]',
-      params: {
-        id: existingCoversationWithUser.id,
-        userId: existingCoversationWithUser.userId,
-      },
-    });
-    return;
-  }
-
-  router.navigate({
-    pathname: '/(main)/chat/new/direct/[id]',
-    params: {
-      id: userId,
-      name: firstName,
-    },
-  });
-};
+import { navgateToChat } from '@/features/chat/components/direct/utils/navigate-to-chat';
 
 export default function UserDetails() {
   const safeAreaInsets = useSafeAreaInsets();

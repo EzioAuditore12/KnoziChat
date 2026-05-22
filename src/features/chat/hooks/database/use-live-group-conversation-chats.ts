@@ -97,11 +97,13 @@ export function useLiveGroupConversationChats({
       groups[date].push(message);
     }
 
-    // Convert the dictionary back to an array of objects
-    return Object.entries(groups).map(([date, messages]) => ({
-      date,
-      data: messages.reverse(),
-    }));
+    // Convert the dictionary back to an array of objects and keep sections in chronological order.
+    return Object.entries(groups)
+      .map(([date, messages]) => ({
+        date,
+        data: [...messages].reverse(),
+      }))
+      .sort((left, right) => left.data[0].createdAt - right.data[0].createdAt);
   }, [data]);
 
   return {
