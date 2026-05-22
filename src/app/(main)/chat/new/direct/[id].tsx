@@ -13,6 +13,8 @@ export default function NewDirectChatScreen() {
     name: string;
   };
 
+  console.log(id);
+
   const { mutate, isPending } = useInitializeDirectChat();
 
   return (
