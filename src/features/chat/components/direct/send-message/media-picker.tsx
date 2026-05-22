@@ -30,6 +30,14 @@ export function MediaPicker({ className, value, onChange, ...props }: MediaPicke
     await sheet.current?.dismiss();
   };
 
+  const handleChange = (data: File | undefined) => {
+    onChange(data);
+
+    if (data) {
+      void dismiss();
+    }
+  };
+
   return (
     <Box className={cn(className)} {...props}>
       <Button onPress={present}>
@@ -51,21 +59,21 @@ export function MediaPicker({ className, value, onChange, ...props }: MediaPicke
               _extra={{
                 className: 'col-span-3',
               }}>
-              <MediaImageInput value={value} onChange={onChange} />
+              <MediaImageInput value={value} onChange={handleChange} />
             </GridItem>
 
             <GridItem
               _extra={{
                 className: 'col-span-3',
               }}>
-              <MediaVideoInput value={value} onChange={onChange} />
+              <MediaVideoInput value={value} onChange={handleChange} />
             </GridItem>
 
             <GridItem
               _extra={{
                 className: 'col-span-3',
               }}>
-              <MediaFileInput value={value} onChange={onChange} />
+              <MediaFileInput value={value} onChange={handleChange} />
             </GridItem>
           </Grid>
         </Box>
