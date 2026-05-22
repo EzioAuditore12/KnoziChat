@@ -13,7 +13,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import { UIIcon } from '@gluestack-ui/core/icon/creator';
-import { tva , withStyleContext } from '@gluestack-ui/utils/nativewind-utils';
+import { tva, withStyleContext } from '@gluestack-ui/utils/nativewind-utils';
 import type { VariantProps } from '@gluestack-ui/utils/nativewind-utils';
 import { withUniwind } from 'uniwind';
 import {
