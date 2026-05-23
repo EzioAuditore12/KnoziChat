@@ -1,56 +1,250 @@
-# Welcome to your Expo app 👋
+# KnoziChat
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+> A modern real-time messaging platform powered by React Native, NestJS, Socket.IO, Redis, and AI-enabled conversations.
 
-## Get started
+![](./docs/images/thumbnail.png)
 
-1. Install dependencies
+## APK Download
 
-   ```bash
-   npm install
-   ```
+### Android APK
 
-2. Start the app
+https://expo.dev/artifacts/eas/jD1GYnAXZ8PgSLRyHE3TST.apk
 
-   ```bash
-   npx expo start
-   ```
+KnoziChat is an offline-first Android chat application designed around scalable real-time communication, intelligent group interactions, AI-assisted conversations, and distributed backend architecture.
 
-In the output, you'll find options to open the app in a
+The platform combines:
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- Real-time one-to-one and group messaging
+- AI-powered contextual conversations
+- Local-first synchronization
+- Redis-backed conversational state management
+- Scalable event-driven backend systems
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Backend and API
 
-## Get a fresh project
+This app is built with a NestJS backend and a FastAPI AI service.
 
-When you're ready, run:
+For backend implementation details, visit:
+
+- Backend Repository: https://github.com/EzioAuditore12/KnoziChat-Backend
+
+Hosted API docs:
+
+- NestJS API Docs: https://knozichat.online/api
+- FastAPI Service Docs: https://knozify.space/docs
+
+---
+
+# TODO / Roadmap
+
+- [ ] Publish application to Google Play Store
+- [ ] Push notification support
+- [ ] Offline storage and synchronization for media files
+- [ ] Voice and video calling support
+- [ ] End-to-end encrypted conversations
+- [ ] Message reactions and threaded replies
+- [ ] AI memory persistence across conversations
+
+---
+
+# Preview
+
+| Home Screen                        | Personal Chat                    |
+| ---------------------------------- | -------------------------------- |
+| ![](./docs/images/home-screen.png) | ![](./docs/images/messaging.png) |
+
+| Group Information                        | Group Messaging                        |
+| ---------------------------------------- | -------------------------------------- |
+| ![](./docs/images/group-information.png) | ![](./docs/images/group-messaging.png) |
+
+| Search                           |
+| -------------------------------- |
+| ![](./docs/images/searching.png) |
+
+| Knozi AI                         |
+| -------------------------------- |
+| ![](./docs/images/ai.png) |
+
+---
+
+# Features
+
+- Real-time one-to-one and group messaging
+- AI-enabled contextual group conversations
+- Offline-first chat synchronization using SQLite
+- Local full-text search using SQLite FTS5
+- Media and image sharing
+- JWT-based authentication and authorization
+- Redis-backed conversational session management
+- Context-aware AI assistant integrated into conversations
+- Hybrid polyglot persistence architecture
+- Modern mobile-first UI built using React Native + Expo
+
+---
+
+# Architecture Overview
+
+KnoziChat follows a distributed event-driven backend architecture optimized for low-latency communication and offline-first synchronization.
+
+## Core Components
+
+### Frontend
+
+- React Native
+- Expo
+- TypeScript
+- Zustand
+- React Query
+- NativeWind
+- SQLite
+
+### Backend
+
+- NestJS
+- Fastify
+- Node.js
+- Socket.IO
+- FastAPI
+- LangChain
+
+### Databases & Infrastructure
+
+- PostgreSQL
+- MongoDB
+- Redis
+- SQLite
+- Docker
+
+---
+
+# Repositories
+
+## Frontend Repository
+
+https://github.com/EzioAuditore12/KnoziChat
+
+## Backend Repository
+
+https://github.com/EzioAuditore12/KnoziChat-Backend
+
+---
+
+# AI-Powered Conversations
+
+KnoziChat integrates FastAPI and LangChain to enable contextual AI interactions directly inside conversations and group chats.
+
+The AI layer is capable of:
+
+- Maintaining conversational awareness
+- Understanding ongoing group context
+- Generating intelligent contextual replies
+- Supporting interactive AI-assisted communication
+
+---
+
+# Offline-First Architecture
+
+The application uses SQLite locally on-device to:
+
+- Persist conversations offline
+- Maintain cached message history
+- Enable instant UI rendering
+- Synchronize chats once connectivity is restored
+
+---
+
+# Tech Stack
+
+| Layer          | Technologies                   |
+| -------------- | ------------------------------ |
+| Frontend       | React Native, Expo, TypeScript |
+| Backend        | NestJS, Fastify, Node.js       |
+| Realtime       | Socket.IO                      |
+| AI Layer       | FastAPI, LangChain             |
+| Databases      | PostgreSQL, MongoDB, SQLite    |
+| Infrastructure | Redis, Docker                  |
+
+---
+
+# Getting Started
+
+## Clone Frontend Repository
 
 ```bash
-npm run reset-project
+git clone https://github.com/EzioAuditore12/KnoziChat
+cd KnoziChat
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-### Other setup steps
+## Install Dependencies
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+```bash
+pnpm install
+```
 
-## Learn more
+---
 
-To learn more about developing your project with Expo, look at the following resources:
+## Start Expo Client
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+pnpm start
+```
 
-## Join the community
+---
 
-Join our community of developers creating universal apps.
+## Clone Backend Repository
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```bash
+git clone https://github.com/EzioAuditore12/KnoziChat-Backend
+cd KnoziChat-Backend
+```
+
+---
+
+## Start Backend
+
+```bash
+pnpm install
+pnpm run start:dev
+```
+
+---
+
+# Environment Variables
+
+## Client
+
+```env
+EXPO_PUBLIC_API_URL=
+EXPO_PUBLIC_SOCKET_URL=
+EXPO_PUBLIC_AI_URL=
+```
+
+## Backend
+
+```env
+DATABASE_URL=
+JWT_SECRET=
+REDIS_URL=
+MONGODB_URL=
+```
+
+---
+
+# Why KnoziChat?
+
+KnoziChat was built to explore:
+
+- Real-time distributed systems
+- Offline-first mobile architectures
+- AI-assisted communication
+- Scalable backend engineering
+- Polyglot persistence strategies
+- Modern mobile system design
+
+---
+
+# License
+
+This project is intended for educational and portfolio purposes.
