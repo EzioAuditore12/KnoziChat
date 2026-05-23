@@ -12,7 +12,7 @@ import { SendDirectMessage } from '@/features/chat/components/direct/send-messag
 
 import { useSocketState } from '@/store/socket';
 
-import { sendMessageEvent } from '@/features/chat/events/send-message.event';
+import { sendMessageEvent } from '@/features/chat/events/send-message';
 
 import { useLiveChatterInfo } from '@/features/chat/hooks/database/use-live-chatter-info';
 import { useLiveDirectChats } from '@/features/chat/hooks/database/use-live-one-to-one-chats';
@@ -43,20 +43,30 @@ export default function ChattingScreen() {
   }, [id]);
 
   useEffect(() => {
-    if (socket?.connected) {
+    if (!socket) return;
+
+    const markConversationSeen = () => {
       socket.emit('conversation:join', id);
 
       socket.emit('message:seen', {
         conversationId: id,
       });
+    };
+
+    if (socket.connected) {
+      markConversationSeen();
     }
 
+    socket.on('connect', markConversationSeen);
+
     return () => {
+      socket.off('connect', markConversationSeen);
+
       if (socket?.connected) {
         socket.emit('conversation:leave', id);
       }
     };
-  }, [socket, id, socket?.connected]);
+  }, [socket, id]);
 
   const { groupedMessages, fetchNextPage: fetchNextChats } = useLiveDirectChats({
     id,
@@ -131,6 +141,7 @@ export default function ChattingScreen() {
 
       <Box className="flex-1">
         <ChatDirectList
+          receiverId={userId}
           data={reversedGroupedMessages}
           onStartReached={fetchNextChats}
           selectedMessageIds={selectedMessageIds}

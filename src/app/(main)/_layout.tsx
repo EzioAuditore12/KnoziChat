@@ -50,8 +50,7 @@ export default function MainLayoutScreens() {
 
       <Stack.Screen name="chat/new/direct/[id]" />
       <Stack.Screen name="chat/new/group/index" />
-
-      <Stack.Screen name="test/index" options={{ headerShown: false }} />
+      <Stack.Screen name="chat/ai/index" />
     </Stack>
   );
 }

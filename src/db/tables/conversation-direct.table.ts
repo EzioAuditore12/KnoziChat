@@ -19,6 +19,11 @@ export const conversationDirectTable = sqliteTable(
       .notNull()
       .references(() => userTable.id),
 
+    myLastSeenAt: integer('my_last_seen_at').notNull().default(0),
+
+    // When did the other person last read this chat?
+    theirLastSeenAt: integer('their_last_seen_at').notNull().default(0),
+
     createdAt: integer('created_at')
       .$defaultFn(() => Date.now())
       .notNull(),

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { AppStateStatus } from 'react-native';
 import { syncDatabase } from '@/db/sync';
 import { useAppState } from '@/hooks/use-app-state';
@@ -11,26 +11,44 @@ const POLLING_INTERVAL_MS = 1000 * 60 * 10; // e.g., run every 10 minutes while 
 export function useSyncEngine() {
   const { user } = useAuthStore((state) => state);
   const isSyncing = useRef(false);
+  const pendingSyncRef = useRef(false);
+  const userRef = useRef(user);
+  const runForegroundSyncRef = useRef<(() => Promise<void>) | null>(null);
 
-  // Core syncing logic
-  const runForegroundSync = useCallback(async () => {
-    if (!user || isSyncing.current) return;
+  useEffect(() => {
+    userRef.current = user;
+  }, [user]);
 
-    try {
-      isSyncing.current = true;
-      console.log(`[Foreground Sync] Running at ${new Date().toISOString()}`);
-      await syncDatabase.pullChanges();
-    } catch (error) {
-      console.error('[Foreground Sync] Failed:', error);
-    } finally {
-      isSyncing.current = false;
-    }
+  useEffect(() => {
+    runForegroundSyncRef.current = async () => {
+      if (!userRef.current || isSyncing.current) return;
+
+      try {
+        isSyncing.current = true;
+        console.log(`[Foreground Sync] Running at ${new Date().toISOString()}`);
+        await syncDatabase.pullChanges();
+      } catch (error) {
+        console.error('[Foreground Sync] Failed:', error);
+      } finally {
+        isSyncing.current = false;
+
+        if (pendingSyncRef.current) {
+          pendingSyncRef.current = false;
+          void runForegroundSyncRef.current?.();
+        }
+      }
+    };
   }, [user]);
 
   // 1. Run sync immediately when app comes to the foreground
   useAppState((status: AppStateStatus) => {
     if (status === 'active') {
-      runForegroundSync();
+      if (isSyncing.current) {
+        pendingSyncRef.current = true;
+        return;
+      }
+
+      void runForegroundSyncRef.current?.();
     }
   });
 
@@ -42,13 +60,15 @@ export function useSyncEngine() {
     registerBackgroundSyncTask();
 
     // Trigger an initial foreground sync
-    runForegroundSync();
+    void runForegroundSyncRef.current?.();
 
     // Setup an interval to sync continuously while the app remains open
-    const intervalId = setInterval(runForegroundSync, POLLING_INTERVAL_MS);
+    const intervalId = setInterval(() => {
+      void runForegroundSyncRef.current?.();
+    }, POLLING_INTERVAL_MS);
 
     return () => {
       clearInterval(intervalId);
     };
-  }, [user, runForegroundSync]);
+  }, [user]);
 }

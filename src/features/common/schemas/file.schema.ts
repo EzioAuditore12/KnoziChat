@@ -6,6 +6,7 @@ export const fileSchema = type({
   type: 'string',
   size: 'number',
   contentType: "'image' | 'file' | 'video'",
+  'thumbnail?': type('string').or('undefined'),
 });
 
 export type File = typeof fileSchema.infer;

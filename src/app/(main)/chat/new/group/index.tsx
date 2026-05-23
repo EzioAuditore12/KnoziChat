@@ -1,7 +1,7 @@
 import { Stack } from 'expo-router';
 import { useDebounce } from 'use-debounce';
 
-import { Activity, useEffect, useState } from 'react';
+import { Activity, useState } from 'react';
 
 import { useGetUsers } from '@/features/common/hooks/queries/use-get-users';
 
@@ -36,17 +36,10 @@ export default function NewGroupChatCreationScreen() {
 
   useRefreshOnFocus(refetch);
 
-  const [knownUsers, setKnownUsers] = useState<Map<string, any>>(new Map());
-
-  useEffect(() => {
-    if (data?.pages) {
-      setKnownUsers((prev) => {
-        const next = new Map(prev);
-        data.pages.flatMap((p) => p.data).forEach((u) => next.set(u.id, u));
-        return next;
-      });
-    }
-  }, [data]);
+  const knownUsers = new Map();
+  if (data?.pages) {
+    data.pages.flatMap((p) => p.data).forEach((u) => knownUsers.set(u.id, u));
+  }
 
   const currentSearchUsers = (data?.pages.flatMap((page) => page.data) ?? []).filter(
     (u) => u.id !== operatingUser?.id

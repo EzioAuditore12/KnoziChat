@@ -27,12 +27,25 @@ import {
 } from '@/components/ui/modal';
 import { Text } from '@/components/ui/text';
 
+import { AvatarInput } from './avatar-input';
+
+import type { InitializeGroupChatParam } from '@/features/chat/schemas/initialize-group-chat/param.schema';
+
+type GroupCreationFormValues = {
+  name: string;
+  avatar: InitializeGroupChatParam['avatar'];
+};
+
 interface GroupCreationDialogProps {
   className?: string;
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   participants: string[];
-  handleFormSubmit: (data: { name: string; participants: string[] }) => void;
+  handleFormSubmit: (data: {
+    name: string;
+    participants: string[];
+    avatar: InitializeGroupChatParam['avatar'];
+  }) => void;
   isFormSubmitting: boolean;
 }
 
@@ -49,16 +62,27 @@ export function GroupCreationDialog({
     control,
     formState: { errors },
     handleSubmit,
-  } = useForm<{ name: string }>({
+  } = useForm<GroupCreationFormValues>({
     defaultValues: {
       name: '',
+      avatar: undefined,
     },
-    resolver: arktypeResolver(type({ name: '0 < string <= 50' })),
+    resolver: arktypeResolver(
+      type({
+        name: '0 < string <= 50',
+        avatar: type(
+          type({
+            uri: 'string',
+            name: 'string',
+            type: 'string',
+          })
+        ).or('undefined'),
+      })
+    ),
   });
 
-  const onSubmit = (data: { name: string }) => {
-    console.log(data);
-    handleFormSubmit({ name: data.name, participants });
+  const onSubmit = (data: GroupCreationFormValues) => {
+    handleFormSubmit({ name: data.name, participants, avatar: data.avatar });
   };
 
   return (
@@ -89,6 +113,22 @@ export function GroupCreationDialog({
               <Text size="sm" className="mb-4 text-zinc-500 dark:text-zinc-400">
                 Are you sure you want to proceed with this action? This cannot be undone.
               </Text>
+
+              <Controller
+                control={control}
+                name="avatar"
+                render={({ field: { value, onChange } }) => (
+                  <Box className="mb-4 items-center gap-2">
+                    <FormControlLabel className="mb-1.5 self-start">
+                      <FormControlLabelText className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                        Avatar
+                      </FormControlLabelText>
+                    </FormControlLabel>
+
+                    <AvatarInput value={value} onChange={onChange} />
+                  </Box>
+                )}
+              />
 
               <Controller
                 control={control}

@@ -6,8 +6,6 @@ import { desc, eq, sql } from 'drizzle-orm';
 import { db } from '@/db';
 import { conversationGroupMemberTable } from '@/db/tables/conversation-group-member.table';
 import { userTable } from '@/db/tables/user.table';
-import { useLiveInfiniteQuery } from '@/db/hooks/use-live-infinite-query';
-import { useAuthStore } from '@/store/auth';
 
 import { Center } from '@/components/ui/center';
 import { Divider } from '@/components/ui/divider';
@@ -17,11 +15,18 @@ import { ChatGroupDetailsHeader } from '@/features/chat/components/group/details
 import { GroupMemberCard } from '@/features/chat/components/group/details/member-card';
 
 import { useLiveGroupConversationDetails } from '@/features/chat/hooks/database/use-live-group-conversation-details';
+import { useLiveInfiniteQuery } from '@/db/hooks/use-live-infinite-query';
+
+import { useAuthStore } from '@/store/auth';
+import { navgateToChat } from '@/features/chat/components/direct/utils/navigate-to-chat';
 
 type GroupConversationMember = {
   id: string;
   name: string;
+  lastName: string;
+  userId: string;
   isAdmin: boolean;
+  avatar: string | null;
   isMe: boolean;
 };
 
@@ -38,8 +43,11 @@ export default function ChatGroupDetails() {
     query: db
       .select({
         id: conversationGroupMemberTable.id,
+        userId: conversationGroupMemberTable.userId,
         name: userTable.firstName,
+        lastName: userTable.lastName,
         isAdmin: conversationGroupMemberTable.isAdmin,
+        avatar: userTable.avatar,
         isMe: sql<boolean>`${conversationGroupMemberTable.userId} = ${currentUserId}`.as('isMe'),
       })
       .from(conversationGroupMemberTable)
@@ -68,15 +76,30 @@ export default function ChatGroupDetails() {
           style={{ paddingTop: safeAreaInsets.top + 20 }}
           className="items-center px-5"
           data={{
-            avatar: groupDetails?.avatar ?? null,
-            membersLength: members?.length ?? 0,
-            name: groupDetails?.name ?? 'Group Chat',
-            createdAt: new Date(groupDetails?.createdAt ?? Date.now()),
-            updatedAt: new Date(groupDetails?.updatedAt ?? Date.now()),
+            avatar: groupDetails.avatar,
+            membersLength: members.length,
+            name: groupDetails.name,
+            createdAt: new Date(groupDetails.createdAt),
+            updatedAt: new Date(groupDetails.updatedAt),
           }}
         />
       }
-      renderItem={({ item }) => <GroupMemberCard data={item} />}
+      renderItem={({ item }) => (
+        <GroupMemberCard
+          data={item}
+          onPress={() =>
+            navgateToChat(
+              {
+                avatar: item.avatar,
+                firstName: item.name,
+                userId: item.userId,
+                lastName: item.lastName,
+              },
+              false
+            )
+          }
+        />
+      )}
     />
   );
 }

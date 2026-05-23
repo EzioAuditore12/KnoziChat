@@ -13,15 +13,17 @@ import { HStack } from '@/components/ui/hstack';
 interface GroupMemberCardProps extends ComponentProps<typeof Card> {
   className?: string;
   data: {
+    id: string;
     name: string;
     isAdmin: boolean;
+    avatar: string | null;
     isMe: boolean;
   };
   onPress?: ThrottledTouchableProps['onPress'];
 }
 
 export function GroupMemberCard({ className, data, onPress }: GroupMemberCardProps) {
-  const { name, isAdmin, isMe } = data;
+  const { name, isAdmin, isMe, avatar } = data;
 
   return (
     <ThrottledTouchable onPress={isMe ? undefined : onPress}>
@@ -30,7 +32,7 @@ export function GroupMemberCard({ className, data, onPress }: GroupMemberCardPro
           <Avatar>
             <AvatarFallbackText>{name}</AvatarFallbackText>
 
-            <AvatarImage source={{ uri: undefined }} alt={name} />
+            <AvatarImage source={{ uri: avatar ?? undefined }} alt={name} />
           </Avatar>
 
           <Box>

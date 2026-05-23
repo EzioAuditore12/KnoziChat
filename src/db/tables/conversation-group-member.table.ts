@@ -27,9 +27,15 @@ export const conversationGroupMemberTable = sqliteTable(
       .notNull()
       .default(false),
 
-    joinedAt: integer('joined_at')
+    createdAt: integer('created_at')
       .$defaultFn(() => Date.now())
       .notNull(),
+
+    updatedAt: integer('updated_at')
+      .$onUpdate(() => Date.now())
+      .notNull(),
+
+    deletedAt: integer('deleted_at'),
   },
   (t) => [
     index('conversation_group_member_group_id_idx').on(t.groupId),

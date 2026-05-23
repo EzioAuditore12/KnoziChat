@@ -11,6 +11,7 @@ import { ArrowDownIcon, Icon } from '@/components/ui/icon';
 
 import { ChatOneToOneBubble } from './chat-bubble';
 import { DirectChatWithAttachment } from '@/features/chat/types/direct-chats';
+import { VideoPlaybackContext } from './video-context';
 
 interface ChatSection {
   date: string;
@@ -42,6 +43,8 @@ interface ChatDirectListProps {
   selectedMessageIds: string[];
 
   onSelectionChange: (ids: string[]) => void;
+
+  receiverId: string;
 }
 
 export function ChatDirectList({
@@ -49,6 +52,7 @@ export function ChatDirectList({
   className,
   onStartReached,
   selectedMessageIds,
+  receiverId,
   onSelectionChange,
 }: ChatDirectListProps) {
   const ref = useRef<FlashListRef<FlattenedItem> | null>(null);
@@ -58,6 +62,8 @@ export function ChatDirectList({
   const [contentHeight, setContentHeight] = useState(0);
 
   const [isAtListEnd, setIsAtListEnd] = useState(true);
+
+  const [playingUri, setPlayingUri] = useState<string | null>(null);
 
   const isSelectionMode = selectedMessageIds.length > 0;
 
@@ -118,52 +124,55 @@ export function ChatDirectList({
   };
 
   return (
-    <View
-      className={cn('relative flex-1', className)}
-      onLayout={(e) => setViewHeight(e.nativeEvent.layout.height)}>
-      <FlashList
-        ref={ref}
-        data={flattenedData}
-        keyExtractor={(item) => item.id}
-        onScroll={handleScroll}
-        onStartReached={onStartReached}
-        onStartReachedThreshold={0.5}
-        onContentSizeChange={(_, h) => setContentHeight(h)}
-        maintainVisibleContentPosition={{
-          startRenderingFromBottom: true,
-          animateAutoScrollToBottom: true,
-          autoscrollToBottomThreshold: 0.1,
-        }}
-        renderItem={({ item }) => {
-          if (item.type === 'HEADER') {
+    <VideoPlaybackContext.Provider value={{ playingUri, setPlayingUri }}>
+      <View
+        className={cn('relative flex-1', className)}
+        onLayout={(e) => setViewHeight(e.nativeEvent.layout.height)}>
+        <FlashList
+          ref={ref}
+          data={flattenedData}
+          keyExtractor={(item) => item.id}
+          onScroll={handleScroll}
+          onStartReached={onStartReached}
+          onStartReachedThreshold={0.5}
+          onContentSizeChange={(_, h) => setContentHeight(h)}
+          maintainVisibleContentPosition={{
+            startRenderingFromBottom: true,
+            animateAutoScrollToBottom: true,
+            autoscrollToBottomThreshold: 0.1,
+          }}
+          renderItem={({ item }) => {
+            if (item.type === 'HEADER') {
+              return (
+                <Badge className="mx-auto my-4 bg-neutral-300/70 px-3 dark:bg-neutral-700/70">
+                  <BadgeText className="text-xs font-medium text-neutral-800 dark:text-neutral-200">
+                    {item.title}
+                  </BadgeText>
+                </Badge>
+              );
+            }
+
             return (
-              <Badge className="mx-auto my-4 bg-neutral-300/70 px-3 dark:bg-neutral-700/70">
-                <BadgeText className="text-xs font-medium text-neutral-800 dark:text-neutral-200">
-                  {item.title}
-                </BadgeText>
-              </Badge>
+              <ChatOneToOneBubble
+                receiverId={receiverId}
+                data={item}
+                selected={selectedMessageIds.includes(item.id)}
+                onPress={() => handlePress(item.id)}
+                onLongPress={() => handleLongPress(item.id)}
+              />
             );
-          }
+          }}
+        />
 
-          return (
-            <ChatOneToOneBubble
-              data={item}
-              selected={selectedMessageIds.includes(item.id)}
-              onPress={() => handlePress(item.id)}
-              onLongPress={() => handleLongPress(item.id)}
-            />
-          );
-        }}
-      />
-
-      <Activity mode={viewHeight < contentHeight && !isAtListEnd ? 'visible' : 'hidden'}>
-        <Button
-          variant="secondary"
-          onPress={scrollToEnd}
-          className="absolute right-2 bottom-2 rounded-full">
-          <Icon as={ArrowDownIcon} size="xl" />
-        </Button>
-      </Activity>
-    </View>
+        <Activity mode={viewHeight < contentHeight && !isAtListEnd ? 'visible' : 'hidden'}>
+          <Button
+            variant="secondary"
+            onPress={scrollToEnd}
+            className="absolute right-2 bottom-2 rounded-full">
+            <Icon as={ArrowDownIcon} size="xl" />
+          </Button>
+        </Activity>
+      </View>
+    </VideoPlaybackContext.Provider>
   );
 }

@@ -47,7 +47,11 @@ export function VerificationRegisterationForm({
   const inputRefs = useRef<(TextInput | null)[]>([]);
 
   useEffect(() => {
-    setTimeLeft(duration);
+    const timeoutId = setTimeout(() => {
+      setTimeLeft(duration);
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
   }, [duration]);
 
   useEffect(() => {

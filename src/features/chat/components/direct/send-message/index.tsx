@@ -15,11 +15,13 @@ import { HStack } from '@/components/ui/hstack';
 import { Input, InputField } from '@/components/ui/input';
 
 import { Socket } from '@/lib/socket-io';
-import { SendMessageEvent } from '../../../events/send-message.event';
+import { SendMessageEvent } from '../../../events/send-message';
 
 import { Toast, ToastDescription, ToastTitle, useToast } from '@/components/ui/toast';
 import { MediaPicker } from './media-picker';
 import { File, fileSchema } from '@/features/common/schemas/file.schema';
+import { MediaPreviewActivity } from './media-preview';
+import crypto from 'react-native-nitro-crypto';
 
 interface SendDirectMessageProps extends ComponentProps<typeof Box> {
   conversationId: string;
@@ -57,8 +59,19 @@ export function SendDirectMessage({
     },
     resolver: arktypeResolver(
       type({
-        text: '0 < string <= 1000',
+        text: 'string <= 1000',
         file: fileSchema.or('undefined'),
+      }).narrow((data, ctx) => {
+        const isEmptyText = data.text === '' || data.text === undefined;
+
+        if (isEmptyText && data.file === undefined) {
+          ctx.reject({
+            expected: 'message or file required',
+            actual: '',
+          });
+        }
+
+        return true;
       })
     ),
   });
@@ -117,14 +130,42 @@ export function SendDirectMessage({
   };
 
   // TODO: Need to implement photo upload
-  const onSubmit = (data: { text: string; file: File | undefined }) => {
+  const onSubmit = (data: { text?: string; file?: File | undefined }) => {
     console.log(data);
+
+    const rawText = typeof data.text === 'string' ? data.text : '';
+    const trimmed = rawText.trimEnd();
+    const content = trimmed === '' ? null : trimmed;
+
+    // Block sending empty text when there's no file attached
+    if (content === null && data.file === undefined) {
+      const newId = crypto.randomInt.toString();
+
+      toast.show({
+        id: newId,
+        placement: 'top',
+        duration: 2000,
+        render: ({ id: toastRenderingId }) => {
+          const uniqueToastId = 'toast-' + toastRenderingId;
+
+          return (
+            <Toast nativeID={uniqueToastId} action="muted" variant="solid">
+              <ToastTitle>Cannot send empty message</ToastTitle>
+
+              <ToastDescription>Type a message or attach a file.</ToastDescription>
+            </Toast>
+          );
+        },
+      });
+
+      return;
+    }
 
     handleSubmit({
       conversationId,
       receiverId,
       socket,
-      content: data.text,
+      content,
       file: data.file,
       deletedAt: undefined,
     });
@@ -143,64 +184,77 @@ export function SendDirectMessage({
 
   return (
     <Box className={cn('border-t-2 border-gray-400', className)} {...props}>
-      <HStack className="items-end gap-2 px-2 py-2">
-        <Controller
-          control={control}
-          name="file"
-          render={({ field: { onChange, value } }) => (
-            <MediaPicker value={value} onChange={onChange} />
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="text"
-          render={({ field: { onChange, value } }) => (
-            <Input className="max-h-32 flex-1 rounded-2xl">
-              <InputField
-                placeholder="Type a message..."
-                value={value}
-                textAlignVertical="top"
-                multiline
-                numberOfLines={1}
-                maxLength={1000}
-                className="py-3"
-                onFocus={() => {
-                  handleFocus();
-                }}
-                onBlur={() => {
-                  stopTyping.cancel();
-
-                  socket?.emit('conversation:typing', {
-                    conversationId,
-                    isTyping: false,
-                  });
-
-                  isTypingRef.current = false;
-                }}
-                onChangeText={(text) => {
-                  onChange(text);
-
-                  if (!isTypingRef.current) {
-                    isTypingRef.current = true;
-
-                    socket?.emit('conversation:typing', {
-                      conversationId,
-                      isTyping: true,
-                    });
-                  }
-
-                  stopTyping();
-                }}
+      <Controller
+        control={control}
+        name="file"
+        render={({ field: { onChange, value } }) => (
+          <>
+            {value && (
+              <MediaPreviewActivity
+                file={value}
+                onRemove={() => onChange(undefined)}
+                className="mx-2 mt-2"
               />
-            </Input>
-          )}
-        />
+            )}
 
-        <Button onPress={handleFormSubmit(onSubmit)} size="sm" className="h-11 rounded-2xl px-4">
-          <ButtonText>Send</ButtonText>
-        </Button>
-      </HStack>
+            <HStack className="items-end gap-2 px-2 py-2">
+              <MediaPicker value={value} onChange={onChange} />
+
+              <Controller
+                control={control}
+                name="text"
+                render={({ field: { onChange, value } }) => (
+                  <Input className="max-h-32 flex-1 rounded-2xl">
+                    <InputField
+                      placeholder="Type a message..."
+                      value={value}
+                      textAlignVertical="top"
+                      multiline
+                      numberOfLines={1}
+                      maxLength={1000}
+                      className="py-3"
+                      onFocus={() => {
+                        handleFocus();
+                      }}
+                      onBlur={() => {
+                        stopTyping.cancel();
+
+                        socket?.emit('conversation:typing', {
+                          conversationId,
+                          isTyping: false,
+                        });
+
+                        isTypingRef.current = false;
+                      }}
+                      onChangeText={(text) => {
+                        onChange(text);
+
+                        if (!isTypingRef.current) {
+                          isTypingRef.current = true;
+
+                          socket?.emit('conversation:typing', {
+                            conversationId,
+                            isTyping: true,
+                          });
+                        }
+
+                        stopTyping();
+                      }}
+                    />
+                  </Input>
+                )}
+              />
+
+              <Button
+                onPress={handleFormSubmit(onSubmit)}
+                size="sm"
+                className="h-11 self-end rounded-2xl px-4">
+                <ButtonText>Send</ButtonText>
+              </Button>
+            </HStack>
+          </>
+        )}
+      />
 
       <Animated.View style={keyboardPadding} />
     </Box>

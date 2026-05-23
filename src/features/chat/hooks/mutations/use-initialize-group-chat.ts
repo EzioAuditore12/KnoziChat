@@ -9,6 +9,7 @@ import { db } from '@/db';
 import { ConversationGroupMember } from '@/db/tables/conversation-group-member.table';
 import { UserRepository } from '@/db/repositories/user.repository';
 import { ConversationGroupRepository } from '@/db/repositories/conversation-group.repository';
+import { ChatGroupRepository } from '@/db/repositories/chat-group.repository';
 
 export function useInitializeGroupChat() {
   return useMutation({
@@ -17,6 +18,7 @@ export function useInitializeGroupChat() {
       await db.transaction(async (transaction) => {
         const userRepository = new UserRepository(transaction);
         const conversationGroupRepository = new ConversationGroupRepository(transaction);
+        const chatGroupRepository = new ChatGroupRepository(transaction);
 
         const existingUsers = await userRepository.areExistingManyById(data.participantIds);
 
@@ -44,21 +46,28 @@ export function useInitializeGroupChat() {
           updatedAt: new Date(data.updatedAt).getTime(),
         });
 
+        const now = new Date(data.createdAt).getTime();
+
         const mappedConversationGroupMembers: ConversationGroupMember[] = data.participantIds.map(
           (userId) => ({
             id: `${data.id}:${userId}`,
-
             groupId: data.id,
-
             userId,
-
             isAdmin: data.adminIds.includes(userId),
-
-            joinedAt: new Date(data.createdAt).getTime(),
+            createdAt: now,
+            updatedAt: now,
+            deletedAt: null,
           })
         );
 
         await conversationGroupRepository.insertMultipleMembers(mappedConversationGroupMembers);
+
+        await chatGroupRepository.create({
+          ...data.chat,
+          createdAt: new Date(data.chat.createdAt).getTime(),
+          updatedAt: new Date(data.chat.updatedAt).getTime(),
+          deletedAt: data.chat.deletedAt ? new Date(data.chat.deletedAt).getTime() : null,
+        });
       });
 
       router.replace({

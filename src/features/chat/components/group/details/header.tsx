@@ -1,5 +1,5 @@
 import { cn } from '@gluestack-ui/utils';
-import { format, formatDistance } from '@bernagl/react-native-date';
+import { format, formatDistance, now } from '@bernagl/react-native-date';
 import type { ComponentProps } from 'react';
 
 import { Avatar, AvatarFallbackText, AvatarImage } from '@/components/ui/avatar';
@@ -25,17 +25,9 @@ export function ChatGroupDetailsHeader({ className, data, ...props }: ChatGroupD
   return (
     <Box className={cn(className)} {...props}>
       <Avatar className="h-28 w-28 rounded-full">
-        <AvatarImage
-          source={
-            avatar
-              ? {
-                  uri: avatar,
-                }
-              : undefined
-          }
-        />
+        <AvatarImage source={{ uri: avatar ?? undefined }} />
 
-        <AvatarFallbackText>{name?.[0] ?? 'G'}</AvatarFallbackText>
+        <AvatarFallbackText>{name[0]}</AvatarFallbackText>
       </Avatar>
 
       <Text size="2xl" className="mt-4 font-bold">
@@ -66,7 +58,7 @@ export function ChatGroupDetailsHeader({ className, data, ...props }: ChatGroupD
             </Text>
 
             <Text size="sm" className="font-medium">
-              {formatDistance(updatedAt, Date.now(), true)}
+              {formatDistance(updatedAt, now(), true)}
             </Text>
           </HStack>
         </VStack>

@@ -1,13 +1,14 @@
 import { type } from 'arktype';
 
 import { createChangesSchema } from '../create-change.schema';
+
 import { userSyncSchema } from '../sync-tables/user-sync.schema';
 import { conversationDirectSyncSchema } from '../sync-tables/conversation-direct-sync.schema';
 import { conversationGroupSyncSchema } from '../sync-tables/conversation-group-sync.schema';
 import { chatDirectSyncSchema } from '../sync-tables/chat-direct-sync.schema';
 import { chatGroupSyncSchema } from '../sync-tables/chat-group-sync.schema';
 import { chatAttachmentSyncSchema } from '../sync-tables/chat-attachment-sync.schema';
-import { conversationGroupMemberSchema } from '@/db/tables/conversation-group-member.table';
+import { conversationGroupMemberSyncSchema } from '../sync-tables/conversation-group-member.schema';
 
 const userChangeSchema = createChangesSchema(userSyncSchema);
 
@@ -15,7 +16,7 @@ const conversationDirectChangeSchema = createChangesSchema(conversationDirectSyn
 
 const conversationGroupChangeSchema = createChangesSchema(conversationGroupSyncSchema);
 
-const conversationGroupMembersChangeSchema = createChangesSchema(conversationGroupMemberSchema);
+const conversationGroupMembersChangeSchema = createChangesSchema(conversationGroupMemberSyncSchema);
 
 const chatDirectChangeSchema = createChangesSchema(chatDirectSyncSchema);
 

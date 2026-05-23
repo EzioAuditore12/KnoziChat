@@ -18,8 +18,10 @@ import {
 import { conversationDirectRelationWithUser } from './relations/one-to-one/conversation-direct-to-user.relation';
 import { conversationGroupMemberTable } from './tables/conversation-group-member.table';
 import { chatAttachmentTable } from './tables/chat-attachment.table';
+import { aiTable } from './tables/ai.table';
 
 export const drizzleSchema = {
+  aiTable,
   userTable,
   conversationDirectTable,
   chatDirectTable,
