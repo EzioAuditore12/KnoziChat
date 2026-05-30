@@ -10,6 +10,8 @@ export const userTable = sqliteTable(USER_TABLE_NAME, {
     .primaryKey()
     .$defaultFn(() => randomUUID()),
 
+  username: text('username').unique().notNull(),
+
   phoneNumber: text('phone_number').unique(),
 
   email: text('email', { length: 240 }).unique().notNull(),

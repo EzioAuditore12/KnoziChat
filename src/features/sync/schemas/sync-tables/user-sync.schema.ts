@@ -2,6 +2,7 @@ import { type } from 'arktype';
 
 export const userSyncSchema = type({
   id: 'string.uuid',
+  username: 'string',
   firstName: 'string',
   middleName: 'string | null',
   lastName: 'string',

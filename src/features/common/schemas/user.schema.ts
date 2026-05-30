@@ -4,6 +4,7 @@ import { phoneSchema } from '@/lib/schemas';
 
 export const userSchema = type({
   id: 'string.uuid',
+  username: '0 < string <= 30',
   firstName: '0 < string <= 50',
   middleName: 'string <= 50 | null',
   lastName: '0 < string <= 50',

@@ -41,7 +41,7 @@ export class ChatGroupRepository {
 
   public async getAllWithUser(
     groupId: string
-  ): Promise<(ChatGroup & { user: { firstName: string; lastName: string } | null })[]> {
+  ): Promise<(ChatGroup & { user: { username: string } | null })[]> {
     return await this.database
       .select({
         id: this.table.id,
@@ -57,8 +57,7 @@ export class ChatGroupRepository {
         createdAt: this.table.createdAt,
         updatedAt: this.table.updatedAt,
         user: {
-          firstName: this.userTable.firstName,
-          lastName: this.userTable.lastName,
+          username: this.userTable.username,
         },
       })
       .from(chatGroupTable)

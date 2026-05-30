@@ -70,8 +70,8 @@ export function AiChatInput({
     if (chosenGroup) {
       handleMutation({
         group: {
-          group_id: chosenGroup.id,
-          group_name: chosenGroup.name,
+          groupId: chosenGroup.id,
+          groupName: chosenGroup.name,
         },
         query: data.query,
       });

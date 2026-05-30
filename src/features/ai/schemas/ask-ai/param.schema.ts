@@ -3,13 +3,13 @@ import { type } from 'arktype';
 const chats = type({
   username: 'string',
   message: 'string',
-  created_at: 'string.date',
+  createdAt: 'string.date',
 });
 
 export const askAiParamSchema = type({
   group: {
-    group_id: 'string.base64',
-    group_name: 'string',
+    groupId: 'string.base64',
+    groupName: 'string',
   },
   chats: chats.array(),
   query: 'string',
