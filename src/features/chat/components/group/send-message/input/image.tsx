@@ -1,4 +1,3 @@
-import { requestMediaLibraryPermissionsAsync, launchImageLibraryAsync } from 'expo-image-picker';
 import { type ComponentProps } from 'react';
 import { cn } from '@gluestack-ui/utils';
 import Svg, { Circle, Path, Rect, type SvgProps } from 'react-native-svg';
@@ -6,9 +5,26 @@ import Svg, { Circle, Path, Rect, type SvgProps } from 'react-native-svg';
 import { ThrottledTouchable } from '@/components/throttled-touchable';
 
 import { Box } from '@/components/ui/box';
+import { openPicker, type Config } from '@baronha/react-native-multiple-image-picker';
 import { VStack } from '@/components/ui/vstack';
 import { Text } from '@/components/ui/text';
 import { File } from '@/features/common/schemas/file.schema';
+
+const config: Config = {
+  maxSelect: 1,
+  allowedLimit: false,
+  primaryColor: '#FB9300',
+  backgroundDark: '#2f2f2f',
+  numberOfColumn: 4,
+  mediaType: 'image',
+  selectBoxStyle: 'number',
+  selectMode: 'single',
+  crop: true,
+  language: 'en',
+  theme: 'system',
+  isHiddenOriginalButton: false,
+  presentation: 'formSheet',
+};
 
 interface MediaImageInputProps extends ComponentProps<typeof VStack> {
   value: File | undefined;
@@ -39,35 +55,22 @@ export function MediaImageInput({ className, value, onChange, ...props }: MediaI
     <>
       <ThrottledTouchable
         onPress={async () => {
-          const permissionResult = await requestMediaLibraryPermissionsAsync();
+          const result = await openPicker(config);
 
-          if (!permissionResult.granted) {
-            alert('Permission required to access the media library is required.');
+          if (result.length === 0 || undefined) return;
 
-            return;
-          }
+          const file = result[0];
 
-          const result = await launchImageLibraryAsync({
-            mediaTypes: ['images'],
-            allowsEditing: true,
-            selectionLimit: 1,
-            quality: 1,
-          });
-
-          if (result.canceled) return;
-
-          const file = result.assets[0];
-
-          if (!file.fileName || !file.mimeType || !file.fileSize)
+          if (!file.fileName || !file.mime || !file.size)
             throw new Error('Unable to accept the file , either corrupted');
 
           onChange({
             name: file.fileName,
-            type: file.mimeType,
-            uri: file.uri,
-            size: file.fileSize,
+            type: file.mime,
+            uri: file.path,
+            size: file.size,
             contentType: 'image',
-            thumbnail: file.uri,
+            thumbnail: file.path,
           });
         }}>
         <VStack space="sm" className={cn('bg-background-100 items-center rounded-3xl p-5')}>

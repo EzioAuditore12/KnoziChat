@@ -11,6 +11,14 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   userInterfaceStyle: 'automatic',
   ios: {
     icon: './assets/expo.icon',
+    infoPlist: {
+      NSPhotoLibraryAddUsageDescription: 'KnoziChat needs photo library permissions',
+      NSPhotoLibraryUsageDescription: 'KnoziChat needs photo library permissions',
+      // if you allow camera, you need to add this
+      NSCameraUsageDescription: 'KnoziChat needs to access your Camera',
+      NSMicrophoneUsageDescription:
+        'KnoziChat needs to access your microphone so that you can record audio',
+    },
   },
   android: {
     adaptiveIcon: {
@@ -36,20 +44,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         android: {
           image: './assets/images/splash-icon.png',
           imageWidth: 76,
-        },
-      },
-    ],
-    [
-      'expo-image-picker',
-      {
-        photosPermission: 'The app accesses your photos to let you share them with your friends.',
-        colors: {
-          cropToolbarColor: '#000000',
-        },
-        dark: {
-          colors: {
-            cropToolbarColor: '#000000',
-          },
         },
       },
     ],

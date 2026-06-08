@@ -7,6 +7,7 @@ type User = {
   id: string;
   firstName: string;
   middleName: string | null;
+  username: string;
   lastName: string;
   phoneNumber: string | null;
   email: string;

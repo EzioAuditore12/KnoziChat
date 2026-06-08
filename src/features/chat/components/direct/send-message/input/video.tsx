@@ -1,4 +1,4 @@
-import { requestMediaLibraryPermissionsAsync, launchImageLibraryAsync } from 'expo-image-picker';
+import { openPicker, type Config } from '@baronha/react-native-multiple-image-picker';
 import { type ComponentProps } from 'react';
 import { cn } from '@gluestack-ui/utils';
 import Svg, { Path, Polygon, Rect, type SvgProps } from 'react-native-svg';
@@ -11,6 +11,20 @@ import { VStack } from '@/components/ui/vstack';
 import { Text } from '@/components/ui/text';
 
 import type { File } from '@/features/common/schemas/file.schema';
+
+const config: Config = {
+  maxSelect: 1,
+  allowedLimit: false,
+  primaryColor: '#FB9300',
+  backgroundDark: '#2f2f2f',
+  numberOfColumn: 4,
+  mediaType: 'video',
+  selectBoxStyle: 'number',
+  selectMode: 'single',
+  language: 'en',
+  theme: 'system',
+  presentation: 'formSheet',
+};
 
 interface MediaVideoInputProps extends ComponentProps<typeof VStack> {
   value: File | undefined;
@@ -34,28 +48,16 @@ export function MediaVideoInput({ className, value, onChange, ...props }: MediaV
     <>
       <ThrottledTouchable
         onPress={async () => {
-          const permissionResult = await requestMediaLibraryPermissionsAsync();
+          const result = await openPicker(config);
 
-          if (!permissionResult.granted) {
-            alert('Permission required to access the media library is required.');
+          if (result.length === 0 || undefined) return;
 
-            return;
-          }
+          const file = result[0];
 
-          const result = await launchImageLibraryAsync({
-            mediaTypes: ['videos'],
-            selectionLimit: 1,
-            quality: 1,
-          });
-
-          if (result.canceled) return;
-
-          const file = result.assets[0];
-
-          if (!file.fileName || !file.mimeType || !file.fileSize)
+          if (!file.fileName || !file.mime || !file.size)
             throw new Error('Unable to accept the file , either corrupted');
 
-          const thumbNail = await MediaToolkit.getThumbnail(file.uri, {
+          const thumbNail = await MediaToolkit.getThumbnail(file.path, {
             timeMs: 3000, // frame time in milliseconds, default 0
             quality: 85, // 0–100, default 80
             maxWidth: 720, // max thumbnail width (does not affect returned metadata)
@@ -65,9 +67,9 @@ export function MediaVideoInput({ className, value, onChange, ...props }: MediaV
 
           onChange({
             name: file.fileName,
-            type: file.mimeType,
-            uri: file.uri,
-            size: file.fileSize,
+            type: file.mime,
+            uri: file.path,
+            size: file.size,
             contentType: 'video',
             thumbnail: thumbNail.uri,
           });

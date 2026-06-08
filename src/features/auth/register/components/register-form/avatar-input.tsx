@@ -1,6 +1,6 @@
-import { requestMediaLibraryPermissionsAsync, launchImageLibraryAsync } from 'expo-image-picker';
 import { Activity, type ComponentProps, useState } from 'react';
 import { cn } from '@gluestack-ui/utils';
+import { openPicker, type Config } from '@baronha/react-native-multiple-image-picker';
 
 import { ThrottledTouchable } from '@/components/throttled-touchable';
 
@@ -9,6 +9,22 @@ import { Avatar, AvatarBadge, AvatarFallbackText, AvatarImage } from '@/componen
 import { Icon, RemoveIcon } from '@/components/ui/icon';
 
 import { RegisterFormParam } from '../../schemas/register-form/params.schema';
+
+const config: Config = {
+  maxSelect: 1,
+  allowedLimit: false,
+  primaryColor: '#FB9300',
+  backgroundDark: '#2f2f2f',
+  numberOfColumn: 4,
+  mediaType: 'image',
+  selectBoxStyle: 'number',
+  selectMode: 'single',
+  crop: true,
+  language: 'en',
+  theme: 'system',
+  isHiddenOriginalButton: false,
+  presentation: 'formSheet',
+};
 
 interface AvatarInputProps extends ComponentProps<typeof Avatar> {
   value: RegisterFormParam['avatar'] | undefined;
@@ -35,30 +51,16 @@ export function AvatarInput({ className, value, onChange, ...props }: AvatarInpu
             return;
           }
 
-          const permissionResult = await requestMediaLibraryPermissionsAsync();
+          const result = await openPicker(config);
 
-          if (!permissionResult.granted) {
-            alert('Permission required to access the media library is required.');
+          if (result.length === 0 || undefined) return;
 
-            return;
-          }
-
-          const result = await launchImageLibraryAsync({
-            mediaTypes: ['images'],
-            allowsEditing: true,
-            selectionLimit: 1,
-            aspect: [4, 3],
-            quality: 1,
-          });
-
-          if (result.canceled) return;
-
-          const file = result.assets[0];
+          const file = result[0];
 
           onChange({
             name: file.fileName ?? 'avatar.jpg',
-            type: file.mimeType ?? 'image/jpeg',
-            uri: file.uri,
+            type: file.mime ?? 'image/jpeg',
+            uri: file.path,
           });
         }}>
         <Avatar className={cn('size-20 self-center', className)} {...props}>
