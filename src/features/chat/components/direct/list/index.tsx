@@ -2,6 +2,7 @@ import { cn } from '@gluestack-ui/utils';
 import { Activity, useMemo, useRef, useState } from 'react';
 
 import { FlashList, type FlashListRef } from '@shopify/flash-list';
+import { openPreview } from '@baronha/react-native-multiple-image-picker';
 
 import { type NativeScrollEvent, type NativeSyntheticEvent, View } from 'react-native';
 
@@ -106,6 +107,44 @@ export function ChatDirectList({
     ]);
   }, [data]);
 
+  const mediaData = useMemo(() => {
+    const items: any[] = [];
+    const idToIndex: Record<string, number> = {};
+
+    flattenedData.forEach((item) => {
+      if (
+        item.type === 'MESSAGE' &&
+        (item.contentType === 'image' || item.contentType === 'video')
+      ) {
+        const attachmentUri = [
+          item.attachment?.remoteUrl,
+          item.attachment?.localUri,
+          item.attachment?.thumbnailUri,
+        ].find((value): value is string => typeof value === 'string' && value.length > 0);
+
+        if (attachmentUri) {
+          idToIndex[item.id] = items.length;
+          items.push({
+            path: attachmentUri,
+            type: item.contentType,
+            ...(item.contentType === 'video' && item.attachment?.thumbnailUri
+              ? { thumbnail: item.attachment.thumbnailUri }
+              : {}),
+          });
+        }
+      }
+    });
+
+    return { items, idToIndex };
+  }, [flattenedData]);
+
+  const handlePreviewMedia = (id: string) => {
+    const index = mediaData.idToIndex[id];
+    if (index !== undefined) {
+      openPreview(mediaData.items, index, { language: 'system' });
+    }
+  };
+
   const scrollToEnd = () => {
     ref.current?.scrollToEnd({
       animated: true,
@@ -159,6 +198,7 @@ export function ChatDirectList({
                 selected={selectedMessageIds.includes(item.id)}
                 onPress={() => handlePress(item.id)}
                 onLongPress={() => handleLongPress(item.id)}
+                onPreviewMedia={handlePreviewMedia}
               />
             );
           }}

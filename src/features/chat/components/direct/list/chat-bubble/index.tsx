@@ -9,7 +9,6 @@ import { Pressable } from '@/components/ui/pressable';
 import { Progress, ProgressFilledTrack } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 
-import { ChatDirectVideo } from './video';
 import { ChatDirectImage } from './image';
 import { StatusIcon } from './status-icon';
 
@@ -27,6 +26,7 @@ interface ChatOneToOneBubbleProps extends ComponentProps<typeof Box> {
   selected?: boolean;
   onPress?: ComponentProps<typeof Pressable>['onPress'];
   onLongPress?: ComponentProps<typeof Pressable>['onLongPress'];
+  onPreviewMedia?: (id: string) => void;
 }
 
 export function ChatOneToOneBubble({
@@ -36,6 +36,7 @@ export function ChatOneToOneBubble({
   selected,
   onPress,
   onLongPress,
+  onPreviewMedia,
   ...props
 }: ChatOneToOneBubbleProps) {
   const { mode, content, createdAt, contentType, status, attachment } = data;
@@ -59,6 +60,11 @@ export function ChatOneToOneBubble({
     if (controller) {
       controller.abort();
     }
+  };
+
+  const handlePreview = () => {
+    if (!attachmentUri) return;
+    onPreviewMedia?.(data.id);
   };
 
   const handleResume = () => {
@@ -112,15 +118,38 @@ export function ChatOneToOneBubble({
         {...props}>
         {/* MEDIA COMPONENTS */}
         <Activity mode={contentType === 'image' && attachmentUri ? 'visible' : 'hidden'}>
-          <Box className="overflow-hidden rounded-xl" pointerEvents="none">
-            <ChatDirectImage source={imageSource} />
-          </Box>
+          <Pressable
+            className="overflow-hidden rounded-xl"
+            onPress={handlePreview}
+            onLongPress={(e) => {
+              Haptics.impact('rigid');
+              onLongPress?.(e);
+            }}>
+            <Box pointerEvents="none">
+              <ChatDirectImage source={imageSource} />
+            </Box>
+          </Pressable>
         </Activity>
 
         <Activity mode={contentType === 'video' && attachmentUri ? 'visible' : 'hidden'}>
-          <Box className="overflow-hidden rounded-xl">
-            <ChatDirectVideo key={attachmentUri} uri={attachmentUri} />
-          </Box>
+          <Pressable
+            className="relative overflow-hidden rounded-xl"
+            onPress={handlePreview}
+            onLongPress={(e) => {
+              Haptics.impact('rigid');
+              onLongPress?.(e);
+            }}>
+            <Box pointerEvents="none">
+              <ChatDirectImage
+                source={attachment?.thumbnailUri ? { uri: attachment.thumbnailUri } : imageSource}
+              />
+              <Box className="absolute inset-0 items-center justify-center bg-black/20">
+                <Box className="items-center justify-center rounded-full bg-black/50 p-2 pl-3">
+                  <PlayIcon size={20} color="#ffffff" />
+                </Box>
+              </Box>
+            </Box>
+          </Pressable>
         </Activity>
 
         {/* UPLOAD PROGRESS & CONTROLS UI */}

@@ -13,7 +13,7 @@ import { Text } from '@/components/ui/text';
 import type { ChatGroupWithUserDetails } from '@/features/chat/types/group-chats';
 
 import { ChatGroupImage } from './image';
-import { ChatGroupVideo } from './video';
+import { PlayIcon } from './status-icon/icons/playIcon';
 
 interface ChatGroupBubbleProps extends ComponentProps<typeof Box> {
   data: ChatGroupWithUserDetails;
@@ -23,6 +23,8 @@ interface ChatGroupBubbleProps extends ComponentProps<typeof Box> {
   onPress?: ComponentProps<typeof Pressable>['onPress'];
 
   onLongPress?: ComponentProps<typeof Pressable>['onLongPress'];
+
+  onPreviewMedia?: (id: string) => void;
 }
 
 const USER_COLORS = [
@@ -84,6 +86,7 @@ export function ChatGroupBubble({
   selected,
   onPress,
   onLongPress,
+  onPreviewMedia,
   ...props
 }: ChatGroupBubbleProps) {
   const { mode, content, createdAt, senderName, senderAvatar, contentType, attachment } = data;
@@ -99,8 +102,14 @@ export function ChatGroupBubble({
   const isSent = mode === 'SENT';
   const isSystem = contentType === 'system';
 
-  const attachmentUri = attachment?.remoteUrl ?? attachment?.localUri ?? undefined;
   const hasMedia = contentType === 'image' || contentType === 'video';
+  const attachmentUri = [
+    attachment?.remoteUrl,
+    attachment?.localUri,
+    attachment?.thumbnailUri,
+  ].find((value): value is string => typeof value === 'string' && value.length > 0);
+  const imageSource = attachmentUri ? { uri: attachmentUri } : undefined;
+
   const transferBytes = attachment?.transferredBytes ?? 0;
   const totalBytes = attachment?.totalBytes ?? 0;
   const isUploadingOrPaused = attachment
@@ -109,6 +118,11 @@ export function ChatGroupBubble({
   const shouldShowAttachmentDetails =
     contentType === 'file' ||
     (attachment ? isUploadingOrPaused || attachment.transferStatus === 'FAILED' : false);
+
+  const handlePreview = () => {
+    if (!attachmentUri) return;
+    onPreviewMedia?.(data.id);
+  };
 
   const systemMessage = useMemo(() => getSystemMessage(data), [data]);
 
@@ -183,21 +197,41 @@ export function ChatGroupBubble({
           <Text className="mb-1 text-[13px] font-semibold text-white/90">{safeSenderName}</Text>
         </Activity>
 
-        {contentType === 'image' && attachmentUri && (
-          <Activity mode="visible">
-            <Box className="overflow-hidden rounded-xl" pointerEvents="none">
-              <ChatGroupImage source={{ uri: attachmentUri }} />
+        {/* MEDIA COMPONENTS */}
+        <Activity mode={contentType === 'image' && attachmentUri ? 'visible' : 'hidden'}>
+          <Pressable
+            className="overflow-hidden rounded-xl"
+            onPress={handlePreview}
+            onLongPress={(e) => {
+              Haptics.impact('rigid');
+              onLongPress?.(e);
+            }}>
+            <Box pointerEvents="none">
+              <ChatGroupImage source={imageSource} />
             </Box>
-          </Activity>
-        )}
+          </Pressable>
+        </Activity>
 
-        {contentType === 'video' && attachmentUri && (
-          <Activity mode="visible">
-            <Box className="overflow-hidden rounded-xl">
-              <ChatGroupVideo key={attachmentUri} uri={attachmentUri} />
+        <Activity mode={contentType === 'video' && attachmentUri ? 'visible' : 'hidden'}>
+          <Pressable
+            className="relative overflow-hidden rounded-xl"
+            onPress={handlePreview}
+            onLongPress={(e) => {
+              Haptics.impact('rigid');
+              onLongPress?.(e);
+            }}>
+            <Box pointerEvents="none">
+              <ChatGroupImage
+                source={attachment?.thumbnailUri ? { uri: attachment.thumbnailUri } : imageSource}
+              />
+              <Box className="absolute inset-0 items-center justify-center bg-black/20">
+                <Box className="items-center justify-center rounded-full bg-black/50 p-2 pl-3">
+                  <PlayIcon size={20} color="#ffffff" />
+                </Box>
+              </Box>
             </Box>
-          </Activity>
-        )}
+          </Pressable>
+        </Activity>
 
         <Activity mode={shouldShowAttachmentDetails ? 'visible' : 'hidden'}>
           <Box

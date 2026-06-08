@@ -2,6 +2,15 @@ diff --git a/node_modules/@baronha/react-native-multiple-image-picker/android/sr
 index cdd8ca7..3911ff5 100644
 --- a/node_modules/@baronha/react-native-multiple-image-picker/android/src/main/java/com/margelo/nitro/multipleimagepicker/MultipleImagePickerImp.kt
 +++ b/node_modules/@baronha/react-native-multiple-image-picker/android/src/main/java/com/margelo/nitro/multipleimagepicker/MultipleImagePickerImp.kt
+@@ -332,7 +332,7 @@
+                 override fun onLongPressDownload(context: Context, media: LocalMedia): Boolean {
+                     onLongPress(media.position.toDouble())
+                     return true
+                 }
+             })
+-            .startFragmentPreview(index, false, assets)
++            .startActivityPreview(index, false, assets)
+     }
 @@ -385,7 +385,7 @@ class MultipleImagePickerImp(reactContext: ReactApplicationContext?) :
                  }
  
