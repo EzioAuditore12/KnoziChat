@@ -1,5 +1,4 @@
 import { cn } from '@gluestack-ui/utils';
-import type { ComponentProps } from 'react';
 
 import { Avatar, AvatarFallbackText, AvatarImage } from '@/components/ui/avatar';
 import { Text } from '@/components/ui/text';
@@ -7,14 +6,12 @@ import { VStack } from '@/components/ui/vstack';
 
 import { ThrottledTouchable, ThrottledTouchableProps } from '@/components/throttled-touchable';
 
-interface CommonGroupCardProps extends ComponentProps<typeof VStack> {
+interface CommonGroupCardProps extends Omit<ThrottledTouchableProps, 'children'> {
   data: {
     id: string;
     name: string;
     avatar?: string | null;
   };
-
-  onPress?: ThrottledTouchableProps['onPress'];
 }
 
 export function CommonGroupCard({ data, onPress, className, ...props }: CommonGroupCardProps) {

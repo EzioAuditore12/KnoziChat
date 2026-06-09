@@ -64,14 +64,6 @@ export function ChatGroupDetailsHeader({ className, data, ...props }: ChatGroupD
         </VStack>
       </Box>
 
-      <VStack className="mt-4 w-full rounded-2xl p-4">
-        <Text className="text-base font-semibold">Group Members</Text>
-
-        <Text size="sm" className="mt-1 text-zinc-500">
-          People participating in this group conversation
-        </Text>
-      </VStack>
-
       <Box className="h-4" />
     </Box>
   );

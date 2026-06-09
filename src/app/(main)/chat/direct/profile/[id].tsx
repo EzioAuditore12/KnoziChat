@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Center } from '@/components/ui/center';
 import { Divider } from '@/components/ui/divider';
 import { Heading } from '@/components/ui/heading';
+import { Text } from '@/components/ui/text';
 
 import { useAuthStore } from '@/store/auth';
 
@@ -13,12 +14,15 @@ import { ChatProfileHeader } from '@/features/chat/components/direct/profile/hea
 
 import { useLiveUserDetails } from '@/features/chat/hooks/database/use-live-user-details';
 import { useLiveUserProfileGroupInCommon } from '@/features/chat/hooks/database/use-live-user-profile-group-in-common';
+import { useLiveGetDirectChatMedia } from '@/features/chat/hooks/database/use-live-get-direct-chat-media';
+import { RecentMediaList } from '@/features/chat/components/recent-media-list';
 
 export default function ChatProfileScreen() {
   const safeAreaInsets = useSafeAreaInsets();
 
-  const { id } = useLocalSearchParams() as {
+  const { id, chatId } = useLocalSearchParams() as {
     id: string;
+    chatId: string;
   };
   const currentUserId = useAuthStore((state) => state.user?.id!);
 
@@ -28,6 +32,13 @@ export default function ChatProfileScreen() {
     id,
     currentUserId,
   });
+
+  const { data: recentMedia } = useLiveGetDirectChatMedia({
+    id: chatId,
+    pageSize: 10,
+  });
+
+  console.log(recentMedia);
 
   if (isLoading || isCommonGroupsLoading)
     return (
@@ -46,18 +57,24 @@ export default function ChatProfileScreen() {
       }}
       ItemSeparatorComponent={() => <Divider />}
       ListHeaderComponent={
-        <ChatProfileHeader
-          style={{
-            paddingTop: safeAreaInsets.top + 20,
-          }}
-          className="items-center px-5"
-          data={{
-            avatar: user?.avatar,
-            firstName: user?.firstName,
-            lastName: user?.lastName,
-            commonGroupsLength: commonGroups.length,
-          }}
-        />
+        <>
+          <ChatProfileHeader
+            style={{
+              paddingTop: safeAreaInsets.top + 20,
+            }}
+            className="items-center px-5"
+            data={{
+              avatar: user?.avatar,
+              firstName: user?.firstName,
+              lastName: user?.lastName,
+              commonGroupsLength: commonGroups.length,
+            }}
+          />
+          <RecentMediaList id={chatId} media={recentMedia} type="direct" />
+          <Text size="lg" className="mt-8 px-5 font-semibold">
+            Groups In Common
+          </Text>
+        </>
       }
       renderItem={({ item }) => (
         <CommonGroupCard

@@ -10,12 +10,17 @@ import { userTable } from '@/db/tables/user.table';
 import { Center } from '@/components/ui/center';
 import { Divider } from '@/components/ui/divider';
 import { Heading } from '@/components/ui/heading';
+import { Text } from '@/components/ui/text';
+import { VStack } from '@/components/ui/vstack';
 
 import { ChatGroupDetailsHeader } from '@/features/chat/components/group/details/header';
 import { GroupMemberCard } from '@/features/chat/components/group/details/member-card';
 
 import { useLiveGroupConversationDetails } from '@/features/chat/hooks/database/use-live-group-conversation-details';
 import { useLiveInfiniteQuery } from '@/db/hooks/use-live-infinite-query';
+import { useLiveGetGroupChatMedia } from '@/features/chat/hooks/database/use-live-get-group-chat-media';
+
+import { RecentMediaList } from '@/features/chat/components/recent-media-list';
 
 import { useAuthStore } from '@/store/auth';
 import { navgateToChat } from '@/features/chat/components/direct/utils/navigate-to-chat';
@@ -38,6 +43,11 @@ export default function ChatGroupDetails() {
   const currentUserId = useAuthStore((state) => state.user?.id ?? '');
 
   const { data: groupDetails, isLoading } = useLiveGroupConversationDetails(id);
+
+  const { data: recentMedia } = useLiveGetGroupChatMedia({
+    id,
+    pageSize: 10,
+  });
 
   const { data: members, isLoading: isMembersLoading } = useLiveInfiniteQuery({
     query: db
@@ -72,17 +82,26 @@ export default function ChatGroupDetails() {
       }}
       ItemSeparatorComponent={() => <Divider />}
       ListHeaderComponent={
-        <ChatGroupDetailsHeader
-          style={{ paddingTop: safeAreaInsets.top + 20 }}
-          className="items-center px-5"
-          data={{
-            avatar: groupDetails.avatar,
-            membersLength: members.length,
-            name: groupDetails.name,
-            createdAt: new Date(groupDetails.createdAt),
-            updatedAt: new Date(groupDetails.updatedAt),
-          }}
-        />
+        <>
+          <ChatGroupDetailsHeader
+            style={{ paddingTop: safeAreaInsets.top + 20 }}
+            className="items-center px-5"
+            data={{
+              avatar: groupDetails.avatar,
+              membersLength: members.length,
+              name: groupDetails.name,
+              createdAt: new Date(groupDetails.createdAt),
+              updatedAt: new Date(groupDetails.updatedAt),
+            }}
+          />
+          <RecentMediaList id={id} media={recentMedia} type="group" />
+          <VStack className="mt-4 w-full px-5 pb-4">
+            <Text className="text-base font-semibold">Group Members</Text>
+            <Text size="sm" className="mt-1 text-zinc-500">
+              People participating in this group conversation
+            </Text>
+          </VStack>
+        </>
       }
       renderItem={({ item }) => (
         <GroupMemberCard

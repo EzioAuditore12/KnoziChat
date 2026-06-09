@@ -127,6 +127,7 @@ export default function ChattingScreen() {
 
                     params: {
                       id: userId,
+                      chatId: id,
                     },
                   })
                 }

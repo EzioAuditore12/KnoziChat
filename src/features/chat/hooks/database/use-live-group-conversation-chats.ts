@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { desc, eq, sql } from 'drizzle-orm';
-import { diffInDays, format, isToday, isYesterday } from '@bernagl/react-native-date';
 
 import { db } from '@/db';
 import { useLiveInfiniteQuery } from '@/db/hooks/use-live-infinite-query';
@@ -9,30 +8,12 @@ import { chatGroupTable } from '@/db/tables/chat-group.table';
 import { userTable } from '@/db/tables/user.table';
 import { chatAttachmentTable } from '@/db/tables/chat-attachment.table';
 
+import { formatChatDate } from '@/features/chat/utils/format-chat-date';
+
 interface UseLiveGroupConversationChatsOptions {
   id: string;
   currentUserId: string;
   pageSize?: number;
-}
-
-function formatChatDate(timestamp: number) {
-  const date = new Date(timestamp);
-
-  if (isToday(date)) {
-    return 'Today';
-  }
-
-  if (isYesterday(date)) {
-    return 'Yesterday';
-  }
-
-  const daysDifference = Math.abs(diffInDays(date, new Date()));
-
-  if (daysDifference < 7) {
-    return format(date, 'EEEE');
-  }
-
-  return format(date, 'PPP');
 }
 
 export function useLiveGroupConversationChats({

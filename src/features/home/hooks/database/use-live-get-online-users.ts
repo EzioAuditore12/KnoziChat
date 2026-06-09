@@ -15,6 +15,7 @@ export function useGetOnlineUsers() {
     query: db
       .select({
         id: userTable.id,
+        username: userTable.username,
         phoneNumber: userTable.phoneNumber,
         email: userTable.email,
         avatar: userTable.avatar,

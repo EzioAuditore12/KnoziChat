@@ -32,6 +32,7 @@ const handleReceiveGroupCreated = async (message: ReceiveGroupCreated) => {
         await userRepository.createMany(
           missingUsers.map((c) => ({
             id: c.id,
+            username: c.username,
             email: c.email,
             firstName: c.firstName,
             lastName: c.lastName,

@@ -44,9 +44,11 @@ export default function MainLayoutScreens() {
 
       <Stack.Screen name="chat/direct/[id]" />
       <Stack.Screen name="chat/direct/profile/[id]" options={{ headerShown: false }} />
+      <Stack.Screen name="chat/direct/media/[id]" />
 
       <Stack.Screen name="chat/group/[id]" />
       <Stack.Screen name="chat/group/details/[id]" options={{ headerShown: false }} />
+      <Stack.Screen name="chat/group/media/[id]" />
 
       <Stack.Screen name="chat/new/direct/[id]" />
       <Stack.Screen name="chat/new/group/index" />

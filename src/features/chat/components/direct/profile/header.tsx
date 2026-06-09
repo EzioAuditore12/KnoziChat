@@ -40,10 +40,6 @@ export function ChatProfileHeader({ data, className, ...props }: ChatProfileHead
           {data.commonGroupsLength} Common Groups
         </Text>
       </Box>
-
-      <Text size="lg" className="mt-8 self-start font-semibold">
-        Groups In Common
-      </Text>
     </Box>
   );
 }

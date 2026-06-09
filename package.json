@@ -60,7 +60,7 @@
     "react-native-mmkv": "^4.3.1",
     "react-native-nitro-buffer": "^0.2.2",
     "react-native-nitro-crypto": "^0.3.2",
-    "react-native-nitro-fetch": "^1.3.3",
+    "react-native-nitro-fetch": "^1.4.0",
     "react-native-nitro-file-system": "^0.4.0",
     "react-native-nitro-haptics": "^0.2.3",
     "react-native-nitro-modules": "^0.35.9",
