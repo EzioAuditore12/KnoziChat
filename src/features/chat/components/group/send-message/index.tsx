@@ -4,6 +4,7 @@ import { type } from 'arktype';
 import { type ComponentProps, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
+import crypto from 'react-native-nitro-crypto';
 
 import { Box } from '@/components/ui/box';
 import { Button, ButtonText } from '@/components/ui/button';
@@ -17,7 +18,6 @@ import { SendGroupMessageEvent } from '../../../events/send-group-message';
 import { File, fileSchema } from '@/features/common/schemas/file.schema';
 import { MediaPreviewActivity } from './media-preview';
 import { MediaPicker } from './media-picker';
-import crypto from 'react-native-nitro-crypto';
 
 interface SendGroupMessageProps extends ComponentProps<typeof Box> {
   id: string;
@@ -130,7 +130,12 @@ export function SendGroupMessage({
   };
 
   return (
-    <Box className={cn('border-t-2 border-gray-400', className)} {...props}>
+    <Box
+      className={cn(
+        'border-t border-zinc-200 bg-white pt-1 pb-1 dark:border-zinc-800 dark:bg-zinc-950',
+        className
+      )}
+      {...props}>
       <Controller
         control={control}
         name="file"
@@ -147,7 +152,7 @@ export function SendGroupMessage({
         )}
       />
 
-      <HStack className="items-center p-2">
+      <HStack className="items-end gap-2 px-3 py-3">
         <Controller
           control={control}
           name="file"
@@ -159,23 +164,27 @@ export function SendGroupMessage({
                 control={control}
                 name="text"
                 render={({ field: { onChange, value, onBlur } }) => (
-                  <Input className="mr-2 w-[70%]">
+                  <Input className="max-h-32 flex-1 rounded-3xl border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-900">
                     <InputField
-                      placeholder="Type a message..."
+                      placeholder="Message..."
                       onFocus={handleFocus}
                       onBlur={onBlur}
                       value={value}
                       onChangeText={onChange}
-                      textAlignVertical="top"
+                      textAlignVertical="center"
                       multiline
-                      numberOfLines={8}
+                      numberOfLines={1}
                       maxLength={1000}
+                      className="min-h-[44px] px-4 py-2.5 text-base"
                     />
                   </Input>
                 )}
               />
 
-              <Button onPress={handlFormSubmit(onSubmit)} size="sm">
+              <Button
+                onPress={handlFormSubmit(onSubmit)}
+                size="sm"
+                className="h-[44px] self-end rounded-full px-5">
                 <ButtonText>Send</ButtonText>
               </Button>
             </>

@@ -40,8 +40,11 @@ export function MediaPicker({ className, value, onChange, ...props }: MediaPicke
 
   return (
     <Box className={cn(className)} {...props}>
-      <Button onPress={present}>
-        <ButtonIcon as={AttachmentFileIcon} />
+      <Button
+        onPress={present}
+        variant="link"
+        className="h-11 w-11 items-center justify-center rounded-full p-0">
+        <ButtonIcon as={AttachmentFileIcon} className="text-zinc-500 dark:text-zinc-400" />
       </Button>
 
       <TrueSheet ref={sheet} detents={['auto', 0.5, 1]}>
