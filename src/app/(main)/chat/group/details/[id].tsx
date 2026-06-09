@@ -9,9 +9,9 @@ import { userTable } from '@/db/tables/user.table';
 
 import { Center } from '@/components/ui/center';
 import { Divider } from '@/components/ui/divider';
-import { Heading } from '@/components/ui/heading';
 import { Text } from '@/components/ui/text';
 import { VStack } from '@/components/ui/vstack';
+import { Spinner } from '@/components/ui/spinner';
 
 import { ChatGroupDetailsHeader } from '@/features/chat/components/group/details/header';
 import { GroupMemberCard } from '@/features/chat/components/group/details/member-card';
@@ -70,7 +70,7 @@ export default function ChatGroupDetails() {
   if (isLoading || isMembersLoading)
     return (
       <Center className="flex-1">
-        <Heading>Loading the details</Heading>
+        <Spinner size="large" />
       </Center>
     );
 

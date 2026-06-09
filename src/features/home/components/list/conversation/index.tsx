@@ -1,7 +1,7 @@
 import { FlashList, type FlashListProps } from '@shopify/flash-list';
 import { router } from 'expo-router';
 
-import { Text } from '@/components/ui/text';
+import { Spinner } from '@/components/ui/spinner';
 import { ConversationCard } from './card';
 
 import type { Conversation } from '@/features/home/types/conversation.type';
@@ -22,7 +22,7 @@ export function ConversationList({
   isFetchingNextPage,
   ...props
 }: ConversationListProps) {
-  if (isLoading) return <Text className="mt-2">Loading all your chats</Text>;
+  if (isLoading) return <Spinner size="large" className="mt-4" />;
 
   return (
     <>

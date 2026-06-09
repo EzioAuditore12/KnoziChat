@@ -10,6 +10,7 @@ import {
   ModalContent,
   ModalHeader,
 } from '@/components/ui/modal';
+import { Spinner } from '@/components/ui/spinner';
 
 import { GroupPickerOption } from './group-picker-option';
 import type { GroupOption } from './types';
@@ -56,8 +57,8 @@ export function GroupPickerModal({
           className="max-h-[60vh] px-4 py-4"
           contentContainerClassName="gap-3 pb-1">
           {isLoadingGroups ? (
-            <View className="rounded-xl border border-dashed border-zinc-200 px-4 py-6 dark:border-zinc-800">
-              <Text className="text-sm text-zinc-500 dark:text-zinc-400">Loading groups...</Text>
+            <View className="items-center justify-center rounded-xl border border-dashed border-zinc-200 px-4 py-6 dark:border-zinc-800">
+              <Spinner size="small" />
             </View>
           ) : groups.length ? (
             groups.map((group) => (

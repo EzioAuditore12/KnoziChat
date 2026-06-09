@@ -17,6 +17,7 @@ import { sendMessageEvent } from '@/features/chat/events/send-message';
 import { useLiveChatterInfo } from '@/features/chat/hooks/database/use-live-chatter-info';
 import { useLiveDirectChats } from '@/features/chat/hooks/database/use-live-one-to-one-chats';
 import { SelectedMessageHeader } from '@/features/chat/components/selected-messages-header';
+import { ChatMessagesLoading } from '@/features/chat/components/loading/chat-messages-loading';
 
 export default function ChattingScreen() {
   const safeAreaInsets = useSafeAreaInsets();
@@ -68,7 +69,11 @@ export default function ChattingScreen() {
     };
   }, [socket, id]);
 
-  const { groupedMessages, fetchNextPage: fetchNextChats } = useLiveDirectChats({
+  const {
+    groupedMessages,
+    fetchNextPage: fetchNextChats,
+    isLoading: isChatsLoading,
+  } = useLiveDirectChats({
     id,
   });
 
@@ -141,13 +146,17 @@ export default function ChattingScreen() {
       />
 
       <Box className="flex-1">
-        <ChatDirectList
-          receiverId={userId}
-          data={reversedGroupedMessages}
-          onStartReached={fetchNextChats}
-          selectedMessageIds={selectedMessageIds}
-          onSelectionChange={setSelectedMessageIds}
-        />
+        {isChatsLoading ? (
+          <ChatMessagesLoading />
+        ) : (
+          <ChatDirectList
+            receiverId={userId}
+            data={reversedGroupedMessages}
+            onStartReached={fetchNextChats}
+            selectedMessageIds={selectedMessageIds}
+            onSelectionChange={setSelectedMessageIds}
+          />
+        )}
 
         <SendDirectMessage
           className="items-center"

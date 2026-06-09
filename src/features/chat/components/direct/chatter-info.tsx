@@ -9,6 +9,7 @@ import { HStack } from '@/components/ui/hstack';
 import { ArrowLeftIcon, Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { VStack } from '@/components/ui/vstack';
+import { Skeleton } from '@/components/ui/skeleton';
 
 import type { User } from '@/db/tables/user.table';
 
@@ -30,18 +31,7 @@ export function ChatterInfo({
   ...props
 }: ChatterInfoProps) {
   if (isLoading) {
-    return (
-      <Box className="border-background-tertiary flex-row items-center gap-x-3 border-b px-4 py-3">
-        <Box className="bg-background-tertiary size-10 animate-pulse rounded-full" />
-
-        <Box className="bg-background-tertiary size-14 animate-pulse rounded-full" />
-
-        <VStack className="flex-1 gap-y-2">
-          <Box className="bg-background-tertiary h-4 w-36 animate-pulse rounded-md" />
-          <Box className="bg-background-tertiary h-3 w-52 animate-pulse rounded-md" />
-        </VStack>
-      </Box>
-    );
+    return <ChatterInfoLoading />;
   }
 
   return (
@@ -83,6 +73,21 @@ export function ChatterInfo({
             {data.email}
           </Text>
         )}
+      </VStack>
+    </Box>
+  );
+}
+
+export function ChatterInfoLoading() {
+  return (
+    <Box className="border-background-tertiary flex-row items-center gap-x-3 border-b px-4 py-3">
+      <Skeleton className="size-10 rounded-full" />
+
+      <Skeleton className="size-14 rounded-full" />
+
+      <VStack className="flex-1 gap-y-2">
+        <Skeleton className="h-4 w-36 rounded-md" />
+        <Skeleton className="h-3 w-52 rounded-md" />
       </VStack>
     </Box>
   );

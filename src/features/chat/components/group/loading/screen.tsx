@@ -2,8 +2,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
 
 import { Box } from '@/components/ui/box';
-import { Text } from '@/components/ui/text';
 import { Center } from '@/components/ui/center';
+import { Spinner } from '@/components/ui/spinner';
 
 export function GroupScreenLoading() {
   const safeAreaInsets = useSafeAreaInsets();
@@ -13,15 +13,15 @@ export function GroupScreenLoading() {
       <Stack.Screen
         options={{
           header: () => (
-            <Box style={{ paddingTop: safeAreaInsets.top }} className="min-h-23 p-2">
-              <Text>Loading group info</Text>
+            <Box style={{ paddingTop: safeAreaInsets.top }} className="min-h-23 justify-center p-2">
+              <Spinner size="small" />
             </Box>
           ),
         }}
       />
 
       <Center className="flex-1">
-        <Text>Loading all the chats</Text>
+        <Spinner size="large" />
       </Center>
     </>
   );

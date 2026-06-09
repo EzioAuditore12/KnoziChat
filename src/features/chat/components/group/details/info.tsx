@@ -9,6 +9,7 @@ import { Text } from '@/components/ui/text';
 import { ThrottledTouchable } from '@/components/throttled-touchable';
 import { ArrowLeftIcon, Icon } from '@/components/ui/icon';
 import { VStack } from '@/components/ui/vstack';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface GroupInfoProps extends ComponentProps<typeof Box> {
   data: {
@@ -22,17 +23,7 @@ interface GroupInfoProps extends ComponentProps<typeof Box> {
 
 export function GroupInfo({ className, data, isLoading = false, ...props }: GroupInfoProps) {
   if (isLoading) {
-    return (
-      <Box className="border-background-tertiary flex-row items-center gap-x-3 border-b px-4 py-3">
-        <Box className="bg-background-tertiary size-10 animate-pulse rounded-full" />
-        <Box className="bg-background-tertiary size-14 animate-pulse rounded-full" />
-
-        <VStack className="flex-1 gap-y-2">
-          <Box className="bg-background-tertiary h-4 w-40 animate-pulse rounded-md" />
-          <Box className="bg-background-tertiary h-3 w-24 animate-pulse rounded-md" />
-        </VStack>
-      </Box>
-    );
+    return <GroupInfoLoading />;
   }
 
   return (
@@ -79,6 +70,20 @@ export function GroupInfo({ className, data, isLoading = false, ...props }: Grou
         <Text size="sm" numberOfLines={1} className="mt-0.5 leading-4">
           {data.members}
         </Text>
+      </VStack>
+    </Box>
+  );
+}
+
+export function GroupInfoLoading() {
+  return (
+    <Box className="border-background-tertiary flex-row items-center gap-x-3 border-b px-4 py-3">
+      <Skeleton className="size-10 rounded-full" />
+      <Skeleton className="size-14 rounded-full" />
+
+      <VStack className="flex-1 gap-y-2">
+        <Skeleton className="h-4 w-40 rounded-md" />
+        <Skeleton className="h-3 w-24 rounded-md" />
       </VStack>
     </Box>
   );

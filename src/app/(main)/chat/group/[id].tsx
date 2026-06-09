@@ -8,7 +8,7 @@ import { GroupInfo } from '@/features/chat/components/group/details/info';
 import { SendGroupMessage } from '@/features/chat/components/group/send-message';
 import { ChatGroupList } from '@/features/chat/components/group/list';
 import { SelectedMessageHeader } from '@/features/chat/components/selected-messages-header';
-import { GroupScreenLoading } from '@/features/chat/components/group/loading/screen';
+import { ChatMessagesLoading } from '@/features/chat/components/loading/chat-messages-loading';
 
 import { useLiveGroupConversationChats } from '@/features/chat/hooks/database/use-live-group-conversation-chats';
 
@@ -55,8 +55,6 @@ export default function GroupChatScreen() {
     };
   }, [socket, id, socket?.connected]);
 
-  if (isGroupMessagesLoading) return <GroupScreenLoading />;
-
   return (
     <>
       <Stack.Screen
@@ -81,12 +79,16 @@ export default function GroupChatScreen() {
         }}
       />
       <Box className="flex-1 p-2">
-        <ChatGroupList
-          data={groupedMessages}
-          onStartReached={fetchNextChats}
-          selectedMessageIds={selectedMessageIds}
-          onSelectionChange={setSelectedMessageIds}
-        />
+        {isGroupMessagesLoading ? (
+          <ChatMessagesLoading />
+        ) : (
+          <ChatGroupList
+            data={groupedMessages}
+            onStartReached={fetchNextChats}
+            selectedMessageIds={selectedMessageIds}
+            onSelectionChange={setSelectedMessageIds}
+          />
+        )}
         <SendGroupMessage
           className="items-center"
           id={id}

@@ -4,8 +4,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Center } from '@/components/ui/center';
 import { Divider } from '@/components/ui/divider';
-import { Heading } from '@/components/ui/heading';
 import { Text } from '@/components/ui/text';
+import { Spinner } from '@/components/ui/spinner';
 
 import { useAuthStore } from '@/store/auth';
 
@@ -43,7 +43,7 @@ export default function ChatProfileScreen() {
   if (isLoading || isCommonGroupsLoading)
     return (
       <Center className="flex-1">
-        <Heading>Loading user details</Heading>
+        <Spinner size="large" />
       </Center>
     );
 

@@ -6,6 +6,7 @@ import { Activity } from 'react';
 import AiHeader from '@/features/ai/components/header';
 import { AiChatInput } from '@/features/ai/components/input';
 import { AiChatList } from '@/features/ai/components/list';
+import { ChatMessagesLoading } from '@/features/chat/components/loading/chat-messages-loading';
 
 import { useGetLiveGroups } from '@/features/ai/hooks/database/use-live-get-users';
 import { useChatWithAi } from '@/features/ai/hooks/mutations/use-chat-with-ai';
@@ -20,7 +21,7 @@ export default function AiPage() {
 
   const { mutate, isPending } = useChatWithAi();
 
-  const { data } = useLiveQuery(db.select().from(aiTable));
+  const { data, isLoading: isChatsLoading } = useLiveQuery(db.select().from(aiTable));
 
   return (
     <>
@@ -30,7 +31,7 @@ export default function AiPage() {
         }}
       />
       <View className="flex-1">
-        <AiChatList data={data} />
+        {isChatsLoading ? <ChatMessagesLoading /> : <AiChatList data={data} />}
         <Activity mode={isPending ? 'visible' : 'hidden'}>
           <View className="border-t border-gray-100 bg-gray-50 px-4 py-2 dark:border-gray-800 dark:bg-gray-900">
             <Text className="text-sm text-gray-500 italic">Knozi Ai is thinking...</Text>
