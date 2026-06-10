@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 
 import { Spinner } from '@/components/ui/spinner';
 import { ConversationCard } from './card';
+import { ConversationListEmpty } from './empty';
 
 import type { Conversation } from '@/features/home/types/conversation.type';
 
@@ -30,6 +31,7 @@ export function ConversationList({
         data={data}
         onEndReachedThreshold={0.5}
         keyExtractor={(item) => item.id}
+        ListEmptyComponent={<ConversationListEmpty />}
         renderItem={({ item }) => (
           <ConversationCard
             data={item}

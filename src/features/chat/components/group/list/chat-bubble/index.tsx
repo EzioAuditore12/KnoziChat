@@ -246,7 +246,7 @@ export function ChatGroupBubble({
               {attachment?.fileName ?? 'Attachment'}
             </Text>
 
-            {isUploadingOrPaused && (
+            <Activity mode={isUploadingOrPaused ? 'visible' : 'hidden'}>
               <Box className="mt-2">
                 <Progress
                   value={totalBytes ? (transferBytes / totalBytes) * 100 : 0}
@@ -261,21 +261,21 @@ export function ChatGroupBubble({
                   {(totalBytes / 1024 / 1024).toFixed(1)} MB
                 </Text>
               </Box>
-            )}
+            </Activity>
 
-            {attachment?.transferStatus === 'FAILED' && (
+            <Activity mode={attachment?.transferStatus === 'FAILED' ? 'visible' : 'hidden'}>
               <Text size="xs" className="mt-2 font-bold text-red-300">
                 Upload Failed.
               </Text>
-            )}
+            </Activity>
           </Box>
         </Activity>
 
-        {!!content && (
+        <Activity mode={!!content ? 'visible' : 'hidden'}>
           <Text className={cn('text-[15px] leading-5 text-white', hasMedia && 'px-2 pt-2 pb-1')}>
             {content}
           </Text>
-        )}
+        </Activity>
 
         <Box className={cn('mt-1 flex-row justify-end', hasMedia && 'px-2 pb-1')}>
           <Text className="text-[11px] text-white/70">

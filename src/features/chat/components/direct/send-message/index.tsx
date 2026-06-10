@@ -1,5 +1,5 @@
 import { cn } from '@gluestack-ui/utils';
-import { useEffect, useRef, useState, type ComponentProps } from 'react';
+import { useEffect, useRef, useState, type ComponentProps, Activity } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { useDebouncedCallback } from 'use-debounce';
@@ -194,15 +194,15 @@ export function SendDirectMessage({
         name="file"
         render={({ field: { onChange, value } }) => (
           <>
-            {value && (
+            <Activity mode={value ? 'visible' : 'hidden'}>
               <MediaPreviewActivity
                 file={value}
                 onRemove={() => onChange(undefined)}
                 className="mx-2 mt-2"
               />
-            )}
+            </Activity>
 
-            <HStack className="items-end gap-2 px-2 py-2">
+            <HStack className="items-end gap-2 px-3 py-3">
               <MediaPicker value={value} onChange={onChange} />
 
               <Controller

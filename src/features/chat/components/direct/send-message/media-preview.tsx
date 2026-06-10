@@ -11,12 +11,14 @@ import { CloseIcon, Icon } from '@/components/ui/icon';
 import { File } from '@/features/common/schemas/file.schema';
 
 interface MediaPreviewActivityProps {
-  file: File;
+  file?: File;
   onRemove: () => void;
   className?: string;
 }
 
 export function MediaPreviewActivity({ file, onRemove, className }: MediaPreviewActivityProps) {
+  if (!file) return null;
+
   return (
     <Card
       className={cn(

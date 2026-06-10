@@ -170,7 +170,7 @@ export function ChatOneToOneBubble({
               {attachment?.fileName}
             </Text>
 
-            {isUploadingOrPaused && (
+            <Activity mode={isUploadingOrPaused ? 'visible' : 'hidden'}>
               <Box className="mt-2 flex-row items-center justify-between">
                 <Box className="mr-3 flex-1">
                   <Progress
@@ -212,13 +212,13 @@ export function ChatOneToOneBubble({
                   </Button>
                 )}
               </Box>
-            )}
+            </Activity>
 
-            {attachment?.transferStatus === 'FAILED' && (
+            <Activity mode={attachment?.transferStatus === 'FAILED' ? 'visible' : 'hidden'}>
               <Text size="xs" className="mt-2 font-bold text-red-300">
                 Upload Failed. Tap resume to retry.
               </Text>
-            )}
+            </Activity>
           </Box>
         </Activity>
 

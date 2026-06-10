@@ -1,23 +1,11 @@
 import { cn } from '@gluestack-ui/utils';
-import { useEffect, useRef, useState } from 'react';
-import { NativeSyntheticEvent, TextInput } from 'react-native';
+import { useEffect, useRef, useState, Activity } from 'react';
+import { type NativeSyntheticEvent, TextInput } from 'react-native';
 
 import { Box } from '@/components/ui/box';
-
-import {
-  FormControl,
-  FormControlHelper,
-  FormControlHelperText,
-  FormControlLabel,
-  FormControlLabelText,
-} from '@/components/ui/form-control';
-
 import { HStack } from '@/components/ui/hstack';
-
 import { Input, InputField } from '@/components/ui/input';
-
 import { Text } from '@/components/ui/text';
-
 import { VStack } from '@/components/ui/vstack';
 
 import type { VerifyRegisterationParam } from '../schemas/verify-registeration/param.schema';
@@ -75,6 +63,29 @@ export function VerificationRegisterationForm({
   };
 
   const handleChange = (value: string, index: number) => {
+    if (value.length > 1) {
+      const numbers = value.replace(/\D/g, '').split('').slice(0, size);
+      if (numbers.length === 0) return;
+
+      const updatedOtp = [...otp];
+      numbers.forEach((num, i) => {
+        if (index + i < size) {
+          updatedOtp[index + i] = num;
+        }
+      });
+
+      setOtp(updatedOtp);
+
+      const nextIndex = Math.min(index + numbers.length, size - 1);
+      inputRefs.current[nextIndex]?.focus();
+
+      const code = updatedOtp.join('');
+      if (code.length === size) {
+        handleSumit({ otp: code, email });
+      }
+      return;
+    }
+
     if (!/^\d?$/.test(value)) return;
 
     const updatedOtp = [...otp];
@@ -103,47 +114,59 @@ export function VerificationRegisterationForm({
   };
 
   return (
-    <Box className={cn(className)}>
-      <FormControl isRequired>
-        <VStack className="gap-4">
-          <FormControlLabel>
-            <FormControlLabelText>Enter OTP</FormControlLabelText>
-          </FormControlLabel>
-
-          <FormControlHelper>
-            <FormControlHelperText>Please enter the OTP sent to your email.</FormControlHelperText>
-          </FormControlHelper>
-
-          <HStack className="justify-between gap-2">
-            {Array.from({
-              length: size,
-            }).map((_, index) => (
-              <Input key={index} className="h-14 w-14 items-center rounded-xl">
-                <InputField
-                  ref={(ref) => {
-                    inputRefs.current[index] = ref as TextInput | null;
-                  }}
-                  value={otp[index]}
-                  onChangeText={(text) => handleChange(text, index)}
-                  onKeyPress={(e) => handleKeyPress(e, index)}
-                  keyboardType="number-pad"
-                  maxLength={1}
-                  textAlign="center"
-                  className="text-center text-xl font-semibold"
-                />
-              </Input>
-            ))}
-          </HStack>
-
-          <Text className="text-typography-500 text-center text-sm">
-            {timeLeft > 0
-              ? `Resend code in ${formatTime(timeLeft)}`
-              : 'You can resend the code now'}
+    <Box className={cn('px-4 py-6', className)}>
+      <VStack className="gap-8">
+        <Box className="items-center">
+          <Text className="mb-2 text-2xl font-bold text-zinc-900 dark:text-white">
+            Verify your email
           </Text>
+          <Text className="text-center text-zinc-500 dark:text-zinc-400">
+            We have ve sent a code to{' '}
+            <Text className="font-semibold text-zinc-900 dark:text-white">{email}</Text>
+          </Text>
+        </Box>
 
-          {isSubmitting && <Text className="text-center text-base">Submitting...</Text>}
+        <HStack className="justify-center gap-3">
+          {Array.from({ length: size }).map((_, index) => (
+            <Input
+              key={index}
+              className={cn(
+                'h-16 w-14 items-center rounded-2xl border-2 border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900/50',
+                otp[index]
+                  ? 'border-emerald-500 bg-emerald-50/50 dark:border-emerald-500 dark:bg-emerald-900/20'
+                  : ''
+              )}>
+              <InputField
+                ref={(ref) => {
+                  inputRefs.current[index] = ref as TextInput | null;
+                }}
+                value={otp[index]}
+                onChangeText={(text) => handleChange(text, index)}
+                onKeyPress={(e) => handleKeyPress(e, index)}
+                keyboardType="number-pad"
+                maxLength={size}
+                textContentType="oneTimeCode"
+                autoComplete="sms-otp"
+                textAlign="center"
+                className="text-center text-2xl font-bold text-zinc-900 dark:text-white"
+              />
+            </Input>
+          ))}
+        </HStack>
+
+        <VStack className="items-center gap-2">
+          <Text className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+            {timeLeft > 0 ? `Resend code in ${formatTime(timeLeft)}` : "Didn't receive the code?"}
+          </Text>
+          {timeLeft <= 0 && (
+            <Text className="font-bold text-emerald-600 dark:text-emerald-400">Resend Code</Text>
+          )}
         </VStack>
-      </FormControl>
+
+        <Activity mode={isSubmitting ? 'visible' : 'hidden'}>
+          <Text className="text-center text-base font-medium text-zinc-500">Verifying code...</Text>
+        </Activity>
+      </VStack>
     </Box>
   );
 }

@@ -1,7 +1,7 @@
 import { cn } from '@gluestack-ui/utils';
 import { arktypeResolver } from '@hookform/resolvers/arktype';
 import { type } from 'arktype';
-import { type ComponentProps, useState } from 'react';
+import { type ComponentProps, useState, Activity } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import crypto from 'react-native-nitro-crypto';
@@ -141,13 +141,13 @@ export function SendGroupMessage({
         name="file"
         render={({ field: { onChange, value } }) => (
           <>
-            {value && (
+            <Activity mode={value ? 'visible' : 'hidden'}>
               <MediaPreviewActivity
                 file={value}
                 onRemove={() => onChange(undefined)}
                 className="mx-2 mt-2"
               />
-            )}
+            </Activity>
           </>
         )}
       />
