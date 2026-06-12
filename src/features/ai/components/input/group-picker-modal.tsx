@@ -1,4 +1,6 @@
-import { Text, View } from 'react-native';
+import { useState } from 'react';
+import { Text, View, Pressable } from 'react-native';
+import { cn } from '@gluestack-ui/utils';
 
 import { CloseIcon, Icon } from '@/components/ui/icon';
 import { Heading } from '@/components/ui/heading';
@@ -13,25 +15,29 @@ import {
 import { Spinner } from '@/components/ui/spinner';
 
 import { GroupPickerOption } from './group-picker-option';
-import type { GroupOption } from './types';
+import type { ChatOption } from './types';
 
 interface GroupPickerModalProps {
-  groups: GroupOption[];
-  isLoadingGroups: boolean;
+  chats: ChatOption[];
+  isLoadingChats: boolean;
   isOpen: boolean;
   onClose: () => void;
-  selectedGroupId?: string;
-  onSelectGroup: (groupId: string) => void;
+  selectedChatId?: string;
+  onSelectChat: (chatId: string) => void;
 }
 
 export function GroupPickerModal({
-  groups,
-  isLoadingGroups,
+  chats,
+  isLoadingChats,
   isOpen,
   onClose,
-  selectedGroupId,
-  onSelectGroup,
+  selectedChatId,
+  onSelectChat,
 }: GroupPickerModalProps) {
+  const [activeTab, setActiveTab] = useState<'group' | 'direct'>('group');
+
+  const filteredChats = chats.filter((chat) => chat.type === activeTab);
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="md">
       <ModalBackdrop className="bg-zinc-950/50 dark:bg-zinc-950/70" />
@@ -40,10 +46,10 @@ export function GroupPickerModal({
         <ModalHeader className="items-start gap-2 border-b border-zinc-200 px-4 py-4 dark:border-zinc-800">
           <View className="flex-1 gap-1 pr-3">
             <Heading size="md" className="font-semibold text-zinc-900 dark:text-zinc-50">
-              Select group
+              Select Chat
             </Heading>
             <Text className="text-sm text-zinc-500 dark:text-zinc-400">
-              Choose the group for this message. The list scrolls if there are many groups.
+              Choose the group or direct chat for this message.
             </Text>
           </View>
 
@@ -52,29 +58,64 @@ export function GroupPickerModal({
           </ModalCloseButton>
         </ModalHeader>
 
+        <View className="flex-row border-b border-zinc-200 dark:border-zinc-800">
+          <Pressable
+            onPress={() => setActiveTab('group')}
+            className={cn(
+              'flex-1 items-center py-3',
+              activeTab === 'group' ? 'border-b-2 border-zinc-900 dark:border-zinc-50' : ''
+            )}>
+            <Text
+              className={cn(
+                'text-sm font-medium',
+                activeTab === 'group'
+                  ? 'text-zinc-900 dark:text-zinc-50'
+                  : 'text-zinc-500 dark:text-zinc-400'
+              )}>
+              Groups
+            </Text>
+          </Pressable>
+          <Pressable
+            onPress={() => setActiveTab('direct')}
+            className={cn(
+              'flex-1 items-center py-3',
+              activeTab === 'direct' ? 'border-b-2 border-zinc-900 dark:border-zinc-50' : ''
+            )}>
+            <Text
+              className={cn(
+                'text-sm font-medium',
+                activeTab === 'direct'
+                  ? 'text-zinc-900 dark:text-zinc-50'
+                  : 'text-zinc-500 dark:text-zinc-400'
+              )}>
+              Direct Chats
+            </Text>
+          </Pressable>
+        </View>
+
         <ModalBody
           scrollEnabled
           className="max-h-[60vh] px-4 py-4"
           contentContainerClassName="gap-3 pb-1">
-          {isLoadingGroups ? (
+          {isLoadingChats ? (
             <View className="items-center justify-center rounded-xl border border-dashed border-zinc-200 px-4 py-6 dark:border-zinc-800">
               <Spinner size="small" />
             </View>
-          ) : groups.length ? (
-            groups.map((group) => (
+          ) : filteredChats.length ? (
+            filteredChats.map((chat) => (
               <GroupPickerOption
-                key={group.id}
-                group={group}
-                isSelected={group.id === selectedGroupId}
+                key={chat.id}
+                group={chat}
+                isSelected={chat.id === selectedChatId}
                 onPress={() => {
-                  onSelectGroup(group.id);
+                  onSelectChat(chat.id);
                   onClose();
                 }}
               />
             ))
           ) : (
             <View className="rounded-xl border border-dashed border-zinc-200 px-4 py-6 dark:border-zinc-800">
-              <Text className="text-sm text-zinc-500 dark:text-zinc-400">No groups available.</Text>
+              <Text className="text-sm text-zinc-500 dark:text-zinc-400">No chats available.</Text>
             </View>
           )}
         </ModalBody>

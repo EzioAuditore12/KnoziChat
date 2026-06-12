@@ -1,13 +1,13 @@
 import { Pressable, Text, View } from 'react-native';
 
 import { cn } from '@gluestack-ui/utils';
-
+import { CheckIcon, Icon } from '@/components/ui/icon';
 import { GroupAvatar } from './group-avatar';
-import type { GroupOption } from './types';
+import type { ChatOption } from './types';
 
 interface GroupPickerOptionProps {
-  group: GroupOption;
-  isSelected: boolean;
+  group: ChatOption;
+  isSelected?: boolean;
   onPress: () => void;
 }
 

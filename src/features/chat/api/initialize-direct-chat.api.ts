@@ -1,4 +1,4 @@
-import { authenticatedTypedFetch } from '@/lib/auth.api';
+import { authenticatedTypedFetch } from '@/lib/auth-fetch';
 
 import type { InitializeDirectChatParam } from '../schemas/initialize-direct-chat/param.schema';
 import { initializeDirectChatResponseSchema } from '../schemas/initialize-direct-chat/response.schema';

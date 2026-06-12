@@ -15,24 +15,24 @@ import { AskAiParam } from '../../schemas/ask-ai/param.schema';
 
 import { GroupPickerModal } from './group-picker-modal';
 import { GroupPickerTrigger } from './group-picker-trigger';
-import type { GroupOption } from './types';
+import type { ChatOption } from './types';
 
 interface AiChatInputProps extends ViewProps {
-  groups: Pick<ConversationGroup, 'id' | 'name' | 'avatar'>[];
-  isLoadingGroups: boolean;
+  chats: ChatOption[];
+  isLoadingChats: boolean;
   handleMutation: (params: Omit<AskAiParam, 'chats'>) => void;
   isMutationPending: boolean;
 }
 
 const paramSchema = type({
   query: '0 < string < 120',
-  groupId: 'string',
+  groupId: 'string', // keeping the schema key the same for form
 });
 
 export function AiChatInput({
   className,
-  groups,
-  isLoadingGroups,
+  chats,
+  isLoadingChats,
   handleMutation,
   isMutationPending,
   ...props
@@ -62,16 +62,16 @@ export function AiChatInput({
     };
   }, []);
 
-  const selectedGroup = groups.find((group) => group.id === selectedGroupId);
+  const selectedChat = chats.find((chat) => chat.id === selectedGroupId);
 
   const onSubmit = (data: typeof paramSchema.infer) => {
-    const chosenGroup = groups.find((group) => group.id === data.groupId);
+    const chosenChat = chats.find((chat) => chat.id === data.groupId);
 
-    if (chosenGroup) {
+    if (chosenChat) {
       handleMutation({
         group: {
-          groupId: chosenGroup.id,
-          groupName: chosenGroup.name,
+          groupId: chosenChat.id,
+          groupName: chosenChat.name,
         },
         query: data.query,
       });
@@ -114,19 +114,19 @@ export function AiChatInput({
             render={({ field: { onChange } }) => (
               <View className="w-full md:w-56 md:shrink-0 lg:w-64">
                 <GroupPickerTrigger
-                  selectedGroup={selectedGroup as GroupOption | undefined}
-                  isLoadingGroups={isLoadingGroups}
-                  placeholder={groups.length ? 'Select group' : 'No groups available'}
+                  selectedChat={selectedChat as ChatOption | undefined}
+                  isLoadingChats={isLoadingChats}
+                  placeholder={chats.length ? 'Select chat' : 'No chats available'}
                   onPress={() => setIsGroupPickerOpen(true)}
                 />
 
                 <GroupPickerModal
-                  groups={groups}
-                  isLoadingGroups={isLoadingGroups}
+                  chats={chats}
+                  isLoadingChats={isLoadingChats}
                   isOpen={isGroupPickerOpen}
                   onClose={() => setIsGroupPickerOpen(false)}
-                  selectedGroupId={selectedGroupId}
-                  onSelectGroup={onChange}
+                  selectedChatId={selectedGroupId}
+                  onSelectChat={onChange}
                 />
               </View>
             )}

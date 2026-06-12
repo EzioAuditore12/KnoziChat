@@ -1,4 +1,4 @@
-import { authenticatedTypedFetch } from '@/lib/auth.api';
+import { authenticatedTypedFetch } from '@/lib/auth-fetch';
 
 import { userProfileResponseSchema } from '../schemas/user-profile-response.schema';
 

@@ -1,14 +1,40 @@
-import { FetchRequestInit } from 'expo/fetch';
-
-import { fetch } from 'react-native-nitro-fetch';
 import * as s from 'standard-parse';
+import { fetch } from 'react-native-nitro-fetch';
 
-export type FetchProps = FetchRequestInit;
+export type FetchOptions = RequestInit;
 
 export type HttpMethods = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
+/**
+ * Converts an object of key-value pairs into a URL search string.
+ * Handles arrays (repeated params), null (empty string), and undefined (skipped).
+ */
+export const buildQueryParams = (query?: object) => {
+  if (!query) return '';
+
+  const params = new URLSearchParams();
+
+  Object.entries(query as Record<string, unknown>).forEach(([key, value]) => {
+    if (value === undefined) return;
+
+    if (value === null) {
+      params.append(key, '');
+      return;
+    }
+
+    if (Array.isArray(value)) {
+      value.forEach((item) => params.append(key, String(item)));
+      return;
+    }
+
+    params.append(key, String(value));
+  });
+
+  return params.toString();
+};
+
 interface TypedFetchProps<S extends s.StandardSchemaV1> extends Omit<
-  FetchRequestInit,
+  FetchOptions,
   'method' | 'body'
 > {
   url: string;
@@ -19,8 +45,10 @@ interface TypedFetchProps<S extends s.StandardSchemaV1> extends Omit<
   contentType?: string | null;
 }
 
-export { fetch };
-
+/**
+ * Type-safe fetch wrapper that validates the response JSON against a
+ * Standard Schema (Zod-compatible). Throws on HTTP errors or validation failures.
+ */
 export const typedFetch = async <S extends s.StandardSchemaV1>({
   url,
   schema,
@@ -31,7 +59,7 @@ export const typedFetch = async <S extends s.StandardSchemaV1>({
   contentType = 'application/json',
   ...props
 }: TypedFetchProps<S>): Promise<s.StandardSchemaV1.InferOutput<S>> => {
-  let typedFetchHeader: Record<string, string> = {
+  const typedFetchHeader: Record<string, string> = {
     ...((headers as Record<string, string>) || {}),
   };
 
@@ -41,11 +69,9 @@ export const typedFetch = async <S extends s.StandardSchemaV1>({
     typedFetchHeader['Content-Type'] = contentType;
   }
 
-  if (query !== undefined) {
-    const paramsValues = new URLSearchParams(query as Record<string, string>).toString();
+  const paramsValues = buildQueryParams(query);
 
-    url = url + (url.includes('?') ? '&' : '?') + paramsValues;
-  }
+  if (paramsValues) url = url + (url.includes('?') ? '&' : '?') + paramsValues;
 
   const response = await fetch(url, {
     headers: typedFetchHeader,
@@ -54,6 +80,7 @@ export const typedFetch = async <S extends s.StandardSchemaV1>({
     ...props,
   });
 
+  // Try to extract a structured error message from the response body
   if (!response.ok) {
     const errorBody = await response.text();
     try {
@@ -66,9 +93,11 @@ export const typedFetch = async <S extends s.StandardSchemaV1>({
 
   const json = await response.json();
 
+  // Validate the parsed JSON against the provided schema
   const result = s.safeParse(schema, json);
 
   if (result.issues) throw new Error(JSON.stringify(result.issues));
 
+  // @ts-ignore
   return result.value;
 };

@@ -1,4 +1,4 @@
-import { authenticatedTypedFetch } from '@/lib/auth.api';
+import { authenticatedTypedFetch } from '@/lib/auth-fetch';
 
 import { UploadVideoParam } from '../schemas/video/param.schema';
 import { uploadVideoResponseSchema } from '../schemas/video/response.schema';

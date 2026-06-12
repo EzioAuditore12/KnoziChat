@@ -1,3 +1,6 @@
-import type { ConversationGroup } from '@/db/tables/conversation-group.table';
-
-export type GroupOption = Pick<ConversationGroup, 'id' | 'name' | 'avatar'>;
+export type ChatOption = {
+  id: string;
+  name: string;
+  avatar: string | null;
+  type: 'group' | 'direct';
+};

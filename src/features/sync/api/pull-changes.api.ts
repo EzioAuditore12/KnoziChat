@@ -1,4 +1,4 @@
-import { authenticatedTypedFetch } from '@/lib/auth.api';
+import { authenticatedTypedFetch } from '@/lib/auth-fetch';
 
 import type { PullChangesParam } from '../schemas/pull-changes/param.schema';
 import { pullChangesResponseSchema } from '../schemas/pull-changes/response.schema';

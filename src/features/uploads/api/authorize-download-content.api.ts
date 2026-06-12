@@ -1,4 +1,4 @@
-import { authenticatedTypedFetch } from '@/lib/auth.api';
+import { authenticatedTypedFetch } from '@/lib/auth-fetch';
 
 import type { AuthorizeDownloadParam } from '../schemas/download/param.schema';
 import { authorizeDownloadResponseSchema } from '../schemas/download/response.schema';

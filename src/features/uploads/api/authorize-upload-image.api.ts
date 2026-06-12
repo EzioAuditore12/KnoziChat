@@ -1,4 +1,4 @@
-import { authenticatedTypedFetch } from '@/lib/auth.api';
+import { authenticatedTypedFetch } from '@/lib/auth-fetch';
 
 import { UploadImageParam } from '../schemas/image/param.schema';
 import { uploadImageResponseSchema } from '../schemas/image/response.schema';
