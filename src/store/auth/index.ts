@@ -6,7 +6,6 @@ import type { AuthStore } from './types';
 
 import { powerSyncDb } from '@/db';
 import { useDeviceConfigStore } from '../device';
-import { useSocketState } from '../socket';
 
 export const useAuthStore = create<AuthStore>()(
   persist(
@@ -25,6 +24,7 @@ export const useAuthStore = create<AuthStore>()(
       logout: async () => {
         await powerSyncDb.disconnectAndClear();
 
+        const { useSocketState } = await import('../socket');
         useSocketState.getState().disconnectSocket();
 
         useDeviceConfigStore.getState().resetTimeStamp();

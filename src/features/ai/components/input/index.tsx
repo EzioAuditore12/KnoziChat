@@ -10,7 +10,6 @@ import { Button, ButtonText } from '@/components/ui/button';
 import { Input, InputField } from '@/components/ui/input';
 
 import { useGradualAnimation } from '@/hooks/use-gradual-animation';
-import { ConversationGroup } from '@/db/tables/conversation-group.table';
 import { AskAiParam } from '../../schemas/ask-ai/param.schema';
 
 import { GroupPickerModal } from './group-picker-modal';

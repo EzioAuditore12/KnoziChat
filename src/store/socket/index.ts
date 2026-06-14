@@ -3,7 +3,6 @@ import { AppState, type NativeEventSubscription } from 'react-native';
 
 import type { SocketState } from './type';
 import { connectWebSocket } from '@/lib/socket-io';
-import { conversationDirectRepository } from '@/db/repositories/conversation-direct.repository';
 
 // Keep this outside, but we will initialize it safely below
 let appStateSubscription: NativeEventSubscription | null = null;
@@ -28,18 +27,12 @@ export const useSocketState = create<SocketState>()((set, get) => ({
 
       set({ socket: newSocket });
 
-      newSocket.on('connect', async () => {
+      newSocket.on('connect', () => {
         console.log('Socket connected', newSocket.id);
-
-        const userIds = await conversationDirectRepository.getUsersWithExistingChats();
-
-        if (userIds.length > 0) {
-          newSocket.emit('presence:get', userIds);
-        }
       });
 
-      newSocket.on('online:users', () => {
-        console.log('Global online users update ignored');
+      newSocket.on('online:users', (keys: string[]) => {
+        set({ onlineUsers: keys });
       });
 
       newSocket.on('presence:list', (statuses) => {

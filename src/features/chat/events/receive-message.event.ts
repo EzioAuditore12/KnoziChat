@@ -54,12 +54,7 @@ const handleReceiveMessage = async (message: ReceiveMessage) => {
         id: conversationId,
       });
 
-      // NEW: Request presence for this new sender
-      const socket = useSocketState.getState().socket;
 
-      if (socket?.connected) {
-        socket.emit('presence:get', [senderId]);
-      }
     }
 
     const saveDirectChat = await chatDirectRepository.create({

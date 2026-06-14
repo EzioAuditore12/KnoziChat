@@ -62,25 +62,26 @@ const handleReceiveGroupMessage = async (message: ReceiveGroupMessage) => {
             updatedAt: new Date(c.updatedAt).getTime(),
           }))
         );
-        await conversationGroupRepository.create({
-          id: groupDetails.id,
-          name: groupDetails.name,
-          avatar: groupDetails.avatar,
-          createdAt: new Date(groupDetails.createdAt).getTime(),
-          updatedAt: new Date(groupDetails.updatedAt).getTime(),
-        });
-        await conversationGroupRepository.insertMultipleMembers(
-          groupMembers.map((m) => ({
-            id: m.id,
-            groupId: m.groupId,
-            userId: m.userId,
-            isAdmin: Boolean(m.isAdmin),
-            createdAt: new Date(m.createdAt).getTime(),
-            updatedAt: new Date(m.updatedAt).getTime(),
-            deletedAt: m.deletedAt ? new Date(m.deletedAt).getTime() : null,
-          }))
-        );
       }
+      
+      await conversationGroupRepository.create({
+        id: groupDetails.id,
+        name: groupDetails.name,
+        avatar: groupDetails.avatar,
+        createdAt: new Date(groupDetails.createdAt).getTime(),
+        updatedAt: new Date(groupDetails.updatedAt).getTime(),
+      });
+      await conversationGroupRepository.insertMultipleMembers(
+        groupMembers.map((m) => ({
+          id: m.id,
+          groupId: m.groupId,
+          userId: m.userId,
+          isAdmin: Boolean(m.isAdmin),
+          createdAt: new Date(m.createdAt).getTime(),
+          updatedAt: new Date(m.updatedAt).getTime(),
+          deletedAt: m.deletedAt ? new Date(m.deletedAt).getTime() : null,
+        }))
+      );
     }
     const savedGroupChat = await chatGroupRepository.create({
       id,

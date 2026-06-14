@@ -25,6 +25,8 @@ export default function HomeScreen() {
 
   const { data: users } = useGetOnlineUsers();
 
+  console.log(users);
+
   return (
     <>
       <Stack.Screen
