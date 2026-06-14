@@ -53,8 +53,6 @@ const handleReceiveMessage = async (message: ReceiveMessage) => {
         userId: senderId,
         id: conversationId,
       });
-
-
     }
 
     const saveDirectChat = await chatDirectRepository.create({

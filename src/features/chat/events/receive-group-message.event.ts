@@ -63,7 +63,7 @@ const handleReceiveGroupMessage = async (message: ReceiveGroupMessage) => {
           }))
         );
       }
-      
+
       await conversationGroupRepository.create({
         id: groupDetails.id,
         name: groupDetails.name,

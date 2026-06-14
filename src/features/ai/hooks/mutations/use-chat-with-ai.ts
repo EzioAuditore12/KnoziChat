@@ -6,10 +6,14 @@ import { askAiApi } from '../../api/ask-ai.api';
 export function useChatWithAi() {
   return useMutation({
     mutationFn: askAiApi,
-    onSuccess: async (data) => {
+    onSuccess: async (data, variables) => {
       console.log(data);
 
-      await aiRepository.create({ text: data.response, sender: 'ai' });
+      await aiRepository.create({
+        text: data.response,
+        sender: 'ai',
+        conversationId: variables.group.groupId,
+      });
     },
     onError: (error) => {
       alert(error);

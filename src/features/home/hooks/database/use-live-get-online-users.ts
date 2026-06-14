@@ -27,7 +27,10 @@ export function useGetOnlineUsers() {
         createdAt: userTable.createdAt,
         updatedAt: userTable.updatedAt,
 
-        isOnline: sql<boolean>`${onlineUsers.length > 0 ? inArray(userTable.id, onlineUsers) : sql`0`}`.as('isOnline'),
+        isOnline:
+          sql<boolean>`${onlineUsers.length > 0 ? inArray(userTable.id, onlineUsers) : sql`0`}`.as(
+            'isOnline'
+          ),
       })
       .from(userTable)
       .where(

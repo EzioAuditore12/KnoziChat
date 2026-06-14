@@ -9,7 +9,8 @@ export const aiTable = sqliteTable(AI_TABLE_NAME, {
   id: text('id')
     .primaryKey()
     .$defaultFn(() => new SnowFlakeId(1).generate().toString()),
-  sender: text('send', { enum: ['ai', 'human'] }).notNull(),
+  conversationId: text('conversation_id').notNull(),
+  sender: text('sender', { enum: ['ai', 'human'] }).notNull(),
   text: text('text').notNull(),
   createdAt: integer('created_at')
     .$defaultFn(() => Date.now())

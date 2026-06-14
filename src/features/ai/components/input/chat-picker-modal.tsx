@@ -14,26 +14,26 @@ import {
 } from '@/components/ui/modal';
 import { Spinner } from '@/components/ui/spinner';
 
-import { GroupPickerOption } from './group-picker-option';
+import { ChatPickerOption } from './chat-picker-option';
 import type { ChatOption } from './types';
 
-interface GroupPickerModalProps {
+interface ChatPickerModalProps {
   chats: ChatOption[];
   isLoadingChats: boolean;
   isOpen: boolean;
   onClose: () => void;
   selectedChatId?: string;
-  onSelectChat: (chatId: string) => void;
+  onSelectChat: (chat: ChatOption) => void;
 }
 
-export function GroupPickerModal({
+export function ChatPickerModal({
   chats,
   isLoadingChats,
   isOpen,
   onClose,
   selectedChatId,
   onSelectChat,
-}: GroupPickerModalProps) {
+}: ChatPickerModalProps) {
   const [activeTab, setActiveTab] = useState<'group' | 'direct'>('group');
 
   const filteredChats = chats.filter((chat) => chat.type === activeTab);
@@ -103,12 +103,12 @@ export function GroupPickerModal({
             </View>
           ) : filteredChats.length ? (
             filteredChats.map((chat) => (
-              <GroupPickerOption
+              <ChatPickerOption
                 key={chat.id}
-                group={chat}
+                chat={chat}
                 isSelected={chat.id === selectedChatId}
                 onPress={() => {
-                  onSelectChat(chat.id);
+                  onSelectChat(chat);
                   onClose();
                 }}
               />

@@ -14,6 +14,7 @@ interface ConversationListProps extends Omit<
   data: Conversation[];
   isLoading?: boolean;
   isFetchingNextPage?: boolean;
+  onPressChat?: (item: Conversation) => void;
 }
 
 export function ConversationList({
@@ -21,6 +22,7 @@ export function ConversationList({
   className,
   isLoading,
   isFetchingNextPage,
+  onPressChat,
   ...props
 }: ConversationListProps) {
   if (isLoading) return <Spinner size="large" className="mt-4" />;
@@ -37,6 +39,11 @@ export function ConversationList({
             data={item}
             className="mx-3 mb-3"
             onPress={() => {
+              if (onPressChat) {
+                onPressChat(item);
+                return;
+              }
+
               if (item.type === 'direct') {
                 router.push({
                   pathname: '/chat/direct/[id]',

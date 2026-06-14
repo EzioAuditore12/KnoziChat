@@ -10,7 +10,11 @@ export type AskAiRequestData = Omit<AskAiParam, 'chats'> & {
 };
 
 export const askAiApi = async (data: AskAiRequestData) => {
-  await aiRepository.create({ text: data.query, sender: 'human' });
+  await aiRepository.create({
+    text: data.query,
+    sender: 'human',
+    conversationId: data.group.groupId,
+  });
 
   let fullResponse = '';
 

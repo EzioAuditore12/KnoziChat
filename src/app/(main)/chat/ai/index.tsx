@@ -1,49 +1,63 @@
-import { View, Text } from 'react-native';
-import { Stack } from 'expo-router';
+import { useState } from 'react';
+import { Stack, router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Activity, useState } from 'react';
+
+import { Box } from '@/components/ui/box';
+import { Button, ButtonIcon } from '@/components/ui/button';
+import { EditIcon } from '@/components/ui/icon';
 
 import AiHeader from '@/features/ai/components/header';
-import { AiChatInput } from '@/features/ai/components/input';
-import { AiChatList } from '@/features/ai/components/list';
-import { FormattedAiText } from '@/features/ai/components/formatted-ai-text';
-import { ChatMessagesLoading } from '@/features/chat/components/loading/chat-messages-loading';
-import { Spinner } from '@/components/ui/spinner';
+import { ConversationList } from '@/features/home/components/list/conversation';
+import { useLiveAiConversationDetails } from '@/features/ai/hooks/database/use-live-ai-conversation-details';
+import { useAuthStore } from '@/store/auth';
+import { syncDatabase } from '@/db/sync';
 
+import { ChatPickerModal } from '@/features/ai/components/input/chat-picker-modal';
 import {
   useGetLiveGroups,
   useGetLiveDirectChats,
-  useGetLiveUsers,
 } from '@/features/ai/hooks/database/use-live-get-users';
-import { useChatWithAi } from '@/features/ai/hooks/mutations/use-chat-with-ai';
-import { useLiveQuery } from '@/db/hooks/use-live-query';
-import { db } from '@/db';
-import { aiTable } from '@/db/tables/ai.table';
+import { aiRepository } from '@/db/repositories/ai.repository';
 import type { ChatOption } from '@/features/ai/components/input/types';
 
 export default function AiPage() {
   const safeAreaInsets = useSafeAreaInsets();
-  const [streamingText, setStreamingText] = useState('');
+  const currentUserId = useAuthStore((state) => state.user?.id!);
 
+  const { data, isFetching, isLoading, fetchNextPage, error } =
+    useLiveAiConversationDetails(currentUserId);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  if (error) {
+    console.error('LIVE QUERY ERROR:', error);
+  }
+
+  // For the picker modal
   const { data: groups, isLoading: isGroupsLoading } = useGetLiveGroups();
   const { data: directChats, isLoading: isDirectChatsLoading } = useGetLiveDirectChats();
-  const { data: allUsers } = useGetLiveUsers();
 
   const chats: ChatOption[] = [
     ...(groups?.map((g) => ({ ...g, type: 'group' as const })) || []),
     ...(directChats?.map((d) => ({ ...d, type: 'direct' as const })) || []),
   ];
 
-  const { mutate, isPending } = useChatWithAi();
+  const handleCreateAiChat = async (chat: ChatOption) => {
+    // Insert a welcome message to seed the conversation and make it show up in the list
+    await aiRepository.create({
+      text: 'Hi! I am ready to help you analyze this conversation.',
+      sender: 'ai',
+      conversationId: chat.id,
+    });
 
-  const { data, isLoading: isChatsLoading } = useLiveQuery(db.select().from(aiTable));
+    setIsModalOpen(false);
 
-  const handleMutationWrapper = (params: any) => {
-    setStreamingText(''); // Reset on new message
-    mutate({
-      ...params,
-      onMessage: (text: string) => {
-        setStreamingText((prev) => prev + text);
+    router.push({
+      pathname: '/(main)/chat/ai/[id]',
+      params: {
+        id: chat.id,
+        name: chat.name || 'Chat',
+        isGroup: chat.type === 'group' ? 'true' : 'false',
+        avatar: chat.avatar || '',
       },
     });
   };
@@ -55,36 +69,55 @@ export default function AiPage() {
           header: () => <AiHeader style={{ paddingTop: safeAreaInsets.top }} />,
         }}
       />
-      <View className="flex-1">
-        {isChatsLoading ? (
-          <ChatMessagesLoading />
-        ) : (
-          <AiChatList data={data} directChats={directChats} allUsers={allUsers} />
-        )}
-        <Activity mode={isPending ? 'visible' : 'hidden'}>
-          <View className="flex-row items-center gap-2 border-t border-gray-100 bg-gray-50 px-4 py-3 dark:border-gray-800 dark:bg-gray-900">
-            {isPending && !streamingText && <Spinner size="small" />}
-            <View className="flex-1">
-              {streamingText ? (
-                <FormattedAiText
-                  text={streamingText}
-                  directChats={directChats}
-                  allUsers={allUsers}
-                  className="text-sm text-gray-500"
-                />
-              ) : (
-                <Text className="text-sm text-gray-500 italic">Knozi Ai is thinking...</Text>
-              )}
-            </View>
-          </View>
-        </Activity>
-        <AiChatInput
+      <Box
+        className="relative flex-1 bg-white p-1 dark:bg-black"
+        style={{ paddingBottom: safeAreaInsets.bottom }}>
+        <ConversationList
+          data={data}
+          onEndReached={fetchNextPage}
+          isLoading={isLoading}
+          isFetchingNextPage={isFetching}
+          onRefresh={() => syncDatabase.pullChanges()}
+          onPressChat={(item) => {
+            router.push({
+              pathname: '/(main)/chat/ai/[id]',
+              params: {
+                id: item.id,
+                name: item.name || 'Chat',
+                isGroup: item.type === 'group' ? 'true' : 'false',
+                avatar: item.avatar || '',
+              },
+            });
+          }}
+        />
+
+        <Button
+          className="absolute right-5"
+          size="lg"
+          accessibilityHint={'New Ai Chat'}
+          style={{
+            bottom: safeAreaInsets.bottom + 20,
+            backgroundColor: '#8b5cf6',
+            borderRadius: 32,
+            padding: 16,
+            elevation: 6,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.25,
+            shadowRadius: 4,
+          }}
+          onPress={() => setIsModalOpen(true)}>
+          <ButtonIcon as={EditIcon} color="#fff" size="lg" />
+        </Button>
+
+        <ChatPickerModal
           chats={chats}
           isLoadingChats={isGroupsLoading || isDirectChatsLoading}
-          handleMutation={handleMutationWrapper}
-          isMutationPending={isPending}
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSelectChat={handleCreateAiChat}
         />
-      </View>
+      </Box>
     </>
   );
 }

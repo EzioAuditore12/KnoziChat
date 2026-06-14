@@ -4,13 +4,13 @@ import { cn } from '@gluestack-ui/utils';
 import { GroupAvatar } from './group-avatar';
 import type { ChatOption } from './types';
 
-interface GroupPickerOptionProps {
-  group: ChatOption;
+interface ChatPickerOptionProps {
+  chat: ChatOption;
   isSelected?: boolean;
   onPress: () => void;
 }
 
-export function GroupPickerOption({ group, isSelected, onPress }: GroupPickerOptionProps) {
+export function ChatPickerOption({ chat, isSelected, onPress }: ChatPickerOptionProps) {
   return (
     <Pressable
       onPress={onPress}
@@ -20,10 +20,10 @@ export function GroupPickerOption({ group, isSelected, onPress }: GroupPickerOpt
           ? 'border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-950/30'
           : 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950'
       )}>
-      <GroupAvatar name={group.name} avatar={group.avatar} />
+      <GroupAvatar name={chat.name} avatar={chat.avatar} />
       <View className="min-w-0 flex-1">
         <Text className="text-sm font-medium text-zinc-900 dark:text-zinc-50" numberOfLines={1}>
-          {group.name}
+          {chat.name}
         </Text>
         <Text className="text-xs text-zinc-500 dark:text-zinc-400">Tap to select</Text>
       </View>
