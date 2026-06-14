@@ -63,6 +63,7 @@
     "react-native-nitro-fetch": "^1.4.0",
     "react-native-nitro-file-system": "^0.4.0",
     "react-native-nitro-haptics": "^0.2.3",
+    "react-native-nitro-markdown": "^0.8.0",
     "react-native-nitro-modules": "^0.35.9",
     "react-native-nitro-text-decoder": "^0.2.0",
     "react-native-reanimated": "4.3.1",

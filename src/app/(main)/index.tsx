@@ -13,8 +13,8 @@ import { useAuthStore } from '@/store/auth';
 
 import { OnlineUsersList } from '@/features/home/components/list/online-users';
 import { useGetOnlineUsers } from '@/features/home/hooks/database/use-live-get-online-users';
-import { Button, ButtonIcon } from '@/components/ui/button';
 import { CircleIcon } from '@/components/ui/icon';
+import { FloatingActionButton } from '@/components/ui/floating-action-button';
 
 export default function HomeScreen() {
   const safeAreaInsets = useSafeAreaInsets();
@@ -50,24 +50,11 @@ export default function HomeScreen() {
           onRefresh={() => syncDatabase.pullChanges()}
         />
 
-        <Button
-          className="absolute right-5"
-          size="lg"
-          accessibilityHint={'Ai'}
-          style={{
-            bottom: safeAreaInsets.bottom + 20,
-            backgroundColor: '#8b5cf6',
-            borderRadius: 32,
-            padding: 16,
-            elevation: 6,
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.25,
-            shadowRadius: 4,
-          }}
-          onPress={() => router.push('/(main)/chat/ai')}>
-          <ButtonIcon as={CircleIcon} color="#fff" size="lg" />
-        </Button>
+        <FloatingActionButton
+          icon={CircleIcon}
+          accessibilityHint="Ai"
+          onPress={() => router.push('/(main)/chat/ai')}
+        />
       </Box>
     </>
   );

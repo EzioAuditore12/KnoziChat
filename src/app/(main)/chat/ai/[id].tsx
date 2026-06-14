@@ -3,7 +3,7 @@ import { Stack, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useState, useMemo } from 'react';
 
-import AiHeader from '@/features/ai/components/header';
+import { AiHeader } from '@/features/ai/components/header';
 import { AiChatInput } from '@/features/ai/components/input';
 import { AiChatList } from '@/features/ai/components/list';
 import { AiStreamingIndicator } from '@/features/ai/components/streaming-indicator';

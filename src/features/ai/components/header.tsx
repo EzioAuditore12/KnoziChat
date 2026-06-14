@@ -12,7 +12,7 @@ interface AiHeaderProps extends ViewProps {
   avatar?: string | null;
 }
 
-export default function AiHeader({ name, avatar, className, ...props }: AiHeaderProps) {
+export function AiHeader({ name, avatar, className, ...props }: AiHeaderProps) {
   return (
     <View
       className={cn(
