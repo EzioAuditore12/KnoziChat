@@ -1,8 +1,7 @@
-import React from 'react';
 import { Box } from '@/components/ui/box';
 import { Text } from '@/components/ui/text';
 import { Button, ButtonIcon, ButtonText } from '@/components/ui/button';
-import { EditIcon } from '@/components/ui/icon';
+import { EditIcon, Icon } from '@/components/ui/icon';
 
 interface AiConversationListEmptyProps {
   onPressAnalyze: () => void;
@@ -12,7 +11,7 @@ export function AiConversationListEmpty({ onPressAnalyze }: AiConversationListEm
   return (
     <Box className="mt-24 flex-1 items-center justify-center gap-4 p-8">
       <Box className="mb-2 rounded-full bg-violet-100 p-6">
-        <ButtonIcon as={EditIcon} className="size-12 text-violet-600" />
+        <Icon as={EditIcon} className="size-12 text-violet-600" />
       </Box>
       <Box>
         <Text className="text-typography-800 text-center text-xl font-bold">

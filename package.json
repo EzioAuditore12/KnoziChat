@@ -94,6 +94,7 @@
     "typescript": "~6.0.3"
   },
   "op-sqlite": {
-    "fts5": true
+    "fts5": true,
+    "sqlcipher": true
   }
 }
