@@ -14,6 +14,9 @@ import { setLocale } from '@bernagl/react-native-date';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import { PowerSyncDatabaseProvider } from '@/db';
 import { TanstackReactQueryClientProvider } from '@/lib/tanstack/query';
+import * as SplashScreen from 'expo-splash-screen';
+
+SplashScreen.preventAutoHideAsync();
 
 setLocale('en');
 

@@ -2,9 +2,7 @@ import { OPSqliteOpenFactory } from '@powersync/op-sqlite';
 import { PowerSyncDatabase, PowerSyncContext, usePowerSync } from '@powersync/react-native';
 import { wrapPowerSyncWithDrizzle } from '@powersync/drizzle-driver';
 import { PropsWithChildren, useEffect, useState } from 'react';
-import { View } from 'react-native';
-
-import { Spinner } from '@/components/ui/spinner';
+import * as SplashScreen from 'expo-splash-screen';
 import { AppSchema, drizzleSchema } from './schema';
 import { setupFts } from './extensions/fts-5';
 import { getOrGenerateDbKey } from './extensions/sql-cipher';
@@ -63,15 +61,13 @@ export function PowerSyncDatabaseProvider({ children }: PropsWithChildren) {
       setupDatabase()
         .then(() => setIsReady(true))
         .catch((e) => console.error('Failed to init DB:', e));
+    } else {
+      SplashScreen.hideAsync();
     }
   }, [isReady]);
 
   if (!isReady) {
-    return (
-      <View className="flex-1 items-center justify-center">
-        <Spinner size="large" />
-      </View>
-    );
+    return null;
   }
 
   return <PowerSyncContext.Provider value={powerSyncDb}>{children}</PowerSyncContext.Provider>;
