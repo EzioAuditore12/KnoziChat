@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import { zustandStorage } from '../storage';
+import { secureStorage } from '../storage';
 import type { AuthStore } from './types';
 
 import { powerSyncDb } from '@/db';
@@ -34,7 +34,7 @@ export const useAuthStore = create<AuthStore>()(
     }),
     {
       name: 'knozichat-auth',
-      storage: createJSONStorage(() => zustandStorage),
+      storage: createJSONStorage(() => secureStorage),
     }
   )
 );

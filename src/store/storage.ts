@@ -1,5 +1,6 @@
 import { StateStorage } from 'zustand/middleware';
 import { createMMKV } from 'react-native-mmkv';
+import * as Keychain from 'react-native-keychain';
 
 const storage = createMMKV();
 
@@ -13,5 +14,18 @@ export const zustandStorage: StateStorage = {
   },
   removeItem: (name) => {
     return storage.remove(name);
+  },
+};
+
+export const secureStorage: StateStorage = {
+  setItem: async (name, value) => {
+    await Keychain.setGenericPassword(name, value, { service: name });
+  },
+  getItem: async (name) => {
+    const credentials = await Keychain.getGenericPassword({ service: name });
+    return credentials ? credentials.password : null;
+  },
+  removeItem: async (name) => {
+    await Keychain.resetGenericPassword({ service: name });
   },
 };
