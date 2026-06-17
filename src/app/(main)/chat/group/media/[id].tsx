@@ -9,9 +9,9 @@ import {
   TabsIndicator,
 } from '@/components/ui/tabs';
 
-import { useLiveGetGroupChatMedia } from '@/features/chat/hooks/database/use-live-get-group-chat-media';
-import { useGroupMediaByDate } from '@/features/chat/hooks/use-group-media-by-date';
-import { MediaSectionList } from '@/features/chat/components/direct/media/media-section-list';
+import { useLiveGetGroupChatMedia } from '@/features/chat/group/hooks/database/use-live-get-group-chat-media';
+import { useGroupMediaByDate } from '@/features/chat/direct/hooks/use-group-media-by-date';
+import { MediaSectionList } from '@/features/chat/direct/components/media/media-section-list';
 import { MediaListLoading } from '@/features/chat/components/loading/media-list-loading';
 
 export default function GroupChatMediaScreen() {

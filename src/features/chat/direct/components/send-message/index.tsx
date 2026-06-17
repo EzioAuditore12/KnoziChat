@@ -14,7 +14,7 @@ import { HStack } from '@/components/ui/hstack';
 import { Input, InputField } from '@/components/ui/input';
 
 import { Socket } from '@/lib/socket-io';
-import { SendMessageEvent } from '../../../events/send-message';
+import { SendMessageEvent } from '../../events/send-message';
 
 import { MediaPicker } from './media-picker';
 import { File } from '@/features/common/schemas/file.schema';

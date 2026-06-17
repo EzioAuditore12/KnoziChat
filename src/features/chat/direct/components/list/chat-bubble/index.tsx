@@ -15,7 +15,7 @@ import { StatusIcon } from './status-icon';
 import type { DirectChatWithAttachment } from '@/features/chat/types/direct-chats';
 
 import { activeUploadControllers } from '@/lib/upload-manager';
-import { sendMessageEvent } from '@/features/chat/events/send-message';
+import { sendMessageEvent } from '@/features/chat/direct/events/send-message';
 import { useSocketState } from '@/store/socket';
 import { PauseIcon } from './status-icon/icons/pauseIcon';
 import { PlayIcon } from './status-icon/icons/playIcon';

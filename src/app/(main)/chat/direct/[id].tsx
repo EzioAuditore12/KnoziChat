@@ -6,16 +6,16 @@ import { Box } from '@/components/ui/box';
 
 import { Socket } from 'socket.io-client';
 
-import { ChatterInfo } from '@/features/chat/components/direct/chatter-info';
-import { ChatDirectList } from '@/features/chat/components/direct/list';
-import { SendDirectMessage } from '@/features/chat/components/direct/send-message';
+import { ChatterInfo } from '@/features/chat/direct/components/chatter-info';
+import { ChatDirectList } from '@/features/chat/direct/components/list';
+import { SendDirectMessage } from '@/features/chat/direct/components/send-message';
 
 import { useSocketState } from '@/store/socket';
 
-import { sendMessageEvent } from '@/features/chat/events/send-message';
+import { sendMessageEvent } from '@/features/chat/direct/events/send-message';
 
-import { useLiveChatterInfo } from '@/features/chat/hooks/database/use-live-chatter-info';
-import { useLiveDirectChats } from '@/features/chat/hooks/database/use-live-one-to-one-chats';
+import { useLiveChatterInfo } from '@/features/chat/direct/hooks/database/use-live-chatter-info';
+import { useLiveDirectChats } from '@/features/chat/direct/hooks/database/use-live-one-to-one-chats';
 import { SelectedMessageHeader } from '@/features/chat/components/selected-messages-header';
 import { ChatMessagesLoading } from '@/features/chat/components/loading/chat-messages-loading';
 

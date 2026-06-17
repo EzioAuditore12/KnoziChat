@@ -29,7 +29,7 @@ import { Text } from '@/components/ui/text';
 
 import { AvatarInput } from './avatar-input';
 
-import type { InitializeGroupChatParam } from '@/features/chat/schemas/initialize-group-chat/param.schema';
+import type { InitializeGroupChatParam } from '@/features/chat/group/schemas/initialize-group-chat/param.schema';
 
 type GroupCreationFormValues = {
   name: string;

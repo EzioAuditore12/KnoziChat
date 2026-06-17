@@ -13,17 +13,17 @@ import { Text } from '@/components/ui/text';
 import { VStack } from '@/components/ui/vstack';
 import { Spinner } from '@/components/ui/spinner';
 
-import { ChatGroupDetailsHeader } from '@/features/chat/components/group/details/header';
-import { GroupMemberCard } from '@/features/chat/components/group/details/member-card';
+import { ChatGroupDetailsHeader } from '@/features/chat/group/components/details/header';
+import { GroupMemberCard } from '@/features/chat/group/components/details/member-card';
 
-import { useLiveGroupConversationDetails } from '@/features/chat/hooks/database/use-live-group-conversation-details';
+import { useLiveGroupConversationDetails } from '@/features/chat/group/hooks/database/use-live-group-conversation-details';
 import { useLiveInfiniteQuery } from '@/db/hooks/use-live-infinite-query';
-import { useLiveGetGroupChatMedia } from '@/features/chat/hooks/database/use-live-get-group-chat-media';
+import { useLiveGetGroupChatMedia } from '@/features/chat/group/hooks/database/use-live-get-group-chat-media';
 
 import { RecentMediaList } from '@/features/chat/components/recent-media-list';
 
 import { useAuthStore } from '@/store/auth';
-import { navgateToChat } from '@/features/chat/components/direct/utils/navigate-to-chat';
+import { navgateToChat } from '@/features/chat/direct/components/utils/navigate-to-chat';
 
 type GroupConversationMember = {
   id: string;

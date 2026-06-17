@@ -11,11 +11,11 @@ import { Box } from '@/components/ui/box';
 import { SearchIcon } from '@/components/ui/icon';
 import { Input, InputField, InputIcon, InputSlot } from '@/components/ui/input';
 
-import { GroupCreationDialog } from '@/features/chat/components/group/create/dialog';
-import { SelectedUserList } from '@/features/chat/components/group/create/selected-user-list';
-import { UserList } from '@/features/chat/components/group/create/user-list';
+import { GroupCreationDialog } from '@/features/chat/group/components/create/dialog';
+import { SelectedUserList } from '@/features/chat/group/components/create/selected-user-list';
+import { UserList } from '@/features/chat/group/components/create/user-list';
 
-import { useInitializeGroupChat } from '@/features/chat/hooks/mutations/use-initialize-group-chat';
+import { useInitializeGroupChat } from '@/features/chat/group/hooks/mutation/use-initialize-group-chat';
 
 import { useAuthStore } from '@/store/auth';
 

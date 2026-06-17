@@ -11,7 +11,7 @@ import { Input, InputField } from '@/components/ui/input';
 import { HStack } from '@/components/ui/hstack';
 import { useGradualAnimation } from '@/hooks/use-gradual-animation';
 import { Socket } from '@/lib/socket-io';
-import { SendGroupMessageEvent } from '../../../events/send-group-message';
+import { SendGroupMessageEvent } from '../../events/send-group-message';
 import { File } from '@/features/common/schemas/file.schema';
 import { MediaPreviewActivity } from './media-preview';
 import { MediaPicker } from './media-picker';

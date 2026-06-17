@@ -7,10 +7,10 @@ import { useSyncEngine } from '@/db/sync/hook';
 
 import { useSocketState } from '@/store/socket';
 
-import { useReceiveGroupMessageEvent } from '@/features/chat/events/receive-group-message.event';
-import { useReceiveMessageEvent } from '@/features/chat/events/receive-message.event';
-import { useReceiveGroupCreatedEvent } from '@/features/chat/events/receive-group-created.event';
-import { useMessageSeenUpdateEvent } from '@/features/chat/events/message-seen-update.event';
+import { useReceiveGroupMessageEvent } from '@/features/chat/group/events/receive-group-message.event';
+import { useReceiveMessageEvent } from '@/features/chat/direct/events/receive-message.event';
+import { useReceiveGroupCreatedEvent } from '@/features/chat/group/events/receive-group-created.event';
+import { useMessageSeenUpdateEvent } from '@/features/chat/direct/events/message-seen-update.event';
 
 export default function MainLayoutScreens() {
   const { user } = useAuthStore((state) => state);

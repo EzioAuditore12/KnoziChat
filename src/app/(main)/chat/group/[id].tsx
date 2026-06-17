@@ -4,21 +4,21 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Box } from '@/components/ui/box';
 
-import { GroupInfo } from '@/features/chat/components/group/details/info';
-import { SendGroupMessage } from '@/features/chat/components/group/send-message';
-import { ChatGroupList } from '@/features/chat/components/group/list';
+import { GroupInfo } from '@/features/chat/group/components/details/info';
+import { SendGroupMessage } from '@/features/chat/group/components/send-message';
+import { ChatGroupList } from '@/features/chat/group/components/list';
 import { SelectedMessageHeader } from '@/features/chat/components/selected-messages-header';
 import { ChatMessagesLoading } from '@/features/chat/components/loading/chat-messages-loading';
 
-import { useLiveGroupConversationChats } from '@/features/chat/hooks/database/use-live-group-conversation-chats';
+import { useLiveGroupConversationChats } from '@/features/chat/group/hooks/database/use-live-group-conversation-chats';
 
 import { useAuthStore } from '@/store/auth';
 
 import { useSocketState } from '@/store/socket';
 
-import { useLiveGroupInfo } from '@/features/chat/hooks/database/use-live-group-info';
+import { useLiveGroupInfo } from '@/features/chat/group/hooks/database/use-live-group-info';
 import { Socket } from '@/lib/socket-io';
-import { sendGroupMessageEvent } from '@/features/chat/events/send-group-message';
+import { sendGroupMessageEvent } from '@/features/chat/group/events/send-group-message';
 
 export default function GroupChatScreen() {
   const safeAreaInsets = useSafeAreaInsets();

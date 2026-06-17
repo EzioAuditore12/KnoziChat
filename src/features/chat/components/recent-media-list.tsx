@@ -7,7 +7,7 @@ import { HStack } from '@/components/ui/hstack';
 import { Text } from '@/components/ui/text';
 import { Link } from '@/components/native-link';
 
-import type { BaseChatMediaItem } from '@/features/chat/components/direct/media/media-section-list';
+import type { BaseChatMediaItem } from '@/features/chat/direct/components/media/media-section-list';
 
 interface RecentMediaListProps<T extends BaseChatMediaItem> {
   id: string;

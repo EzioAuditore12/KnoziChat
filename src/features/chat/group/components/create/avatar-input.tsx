@@ -8,7 +8,7 @@ import { AvatarModifyAlert } from '@/features/auth/register/components/register-
 import { Avatar, AvatarBadge, AvatarFallbackText, AvatarImage } from '@/components/ui/avatar';
 import { Icon, RemoveIcon } from '@/components/ui/icon';
 
-import type { InitializeGroupChatParam } from '@/features/chat/schemas/initialize-group-chat/param.schema';
+import type { InitializeGroupChatParam } from '@/features/chat/group/schemas/initialize-group-chat/param.schema';
 
 const config: Config = {
   maxSelect: 1,

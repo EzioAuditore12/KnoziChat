@@ -11,7 +11,7 @@ import { useGetUser } from '@/features/common/hooks/queries/use-get-user';
 
 import { UserProfileLoading } from '@/features/common/components/user/profile-loading';
 import { useRefreshOnFocus } from '@/hooks/use-refresh-on-focus';
-import { navgateToChat } from '@/features/chat/components/direct/utils/navigate-to-chat';
+import { navgateToChat } from '@/features/chat/direct/components/utils/navigate-to-chat';
 
 export default function UserDetails() {
   const safeAreaInsets = useSafeAreaInsets();

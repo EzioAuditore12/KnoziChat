@@ -4,8 +4,8 @@ import { Box } from '@/components/ui/box';
 import { Center } from '@/components/ui/center';
 import { Text } from '@/components/ui/text';
 
-import { SendFirstMessage } from '@/features/chat/components/direct/send-first-message';
-import { useInitializeDirectChat } from '@/features/chat/hooks/mutations/use-initialize-direct-chat';
+import { SendFirstMessage } from '@/features/chat/direct/components/send-first-message';
+import { useInitializeDirectChat } from '@/features/chat/direct/hooks/mutations/use-initialize-direct-chat';
 
 export default function NewDirectChatScreen() {
   const { id, name } = useLocalSearchParams() as unknown as {

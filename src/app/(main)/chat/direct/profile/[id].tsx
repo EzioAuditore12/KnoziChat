@@ -9,12 +9,12 @@ import { Spinner } from '@/components/ui/spinner';
 
 import { useAuthStore } from '@/store/auth';
 
-import { CommonGroupCard } from '@/features/chat/components/direct/profile/common-group-card';
-import { ChatProfileHeader } from '@/features/chat/components/direct/profile/header';
+import { CommonGroupCard } from '@/features/chat/direct/components/profile/common-group-card';
+import { ChatProfileHeader } from '@/features/chat/direct/components/profile/header';
 
-import { useLiveUserDetails } from '@/features/chat/hooks/database/use-live-user-details';
-import { useLiveUserProfileGroupInCommon } from '@/features/chat/hooks/database/use-live-user-profile-group-in-common';
-import { useLiveGetDirectChatMedia } from '@/features/chat/hooks/database/use-live-get-direct-chat-media';
+import { useLiveUserDetails } from '@/features/chat/direct/hooks/database/use-live-user-details';
+import { useLiveUserProfileGroupInCommon } from '@/features/chat/direct/hooks/database/use-live-user-profile-group-in-common';
+import { useLiveGetDirectChatMedia } from '@/features/chat/direct/hooks/database/use-live-get-direct-chat-media';
 import { RecentMediaList } from '@/features/chat/components/recent-media-list';
 
 export default function ChatProfileScreen() {
