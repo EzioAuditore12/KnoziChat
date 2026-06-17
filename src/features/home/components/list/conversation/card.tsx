@@ -21,7 +21,7 @@ interface ConversationCardProps extends ComponentProps<typeof Card> {
 }
 
 export function ConversationCard({ className, data, onPress, ...props }: ConversationCardProps) {
-  const { name, updatedAt, lastMessage, avatar, unreadCount } = data;
+  const { name, updatedAt, lastMessageAt, lastMessage, avatar, unreadCount } = data as any;
 
   return (
     <ThrottledTouchable onPress={onPress}>
@@ -38,7 +38,7 @@ export function ConversationCard({ className, data, onPress, ...props }: Convers
                 {name}
               </Heading>
 
-              <Text className="ml-3 text-xs">{formatChatDate(updatedAt)}</Text>
+              <Text className="ml-3 text-xs">{formatChatDate(lastMessageAt ?? updatedAt)}</Text>
             </Box>
 
             <Box className="mt-1 flex-row items-center justify-between">
