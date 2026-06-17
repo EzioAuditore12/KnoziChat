@@ -1,23 +1,23 @@
 import { cn } from '@gluestack-ui/utils';
-import { arktypeResolver } from '@hookform/resolvers/arktype';
-import { type } from 'arktype';
-import { type ComponentProps, useState, Activity } from 'react';
+
+import { type ComponentProps, Activity } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
-import crypto from 'react-native-nitro-crypto';
 
 import { Box } from '@/components/ui/box';
 import { Button, ButtonText } from '@/components/ui/button';
 import { Input, InputField } from '@/components/ui/input';
-import { Toast, ToastTitle, ToastDescription, useToast } from '@/components/ui/toast';
 
 import { HStack } from '@/components/ui/hstack';
 import { useGradualAnimation } from '@/hooks/use-gradual-animation';
 import { Socket } from '@/lib/socket-io';
 import { SendGroupMessageEvent } from '../../../events/send-group-message';
-import { File, fileSchema } from '@/features/common/schemas/file.schema';
+import { File } from '@/features/common/schemas/file.schema';
 import { MediaPreviewActivity } from './media-preview';
 import { MediaPicker } from './media-picker';
+import { arktypeResolver } from '@hookform/resolvers/arktype';
+import { sendMessageSchema, type SendMessageSchemaType } from './schema';
+import { useSwipeReplyTip, useEmptyMessageToast } from './use-send-message-logic';
 
 interface SendGroupMessageProps extends ComponentProps<typeof Box> {
   id: string;
@@ -44,26 +44,19 @@ export function SendGroupMessage({
     };
   }, []);
 
+  const showEmptyMessageToast = useEmptyMessageToast();
+  const handleFocus = useSwipeReplyTip(onFocus);
+
   const {
     control,
     reset,
     handleSubmit: handlFormSubmit,
-  } = useForm({
+  } = useForm<SendMessageSchemaType>({
     defaultValues: {
       text: '',
       file: undefined,
     },
-    resolver: arktypeResolver(
-      type({ text: 'string <= 1000', file: fileSchema.or('undefined') }).narrow((data, ctx) => {
-        const isEmptyText = data.text === '' || data.text === undefined;
-
-        if (isEmptyText && data.file === undefined) {
-          ctx.reject({ expected: 'message or file required', actual: '' });
-        }
-
-        return true;
-      })
-    ),
+    resolver: arktypeResolver(sendMessageSchema),
   });
 
   const onSubmit = (data: { text?: string; file?: File | undefined }) => {
@@ -72,23 +65,7 @@ export function SendGroupMessage({
     const content = trimmed === '' ? null : trimmed;
 
     if (content === null && data.file === undefined) {
-      const newId = crypto.randomInt.toString();
-      setToastId(newId);
-      toast.show({
-        id: newId,
-        placement: 'top',
-        duration: 2000,
-        render: ({ id: toastRenderingId }) => {
-          const uniqueToastId = 'toast-' + toastRenderingId;
-          return (
-            <Toast nativeID={uniqueToastId} action="muted" variant="solid">
-              <ToastTitle>Cannot send empty message</ToastTitle>
-              <ToastDescription>Type a message or attach a file.</ToastDescription>
-            </Toast>
-          );
-        },
-      });
-
+      showEmptyMessageToast();
       return;
     }
 
@@ -102,31 +79,6 @@ export function SendGroupMessage({
     });
 
     reset();
-  };
-
-  const toast = useToast();
-  const [toastId, setToastId] = useState<string>('0');
-
-  const handleFocus = () => {
-    const didDeselect = onFocus?.();
-    if (didDeselect && !toast.isActive(toastId)) {
-      const newId = Math.random().toString();
-      setToastId(newId);
-      toast.show({
-        id: newId,
-        placement: 'top',
-        duration: 3000,
-        render: ({ id: toastRenderingId }) => {
-          const uniqueToastId = 'toast-' + toastRenderingId;
-          return (
-            <Toast nativeID={uniqueToastId} action="muted" variant="solid">
-              <ToastTitle>Tip</ToastTitle>
-              <ToastDescription>You can swipe right on a message to reply to it!</ToastDescription>
-            </Toast>
-          );
-        },
-      });
-    }
   };
 
   return (
@@ -173,7 +125,7 @@ export function SendGroupMessage({
                       onChangeText={onChange}
                       textAlignVertical="center"
                       multiline
-                      numberOfLines={1}
+                      numberOfLines={8}
                       maxLength={1000}
                       className="min-h-[44px] px-4 py-2.5 text-base"
                     />

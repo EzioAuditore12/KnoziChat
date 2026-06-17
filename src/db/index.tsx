@@ -1,8 +1,7 @@
 import { OPSqliteOpenFactory } from '@powersync/op-sqlite';
 import { PowerSyncDatabase, PowerSyncContext, usePowerSync } from '@powersync/react-native';
 import { wrapPowerSyncWithDrizzle } from '@powersync/drizzle-driver';
-import { PropsWithChildren, useEffect, useState } from 'react';
-import * as SplashScreen from 'expo-splash-screen';
+import { PropsWithChildren } from 'react';
 import { AppSchema, drizzleSchema } from './schema';
 import { setupFts } from './extensions/fts-5';
 import { getOrGenerateDbKey } from './extensions/sql-cipher';
@@ -14,25 +13,12 @@ const dbName = 'knozichat.db';
 const _getDb = () => wrapPowerSyncWithDrizzle({} as PowerSyncDatabase, { schema: drizzleSchema });
 
 export let powerSyncDb: PowerSyncDatabase;
-let _dbInstance: ReturnType<typeof _getDb> | null = null;
+let _dbInstance: ReturnType<typeof _getDb>;
 
-// Proxy the db object so other files can safely capture it synchronously
-// Any method calls (e.g. db.select()) will be forwarded to the real instance once it's initialized.
-export const db = new Proxy({} as ReturnType<typeof _getDb>, {
-  get(_target, prop) {
-    if (!_dbInstance) {
-      throw new Error(`Cannot access db.${String(prop)} before database is initialized.`);
-    }
-    const key = prop as keyof typeof _dbInstance;
-    const val = _dbInstance[key];
-    return typeof val === 'function' ? (val as Function).bind(_dbInstance) : val;
-  },
-});
-
-export const setupDatabase = async () => {
+export const setupDatabase = () => {
   if (powerSyncDb) return;
 
-  const encryptionKey = await getOrGenerateDbKey();
+  const encryptionKey = getOrGenerateDbKey();
 
   const factory = new OPSqliteOpenFactory({
     dbFilename: dbName,
@@ -50,26 +36,16 @@ export const setupDatabase = async () => {
     schema: drizzleSchema,
   });
 
-  await setupFts(_dbInstance).catch(console.error);
+  // Run FTS setup asynchronously so it doesn't block the app startup
+  setupFts(_dbInstance).catch(console.error);
 };
 
+// Call it immediately at the top level
+setupDatabase();
+
+export const db = _dbInstance!;
+
 export function PowerSyncDatabaseProvider({ children }: PropsWithChildren) {
-  const [isReady, setIsReady] = useState(!!powerSyncDb);
-
-  useEffect(() => {
-    if (!isReady) {
-      setupDatabase()
-        .then(() => setIsReady(true))
-        .catch((e) => console.error('Failed to init DB:', e));
-    } else {
-      SplashScreen.hideAsync();
-    }
-  }, [isReady]);
-
-  if (!isReady) {
-    return null;
-  }
-
   return <PowerSyncContext.Provider value={powerSyncDb}>{children}</PowerSyncContext.Provider>;
 }
 

@@ -15,7 +15,7 @@ import { File } from '@/features/common/schemas/file.schema';
 import { AttachmentFileIcon } from './input/attachment-icon';
 
 interface MediaPickerProps extends ComponentProps<typeof Box> {
-  value: File;
+  value: File | undefined;
   onChange: (data: File | undefined) => void;
 }
 

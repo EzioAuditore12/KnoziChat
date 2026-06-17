@@ -1,12 +1,10 @@
 import { cn } from '@gluestack-ui/utils';
-import { useEffect, useRef, useState, type ComponentProps, Activity } from 'react';
+import { ComponentProps, Activity } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
-import { useDebouncedCallback } from 'use-debounce';
-import crypto from 'react-native-nitro-crypto';
 
 import { arktypeResolver } from '@hookform/resolvers/arktype';
-import { type } from 'arktype';
+import { sendMessageSchema, type SendMessageSchemaType } from './schema';
 
 import { useGradualAnimation } from '@/hooks/use-gradual-animation';
 
@@ -18,10 +16,15 @@ import { Input, InputField } from '@/components/ui/input';
 import { Socket } from '@/lib/socket-io';
 import { SendMessageEvent } from '../../../events/send-message';
 
-import { Toast, ToastDescription, ToastTitle, useToast } from '@/components/ui/toast';
 import { MediaPicker } from './media-picker';
-import { File, fileSchema } from '@/features/common/schemas/file.schema';
+import { File } from '@/features/common/schemas/file.schema';
 import { MediaPreviewActivity } from './media-preview';
+
+import {
+  useTypingIndicator,
+  useSwipeReplyTip,
+  useEmptyMessageToast,
+} from './use-send-message-logic';
 
 interface SendDirectMessageProps extends ComponentProps<typeof Box> {
   conversationId: string;
@@ -41,95 +44,24 @@ export function SendDirectMessage({
   ...props
 }: SendDirectMessageProps) {
   const { height } = useGradualAnimation();
+  const keyboardPadding = useAnimatedStyle(() => ({ height: height.value }), []);
 
-  const keyboardPadding = useAnimatedStyle(() => {
-    return {
-      height: height.value,
-    };
-  }, []);
+  const showEmptyMessageToast = useEmptyMessageToast();
+  const { handleTyping, handleStopTyping } = useTypingIndicator(socket, conversationId);
+  const handleFocus = useSwipeReplyTip(onFocus);
 
   const {
     control,
     reset,
     handleSubmit: handleFormSubmit,
-  } = useForm({
+  } = useForm<SendMessageSchemaType>({
     defaultValues: {
       text: '',
       file: undefined,
     },
-    resolver: arktypeResolver(
-      type({
-        text: 'string <= 1000',
-        file: fileSchema.or('undefined'),
-      }).narrow((data, ctx) => {
-        const isEmptyText = data.text === '' || data.text === undefined;
-
-        if (isEmptyText && data.file === undefined) {
-          ctx.reject({
-            expected: 'message or file required',
-            actual: '',
-          });
-        }
-
-        return true;
-      })
-    ),
+    resolver: arktypeResolver(sendMessageSchema),
   });
 
-  const toast = useToast();
-
-  const [toastId, setToastId] = useState<string>('0');
-
-  const isTypingRef = useRef(false);
-
-  const stopTyping = useDebouncedCallback(() => {
-    socket?.emit('conversation:typing', {
-      conversationId,
-      isTyping: false,
-    });
-
-    isTypingRef.current = false;
-  }, 1000);
-
-  useEffect(() => {
-    return () => {
-      stopTyping.cancel();
-
-      socket?.emit('conversation:typing', {
-        conversationId,
-        isTyping: false,
-      });
-    };
-  }, [conversationId, socket, stopTyping]);
-
-  const handleFocus = () => {
-    const didDeselect = onFocus?.();
-
-    if (didDeselect && !toast.isActive(toastId)) {
-      const newId = Math.random().toString();
-
-      setToastId(newId);
-
-      toast.show({
-        id: newId,
-        placement: 'top',
-        duration: 3000,
-        render: ({ id: toastRenderingId }) => {
-          const uniqueToastId = 'toast-' + toastRenderingId;
-
-          return (
-            <Toast nativeID={uniqueToastId} action="muted" variant="solid">
-              <ToastTitle>Tip</ToastTitle>
-
-              <ToastDescription>You can swipe right on a message to reply to it!</ToastDescription>
-            </Toast>
-          );
-        },
-      });
-    }
-  };
-
-  // TODO: Need to implement photo upload
   const onSubmit = (data: { text?: string; file?: File | undefined }) => {
     console.log(data);
 
@@ -139,25 +71,7 @@ export function SendDirectMessage({
 
     // Block sending empty text when there's no file attached
     if (content === null && data.file === undefined) {
-      const newId = crypto.randomInt.toString();
-
-      toast.show({
-        id: newId,
-        placement: 'top',
-        duration: 2000,
-        render: ({ id: toastRenderingId }) => {
-          const uniqueToastId = 'toast-' + toastRenderingId;
-
-          return (
-            <Toast nativeID={uniqueToastId} action="muted" variant="solid">
-              <ToastTitle>Cannot send empty message</ToastTitle>
-
-              <ToastDescription>Type a message or attach a file.</ToastDescription>
-            </Toast>
-          );
-        },
-      });
-
+      showEmptyMessageToast();
       return;
     }
 
@@ -170,15 +84,7 @@ export function SendDirectMessage({
       deletedAt: undefined,
     });
 
-    stopTyping.cancel();
-
-    socket?.emit('conversation:typing', {
-      conversationId,
-      isTyping: false,
-    });
-
-    isTypingRef.current = false;
-
+    handleStopTyping();
     reset();
   };
 
@@ -215,35 +121,14 @@ export function SendDirectMessage({
                       value={value}
                       textAlignVertical="center"
                       multiline
-                      numberOfLines={1}
+                      numberOfLines={8}
                       maxLength={1000}
                       className="min-h-[44px] px-4 py-2.5 text-base"
-                      onFocus={() => {
-                        handleFocus();
-                      }}
-                      onBlur={() => {
-                        stopTyping.cancel();
-
-                        socket?.emit('conversation:typing', {
-                          conversationId,
-                          isTyping: false,
-                        });
-
-                        isTypingRef.current = false;
-                      }}
+                      onFocus={handleFocus}
+                      onBlur={handleStopTyping}
                       onChangeText={(text) => {
                         onChange(text);
-
-                        if (!isTypingRef.current) {
-                          isTypingRef.current = true;
-
-                          socket?.emit('conversation:typing', {
-                            conversationId,
-                            isTyping: true,
-                          });
-                        }
-
-                        stopTyping();
+                        handleTyping();
                       }}
                     />
                   </Input>

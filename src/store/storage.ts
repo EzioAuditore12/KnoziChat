@@ -1,10 +1,6 @@
 import { StateStorage } from 'zustand/middleware';
 import { createMMKV } from 'react-native-mmkv';
-import {
-  setGenericPassword,
-  getGenericPassword,
-  resetGenericPassword,
-} from 'react-native-keychain';
+import { setItem, deleteItemAsync, getItem } from 'expo-secure-store';
 
 const storage = createMMKV();
 
@@ -22,14 +18,14 @@ export const zustandStorage: StateStorage = {
 };
 
 export const secureStorage: StateStorage = {
-  setItem: async (name, value) => {
-    await setGenericPassword(name, value, { service: name });
+  setItem: (name, value) => {
+    setItem(name, value);
   },
-  getItem: async (name) => {
-    const credentials = await getGenericPassword({ service: name });
-    return credentials ? credentials.password : null;
+  getItem: (name) => {
+    const value = getItem(name);
+    return value ?? null;
   },
   removeItem: async (name) => {
-    await resetGenericPassword({ service: name });
+    await deleteItemAsync(name);
   },
 };
