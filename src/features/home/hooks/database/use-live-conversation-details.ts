@@ -68,6 +68,14 @@ export function useLiveConversationDetails(currentUserId: string, pageSize: numb
         LIMIT 1
       )`.as('lastMessage'),
 
+      lastMessageAt: sql<number | null>`(
+        SELECT chat_direct.created_at
+        FROM chat_direct
+        WHERE chat_direct.conversation_id = conversation_direct.id
+        ORDER BY chat_direct.created_at DESC
+        LIMIT 1
+      )`.as('lastMessageAt'),
+
       unreadCount: sql<number>`(
         SELECT count(*)
         FROM chat_direct
@@ -144,6 +152,14 @@ export function useLiveConversationDetails(currentUserId: string, pageSize: numb
         LIMIT 1
       )`.as('lastMessage'),
 
+      lastMessageAt: sql<number | null>`(
+        SELECT chat_group.created_at
+        FROM chat_group
+        WHERE chat_group.conversation_id = conversation_group.id
+        ORDER BY chat_group.created_at DESC
+        LIMIT 1
+      )`.as('lastMessageAt'),
+
       unreadCount: sql<number>`0`.as('unreadCount'),
     })
     .from(conversationGroupTable)
@@ -158,7 +174,7 @@ export function useLiveConversationDetails(currentUserId: string, pageSize: numb
   const query = db
     .select()
     .from(unionAll(direct, group).as('conversations'))
-    .orderBy(desc(sql`updated_at`));
+    .orderBy(desc(sql`COALESCE(conversations.lastMessageAt, conversations.updatedAt)`));
 
   return useLiveInfiniteQuery({
     query,

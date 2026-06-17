@@ -1,5 +1,4 @@
 import { cn } from '@gluestack-ui/utils';
-import { format, isToday, isYesterday } from '@bernagl/react-native-date';
 import { Activity, type ComponentProps } from 'react';
 
 import { Avatar, AvatarFallbackText, AvatarImage } from '@/components/ui/avatar';
@@ -14,28 +13,11 @@ import type { Conversation } from '@/features/home/types/conversation.type';
 import { VStack } from '@/components/ui/vstack';
 
 import { Badge, BadgeText } from '@/components/ui/badge';
+import { formatChatDate } from '@/features/chat/utils/format-chat-date';
 
 interface ConversationCardProps extends ComponentProps<typeof Card> {
   onPress: ThrottledTouchableProps['onPress'];
   data: Conversation;
-}
-
-function formatChatDate(timestamp: number) {
-  const date = new Date(timestamp);
-
-  if (isToday(date)) {
-    return format(date, 'h:mm aa');
-  }
-
-  if (isYesterday(date)) {
-    return 'Yesterday';
-  }
-
-  if (Date.now() - timestamp < 7 * 24 * 60 * 60 * 1000) {
-    return format(date, 'EEEE');
-  }
-
-  return format(date, 'P');
 }
 
 export function ConversationCard({ className, data, onPress, ...props }: ConversationCardProps) {
