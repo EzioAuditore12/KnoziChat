@@ -5,6 +5,7 @@ export type Conversation = {
   name: string;
   avatar: string | null;
   updatedAt: number;
+  lastMessageAt: number | null;
   type: ConversationType;
   userId: string;
   lastMessage: string | null;

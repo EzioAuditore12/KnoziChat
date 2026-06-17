@@ -62,8 +62,8 @@ export const chatGroupTable = sqliteTable(
   },
   (t) => [
     index('chat_group_conversation_group_idx').on(t.conversationId),
-
     index('chat_group_sender_idx').on(t.senderId),
+    index('chat_group_conv_created_idx').on(t.conversationId, t.createdAt),
   ]
 );
 

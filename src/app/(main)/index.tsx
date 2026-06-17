@@ -23,7 +23,9 @@ export default function HomeScreen() {
 
   const { data, isFetching, isLoading, fetchNextPage } = useLiveConversationDetails(currentUserId);
 
-  const { data: users } = useGetOnlineUsers();
+  const { data: users, isLoading: isUsersLoading } = useGetOnlineUsers();
+
+  console.log(data);
 
   return (
     <>
@@ -35,7 +37,7 @@ export default function HomeScreen() {
         }}
       />
 
-      <OnlineUsersList users={users} />
+      <OnlineUsersList users={users} isLoading={isUsersLoading} />
 
       <Heading className="px-4 py-1">Chats</Heading>
 

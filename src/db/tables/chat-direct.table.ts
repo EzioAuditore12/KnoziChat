@@ -38,7 +38,10 @@ export const chatDirectTable = sqliteTable(
 
     deletedAt: integer('deleted_at'),
   },
-  (t) => [index('conversation_direct_idx').on(t.conversationId)]
+  (t) => [
+    index('conversation_direct_idx').on(t.conversationId),
+    index('chat_direct_conv_created_idx').on(t.conversationId, t.createdAt)
+  ]
 );
 
 export const chatDirectSchema = createSelectSchema(chatDirectTable);

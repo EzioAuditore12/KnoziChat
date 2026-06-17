@@ -174,7 +174,7 @@ export function useLiveConversationDetails(currentUserId: string, pageSize: numb
   const query = db
     .select()
     .from(unionAll(direct, group).as('conversations'))
-    .orderBy(desc(sql`COALESCE(conversations.lastMessageAt, conversations.updatedAt)`));
+    .orderBy(desc(sql`COALESCE(conversations."lastMessageAt", conversations.updated_at)`));
 
   return useLiveInfiniteQuery({
     query,
