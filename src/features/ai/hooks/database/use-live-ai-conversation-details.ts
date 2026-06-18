@@ -40,6 +40,14 @@ export function useLiveAiConversationDetails(currentUserId: string, pageSize: nu
         LIMIT 1
       )`.as('lastMessage'),
 
+      lastMessageAt: sql<number | null>`(
+        SELECT ai.created_at
+        FROM ai
+        WHERE ai.conversation_id = conversation_direct.id
+        ORDER BY ai.created_at DESC
+        LIMIT 1
+      )`.as('lastMessageAt'),
+
       unreadCount: sql<number>`0`.as('unreadCount'),
     })
     .from(conversationDirectTable)
@@ -74,6 +82,14 @@ export function useLiveAiConversationDetails(currentUserId: string, pageSize: nu
         ORDER BY ai.created_at DESC
         LIMIT 1
       )`.as('lastMessage'),
+
+      lastMessageAt: sql<number | null>`(
+        SELECT ai.created_at
+        FROM ai
+        WHERE ai.conversation_id = conversation_group.id
+        ORDER BY ai.created_at DESC
+        LIMIT 1
+      )`.as('lastMessageAt'),
 
       unreadCount: sql<number>`0`.as('unreadCount'),
     })

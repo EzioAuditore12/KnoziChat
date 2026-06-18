@@ -1,5 +1,6 @@
-import { conversationDirectRepository } from '@/db/repositories/conversation-direct.repository';
 import { router } from 'expo-router';
+
+import { conversationDirectRepository } from '@/db/repositories/conversation-direct.repository';
 
 export const navgateToChat = async (
   {
@@ -7,11 +8,13 @@ export const navgateToChat = async (
     avatar,
     firstName,
     lastName,
+    email,
   }: {
     userId: string;
     avatar: string | null;
     firstName: string;
     lastName: string;
+    email: string;
   },
   shouldDismissToMain: boolean = true
 ) => {
@@ -35,6 +38,8 @@ export const navgateToChat = async (
     params: {
       id: userId,
       name: firstName,
+      avatar: avatar || '',
+      email,
     },
   });
 };

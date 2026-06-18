@@ -49,6 +49,7 @@ export default function UserDetails() {
             avatar: data.avatar,
             firstName: data.firstName,
             lastName: data.lastName,
+            email: data.email,
           })
         }>
         <ButtonText>Start Chatting</ButtonText>

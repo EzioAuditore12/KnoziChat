@@ -1,13 +1,15 @@
 import { useMemo } from 'react';
 import { Linking, useColorScheme } from 'react-native';
+import { Markdown } from 'react-native-nitro-markdown';
+import type { CustomRenderers } from 'react-native-nitro-markdown';
+
 import { Text } from '@/components/ui/text';
 import { Link } from '@/components/native-link';
 import { cn } from '@gluestack-ui/utils';
 import { useAuthStore } from '@/store/auth';
-import { Markdown } from 'react-native-nitro-markdown';
-import type { CustomRenderers } from 'react-native-nitro-markdown';
 
-const UUID_REGEX = /([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})/g;
+const MENTION_LINK_OR_UUID_REGEX =
+  /(\[.*?\]\(mention:\/\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\))|([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})/g;
 
 interface FormattedAiTextProps {
   text: string;
@@ -29,8 +31,12 @@ export function FormattedAiText({
 
   const processedText = useMemo(() => {
     if (!text) return '';
-    // Replace UUIDs with markdown links using the custom mention:// scheme
-    return text.replace(UUID_REGEX, (uuid) => `[${uuid}](mention://${uuid})`);
+    // Preserve existing mention links and only wrap raw UUIDs
+    return text.replace(MENTION_LINK_OR_UUID_REGEX, (match, existingLink, rawUuid) => {
+      if (existingLink) return existingLink;
+      if (rawUuid) return `[${rawUuid}](mention://${rawUuid})`;
+      return match;
+    });
   }, [text]);
 
   const renderers = useMemo<CustomRenderers>(
@@ -65,7 +71,12 @@ export function FormattedAiText({
                 <Link
                   href={{
                     pathname: '/(main)/chat/new/direct/[id]',
-                    params: { id: user.id, name: user.firstName },
+                    params: {
+                      id: user.id,
+                      name: user.firstName,
+                      avatar: user.avatar || '',
+                      email: user.email,
+                    },
                   }}>
                   <Text className={cn('font-medium text-blue-500', className)}>
                     @{user.username}

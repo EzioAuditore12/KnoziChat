@@ -40,7 +40,7 @@ export const chatDirectTable = sqliteTable(
   },
   (t) => [
     index('conversation_direct_idx').on(t.conversationId),
-    index('chat_direct_conv_created_idx').on(t.conversationId, t.createdAt)
+    index('chat_direct_conv_created_idx').on(t.conversationId, t.createdAt),
   ]
 );
 
