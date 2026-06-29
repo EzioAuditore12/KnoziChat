@@ -1,0 +1,322 @@
+diff --git a/node_modules/@baronha/react-native-multiple-image-picker/android/src/main/java/com/margelo/nitro/multipleimagepicker/MultipleImagePickerImp.kt b/node_modules/@baronha/react-native-multiple-image-picker/android/src/main/java/com/margelo/nitro/multipleimagepicker/MultipleImagePickerImp.kt
+index cdd8ca7..3911ff5 100644
+--- a/node_modules/@baronha/react-native-multiple-image-picker/android/src/main/java/com/margelo/nitro/multipleimagepicker/MultipleImagePickerImp.kt
++++ b/node_modules/@baronha/react-native-multiple-image-picker/android/src/main/java/com/margelo/nitro/multipleimagepicker/MultipleImagePickerImp.kt
+@@ -332,7 +332,7 @@
+                 override fun onLongPressDownload(context: Context, media: LocalMedia): Boolean {
+                     onLongPress(media.position.toDouble())
+                     return true
+                 }
+             })
+-            .startFragmentPreview(index, false, assets)
++            .startActivityPreview(index, false, assets)
+     }
+@@ -385,7 +385,7 @@ class MultipleImagePickerImp(reactContext: ReactApplicationContext?) :
+                 }
+ 
+                 override fun onCancel() {
+-//                    rejected(0.0)
++                    rejected(0.0)
+                 }
+             })
+     }
+diff --git a/node_modules/@baronha/react-native-multiple-image-picker/nitrogen/generated/android/MultipleImagePickerOnLoad.cpp b/node_modules/@baronha/react-native-multiple-image-picker/nitrogen/generated/android/MultipleImagePickerOnLoad.cpp
+index a6e6209..8581355 100644
+--- a/node_modules/@baronha/react-native-multiple-image-picker/nitrogen/generated/android/MultipleImagePickerOnLoad.cpp
++++ b/node_modules/@baronha/react-native-multiple-image-picker/nitrogen/generated/android/MultipleImagePickerOnLoad.cpp
+@@ -20,35 +20,43 @@
+ #include "JFunc_void_double.hpp"
+ #include "JFunc_void_CropResult.hpp"
+ #include "JFunc_void_CameraResult.hpp"
+-#include <NitroModules/JNISharedPtr.hpp>
+ #include <NitroModules/DefaultConstructableObject.hpp>
+ 
+ namespace margelo::nitro::multipleimagepicker {
+ 
+ int initialize(JavaVM* vm) {
++  return facebook::jni::initialize(vm, []() {
++    ::margelo::nitro::multipleimagepicker::registerAllNatives();
++  });
++}
++
++struct JHybridMultipleImagePickerSpecImpl: public jni::JavaClass<JHybridMultipleImagePickerSpecImpl, JHybridMultipleImagePickerSpec::JavaPart> {
++  static auto constexpr kJavaDescriptor = "Lcom/margelo/nitro/multipleimagepicker/MultipleImagePicker;";
++  static std::shared_ptr<JHybridMultipleImagePickerSpec> create() {
++    static auto constructorFn = javaClassStatic()->getConstructor<JHybridMultipleImagePickerSpecImpl::javaobject()>();
++    jni::local_ref<JHybridMultipleImagePickerSpec::JavaPart> javaPart = javaClassStatic()->newObject(constructorFn);
++    return javaPart->getJHybridMultipleImagePickerSpec();
++  }
++};
++
++void registerAllNatives() {
+   using namespace margelo::nitro;
+   using namespace margelo::nitro::multipleimagepicker;
+-  using namespace facebook;
+-
+-  return facebook::jni::initialize(vm, [] {
+-    // Register native JNI methods
+-    margelo::nitro::multipleimagepicker::JHybridMultipleImagePickerSpec::registerNatives();
+-    margelo::nitro::multipleimagepicker::JFunc_void_std__vector_PickerResult__cxx::registerNatives();
+-    margelo::nitro::multipleimagepicker::JFunc_void_double_cxx::registerNatives();
+-    margelo::nitro::multipleimagepicker::JFunc_void_CropResult_cxx::registerNatives();
+-    margelo::nitro::multipleimagepicker::JFunc_void_CameraResult_cxx::registerNatives();
+-
+-    // Register Nitro Hybrid Objects
+-    HybridObjectRegistry::registerHybridObjectConstructor(
+-      "MultipleImagePicker",
+-      []() -> std::shared_ptr<HybridObject> {
+-        static DefaultConstructableObject<JHybridMultipleImagePickerSpec::javaobject> object("com/margelo/nitro/multipleimagepicker/MultipleImagePicker");
+-        auto instance = object.create();
+-        auto globalRef = jni::make_global(instance);
+-        return JNISharedPtr::make_shared_from_jni<JHybridMultipleImagePickerSpec>(globalRef);
+-      }
+-    );
+-  });
++
++  // Register native JNI methods
++  margelo::nitro::multipleimagepicker::JHybridMultipleImagePickerSpec::CxxPart::registerNatives();
++  margelo::nitro::multipleimagepicker::JFunc_void_std__vector_PickerResult__cxx::registerNatives();
++  margelo::nitro::multipleimagepicker::JFunc_void_double_cxx::registerNatives();
++  margelo::nitro::multipleimagepicker::JFunc_void_CropResult_cxx::registerNatives();
++  margelo::nitro::multipleimagepicker::JFunc_void_CameraResult_cxx::registerNatives();
++
++  // Register Nitro Hybrid Objects
++  HybridObjectRegistry::registerHybridObjectConstructor(
++    "MultipleImagePicker",
++    []() -> std::shared_ptr<HybridObject> {
++      return JHybridMultipleImagePickerSpecImpl::create();
++    }
++  );
+ }
+ 
+ } // namespace margelo::nitro::multipleimagepicker
+diff --git a/node_modules/@baronha/react-native-multiple-image-picker/nitrogen/generated/android/MultipleImagePickerOnLoad.hpp b/node_modules/@baronha/react-native-multiple-image-picker/nitrogen/generated/android/MultipleImagePickerOnLoad.hpp
+index 073381a..0af4b7c 100644
+--- a/node_modules/@baronha/react-native-multiple-image-picker/nitrogen/generated/android/MultipleImagePickerOnLoad.hpp
++++ b/node_modules/@baronha/react-native-multiple-image-picker/nitrogen/generated/android/MultipleImagePickerOnLoad.hpp
+@@ -20,6 +20,22 @@ namespace margelo::nitro::multipleimagepicker {
+    * }
+    * ```
+    */
++  [[deprecated("Use registerAllNatives() instead.")]]
+   int initialize(JavaVM* vm);
+ 
++  /**
++   * Register the native (C++) part of MultipleImagePicker, and autolinks all Hybrid Objects.
++   * Call this in your `JNI_OnLoad` function (probably inside `cpp-adapter.cpp`),
++   * inside a `facebook::jni::initialize(vm, ...)` call.
++   * Example:
++   * ```cpp (cpp-adapter.cpp)
++   * JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void*) {
++   *   return facebook::jni::initialize(vm, []() {
++   *     margelo::nitro::multipleimagepicker::registerAllNatives();
++   *   });
++   * }
++   * ```
++   */
++  void registerAllNatives();
++
+ } // namespace margelo::nitro::multipleimagepicker
+diff --git a/node_modules/@baronha/react-native-multiple-image-picker/nitrogen/generated/android/c++/JHybridMultipleImagePickerSpec.cpp b/node_modules/@baronha/react-native-multiple-image-picker/nitrogen/generated/android/c++/JHybridMultipleImagePickerSpec.cpp
+index 1e68abf..901376e 100644
+--- a/node_modules/@baronha/react-native-multiple-image-picker/nitrogen/generated/android/c++/JHybridMultipleImagePickerSpec.cpp
++++ b/node_modules/@baronha/react-native-multiple-image-picker/nitrogen/generated/android/c++/JHybridMultipleImagePickerSpec.cpp
+@@ -99,19 +99,31 @@ namespace margelo::nitro::multipleimagepicker { struct CameraResult; }
+ 
+ namespace margelo::nitro::multipleimagepicker {
+ 
+-  jni::local_ref<JHybridMultipleImagePickerSpec::jhybriddata> JHybridMultipleImagePickerSpec::initHybrid(jni::alias_ref<jhybridobject> jThis) {
++  std::shared_ptr<JHybridMultipleImagePickerSpec> JHybridMultipleImagePickerSpec::JavaPart::getJHybridMultipleImagePickerSpec() {
++    auto hybridObject = JHybridObject::JavaPart::getJHybridObject();
++    auto castHybridObject = std::dynamic_pointer_cast<JHybridMultipleImagePickerSpec>(hybridObject);
++    if (castHybridObject == nullptr) [[unlikely]] {
++      throw std::runtime_error("Failed to downcast JHybridObject to JHybridMultipleImagePickerSpec!");
++    }
++    return castHybridObject;
++  }
++
++  jni::local_ref<JHybridMultipleImagePickerSpec::CxxPart::jhybriddata> JHybridMultipleImagePickerSpec::CxxPart::initHybrid(jni::alias_ref<jhybridobject> jThis) {
+     return makeCxxInstance(jThis);
+   }
+ 
+-  void JHybridMultipleImagePickerSpec::registerNatives() {
+-    registerHybrid({
+-      makeNativeMethod("initHybrid", JHybridMultipleImagePickerSpec::initHybrid),
+-    });
++  std::shared_ptr<JHybridObject> JHybridMultipleImagePickerSpec::CxxPart::createHybridObject(const jni::local_ref<JHybridObject::JavaPart>& javaPart) {
++    auto castJavaPart = jni::dynamic_ref_cast<JHybridMultipleImagePickerSpec::JavaPart>(javaPart);
++    if (castJavaPart == nullptr) [[unlikely]] {
++      throw std::runtime_error("Failed to cast JHybridObject::JavaPart to JHybridMultipleImagePickerSpec::JavaPart!");
++    }
++    return std::make_shared<JHybridMultipleImagePickerSpec>(castJavaPart);
+   }
+ 
+-  size_t JHybridMultipleImagePickerSpec::getExternalMemorySize() noexcept {
+-    static const auto method = javaClassStatic()->getMethod<jlong()>("getMemorySize");
+-    return method(_javaPart);
++  void JHybridMultipleImagePickerSpec::CxxPart::registerNatives() {
++    registerHybrid({
++      makeNativeMethod("initHybrid", JHybridMultipleImagePickerSpec::CxxPart::initHybrid),
++    });
+   }
+ 
+   // Properties
+@@ -119,15 +131,15 @@ namespace margelo::nitro::multipleimagepicker {
+ 
+   // Methods
+   void JHybridMultipleImagePickerSpec::openPicker(const NitroConfig& config, const std::function<void(const std::vector<PickerResult>& /* result */)>& resolved, const std::function<void(double /* reject */)>& rejected) {
+-    static const auto method = javaClassStatic()->getMethod<void(jni::alias_ref<JNitroConfig> /* config */, jni::alias_ref<JFunc_void_std__vector_PickerResult_::javaobject> /* resolved */, jni::alias_ref<JFunc_void_double::javaobject> /* rejected */)>("openPicker_cxx");
++    static const auto method = _javaPart->javaClassStatic()->getMethod<void(jni::alias_ref<JNitroConfig> /* config */, jni::alias_ref<JFunc_void_std__vector_PickerResult_::javaobject> /* resolved */, jni::alias_ref<JFunc_void_double::javaobject> /* rejected */)>("openPicker_cxx");
+     method(_javaPart, JNitroConfig::fromCpp(config), JFunc_void_std__vector_PickerResult__cxx::fromCpp(resolved), JFunc_void_double_cxx::fromCpp(rejected));
+   }
+   void JHybridMultipleImagePickerSpec::openCrop(const std::string& image, const NitroCropConfig& config, const std::function<void(const CropResult& /* result */)>& resolved, const std::function<void(double /* reject */)>& rejected) {
+-    static const auto method = javaClassStatic()->getMethod<void(jni::alias_ref<jni::JString> /* image */, jni::alias_ref<JNitroCropConfig> /* config */, jni::alias_ref<JFunc_void_CropResult::javaobject> /* resolved */, jni::alias_ref<JFunc_void_double::javaobject> /* rejected */)>("openCrop_cxx");
++    static const auto method = _javaPart->javaClassStatic()->getMethod<void(jni::alias_ref<jni::JString> /* image */, jni::alias_ref<JNitroCropConfig> /* config */, jni::alias_ref<JFunc_void_CropResult::javaobject> /* resolved */, jni::alias_ref<JFunc_void_double::javaobject> /* rejected */)>("openCrop_cxx");
+     method(_javaPart, jni::make_jstring(image), JNitroCropConfig::fromCpp(config), JFunc_void_CropResult_cxx::fromCpp(resolved), JFunc_void_double_cxx::fromCpp(rejected));
+   }
+   void JHybridMultipleImagePickerSpec::openPreview(const std::vector<MediaPreview>& media, double index, const NitroPreviewConfig& config, const std::function<void(double /* index */)>& onLongPress) {
+-    static const auto method = javaClassStatic()->getMethod<void(jni::alias_ref<jni::JArrayClass<JMediaPreview>> /* media */, double /* index */, jni::alias_ref<JNitroPreviewConfig> /* config */, jni::alias_ref<JFunc_void_double::javaobject> /* onLongPress */)>("openPreview_cxx");
++    static const auto method = _javaPart->javaClassStatic()->getMethod<void(jni::alias_ref<jni::JArrayClass<JMediaPreview>> /* media */, double /* index */, jni::alias_ref<JNitroPreviewConfig> /* config */, jni::alias_ref<JFunc_void_double::javaobject> /* onLongPress */)>("openPreview_cxx");
+     method(_javaPart, [&]() {
+       size_t __size = media.size();
+       jni::local_ref<jni::JArrayClass<JMediaPreview>> __array = jni::JArrayClass<JMediaPreview>::newArray(__size);
+@@ -139,7 +151,7 @@ namespace margelo::nitro::multipleimagepicker {
+     }(), index, JNitroPreviewConfig::fromCpp(config), JFunc_void_double_cxx::fromCpp(onLongPress));
+   }
+   void JHybridMultipleImagePickerSpec::openCamera(const NitroCameraConfig& config, const std::function<void(const CameraResult& /* result */)>& resolved, const std::function<void(double /* reject */)>& rejected) {
+-    static const auto method = javaClassStatic()->getMethod<void(jni::alias_ref<JNitroCameraConfig> /* config */, jni::alias_ref<JFunc_void_CameraResult::javaobject> /* resolved */, jni::alias_ref<JFunc_void_double::javaobject> /* rejected */)>("openCamera_cxx");
++    static const auto method = _javaPart->javaClassStatic()->getMethod<void(jni::alias_ref<JNitroCameraConfig> /* config */, jni::alias_ref<JFunc_void_CameraResult::javaobject> /* resolved */, jni::alias_ref<JFunc_void_double::javaobject> /* rejected */)>("openCamera_cxx");
+     method(_javaPart, JNitroCameraConfig::fromCpp(config), JFunc_void_CameraResult_cxx::fromCpp(resolved), JFunc_void_double_cxx::fromCpp(rejected));
+   }
+ 
+diff --git a/node_modules/@baronha/react-native-multiple-image-picker/nitrogen/generated/android/c++/JHybridMultipleImagePickerSpec.hpp b/node_modules/@baronha/react-native-multiple-image-picker/nitrogen/generated/android/c++/JHybridMultipleImagePickerSpec.hpp
+index 000913c..84dec68 100644
+--- a/node_modules/@baronha/react-native-multiple-image-picker/nitrogen/generated/android/c++/JHybridMultipleImagePickerSpec.hpp
++++ b/node_modules/@baronha/react-native-multiple-image-picker/nitrogen/generated/android/c++/JHybridMultipleImagePickerSpec.hpp
+@@ -13,35 +13,37 @@
+ 
+ 
+ 
+-
+ namespace margelo::nitro::multipleimagepicker {
+ 
+   using namespace facebook;
+ 
+-  class JHybridMultipleImagePickerSpec: public jni::HybridClass<JHybridMultipleImagePickerSpec, JHybridObject>,
+-                                        public virtual HybridMultipleImagePickerSpec {
++  class JHybridMultipleImagePickerSpec: public virtual HybridMultipleImagePickerSpec, public virtual JHybridObject {
+   public:
+-    static auto constexpr kJavaDescriptor = "Lcom/margelo/nitro/multipleimagepicker/HybridMultipleImagePickerSpec;";
+-    static jni::local_ref<jhybriddata> initHybrid(jni::alias_ref<jhybridobject> jThis);
+-    static void registerNatives();
+-
+-  protected:
+-    // C++ constructor (called from Java via `initHybrid()`)
+-    explicit JHybridMultipleImagePickerSpec(jni::alias_ref<jhybridobject> jThis) :
+-      HybridObject(HybridMultipleImagePickerSpec::TAG),
+-      _javaPart(jni::make_global(jThis)) {}
++    struct JavaPart: public jni::JavaClass<JavaPart, JHybridObject::JavaPart> {
++      static auto constexpr kJavaDescriptor = "Lcom/margelo/nitro/multipleimagepicker/HybridMultipleImagePickerSpec;";
++      std::shared_ptr<JHybridMultipleImagePickerSpec> getJHybridMultipleImagePickerSpec();
++    };
++    struct CxxPart: public jni::HybridClass<CxxPart, JHybridObject::CxxPart> {
++      static auto constexpr kJavaDescriptor = "Lcom/margelo/nitro/multipleimagepicker/HybridMultipleImagePickerSpec$CxxPart;";
++      static jni::local_ref<jhybriddata> initHybrid(jni::alias_ref<jhybridobject> jThis);
++      static void registerNatives();
++      using HybridBase::HybridBase;
++    protected:
++      std::shared_ptr<JHybridObject> createHybridObject(const jni::local_ref<JHybridObject::JavaPart>& javaPart) override;
++    };
+ 
+   public:
++    explicit JHybridMultipleImagePickerSpec(const jni::local_ref<JHybridMultipleImagePickerSpec::JavaPart>& javaPart):
++      HybridObject(HybridMultipleImagePickerSpec::TAG),
++      JHybridObject(javaPart),
++      _javaPart(jni::make_global(javaPart)) {}
+     ~JHybridMultipleImagePickerSpec() override {
+       // Hermes GC can destroy JS objects on a non-JNI Thread.
+       jni::ThreadScope::WithClassLoader([&] { _javaPart.reset(); });
+     }
+ 
+   public:
+-    size_t getExternalMemorySize() noexcept override;
+-
+-  public:
+-    inline const jni::global_ref<JHybridMultipleImagePickerSpec::javaobject>& getJavaPart() const noexcept {
++    inline const jni::global_ref<JHybridMultipleImagePickerSpec::JavaPart>& getJavaPart() const noexcept {
+       return _javaPart;
+     }
+ 
+@@ -57,9 +59,7 @@ namespace margelo::nitro::multipleimagepicker {
+     void openCamera(const NitroCameraConfig& config, const std::function<void(const CameraResult& /* result */)>& resolved, const std::function<void(double /* reject */)>& rejected) override;
+ 
+   private:
+-    friend HybridBase;
+-    using HybridBase::HybridBase;
+-    jni::global_ref<JHybridMultipleImagePickerSpec::javaobject> _javaPart;
++    jni::global_ref<JHybridMultipleImagePickerSpec::JavaPart> _javaPart;
+   };
+ 
+ } // namespace margelo::nitro::multipleimagepicker
+diff --git a/node_modules/@baronha/react-native-multiple-image-picker/nitrogen/generated/android/kotlin/com/margelo/nitro/multipleimagepicker/HybridMultipleImagePickerSpec.kt b/node_modules/@baronha/react-native-multiple-image-picker/nitrogen/generated/android/kotlin/com/margelo/nitro/multipleimagepicker/HybridMultipleImagePickerSpec.kt
+index 47aa765..8042719 100644
+--- a/node_modules/@baronha/react-native-multiple-image-picker/nitrogen/generated/android/kotlin/com/margelo/nitro/multipleimagepicker/HybridMultipleImagePickerSpec.kt
++++ b/node_modules/@baronha/react-native-multiple-image-picker/nitrogen/generated/android/kotlin/com/margelo/nitro/multipleimagepicker/HybridMultipleImagePickerSpec.kt
+@@ -24,18 +24,6 @@ import com.margelo.nitro.core.*
+   "LocalVariableName", "PropertyName", "PrivatePropertyName", "FunctionName"
+ )
+ abstract class HybridMultipleImagePickerSpec: HybridObject() {
+-  @DoNotStrip
+-  private var mHybridData: HybridData = initHybrid()
+-
+-  init {
+-    super.updateNative(mHybridData)
+-  }
+-
+-  override fun updateNative(hybridData: HybridData) {
+-    mHybridData = hybridData
+-    super.updateNative(hybridData)
+-  }
+-
+   // Properties
+   
+ 
+@@ -76,9 +64,23 @@ abstract class HybridMultipleImagePickerSpec: HybridObject() {
+     return __result
+   }
+ 
+-  private external fun initHybrid(): HybridData
++  // Default implementation of `HybridObject.toString()`
++  override fun toString(): String {
++    return "[HybridObject MultipleImagePicker]"
++  }
++  
++  // C++ backing class
++  @DoNotStrip
++  @Keep
++  protected open class CxxPart(javaPart: HybridMultipleImagePickerSpec): HybridObject.CxxPart(javaPart) {
++    // C++ JHybridMultipleImagePickerSpec::CxxPart::initHybrid(...)
++    external override fun initHybrid(): HybridData
++  }
++  override fun createCxxPart(): CxxPart {
++    return CxxPart(this)
++  }
+ 
+   companion object {
+-    private const val TAG = "HybridMultipleImagePickerSpec"
++    protected const val TAG = "HybridMultipleImagePickerSpec"
+   }
+ }
+diff --git a/node_modules/@baronha/react-native-multiple-image-picker/nitrogen/generated/ios/MultipleImagePicker-Swift-Cxx-Umbrella.hpp b/node_modules/@baronha/react-native-multiple-image-picker/nitrogen/generated/ios/MultipleImagePicker-Swift-Cxx-Umbrella.hpp
+index 130d74f..a19bab3 100644
+--- a/node_modules/@baronha/react-native-multiple-image-picker/nitrogen/generated/ios/MultipleImagePicker-Swift-Cxx-Umbrella.hpp
++++ b/node_modules/@baronha/react-native-multiple-image-picker/nitrogen/generated/ios/MultipleImagePicker-Swift-Cxx-Umbrella.hpp
+@@ -86,7 +86,7 @@ namespace margelo::nitro::multipleimagepicker { enum class Theme; }
+ 
+ // Common C++ types used in Swift
+ #include <NitroModules/ArrayBufferHolder.hpp>
+-#include <NitroModules/AnyMapHolder.hpp>
++#include <NitroModules/AnyMap.hpp>
+ #include <NitroModules/RuntimeError.hpp>
+ 
+ // Forward declarations of Swift defined types

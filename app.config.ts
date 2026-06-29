@@ -36,7 +36,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         backgroundColor: '#ffffff',
       },
     ],
+    'react-native-nitro-fetch',
     'expo-secure-store',
+    '@react-native-vector-icons/ant-design',
   ],
   experiments: {
     typedRoutes: true,

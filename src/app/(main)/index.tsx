@@ -6,9 +6,11 @@ import { db } from '@/db';
 import { useLiveQuery } from '@/db/hooks/use-live-query';
 import { userRepository } from '@/db/repositories/user.repository';
 import { userTable } from '@/db/tables/user.table';
+import { useAuthStore } from '@/store/auth';
 
 export default function HomeScreen() {
   const { data } = useLiveQuery(db.select().from(userTable));
+  const { logout } = useAuthStore();
 
   console.log(data);
 
@@ -28,6 +30,10 @@ export default function HomeScreen() {
         }}
       >
         Create User
+      </Button>
+
+      <Button onPress={logout} variant="danger">
+        Logout
       </Button>
     </View>
   );

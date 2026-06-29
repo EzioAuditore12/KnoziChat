@@ -11,12 +11,15 @@ const nativeOnlyModules = new Set([
   'react-native-mmkv',
   'react-native-nitro-fetch',
   'react-native-nitro-crypto',
+  'expo-secure-store',
+  '@baronha/react-native-multiple-image-picker',
 ]);
 
 const webOnlyModules = new Set([
   '@powersync/web',
   '@react-native-async-storage/async-storage',
   'expo-crypto',
+  'expo-image-picker',
 ]);
 
 const webModuleMappings = {
